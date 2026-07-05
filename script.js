@@ -137,32 +137,17 @@ if (stripeCheckoutBtn && stripeProductSelect) {
             return;
         }
 
-        stripeCheckoutBtn.innerText = 'Loading...';
-        try {
-            // Ping analytics silently
-            fetch('/api/stats', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'buy' })
-            }).catch(() => {});
+        stripeCheckoutBtn.innerText = 'Redirecting...';
+        
+        // Ping analytics silently
+        fetch('/api/stats', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'buy' })
+        }).catch(() => {});
 
-            const stripe = Stripe('pk_live_51SKTKz2OaP3owCzDs5rWpsYEoOmAZLtSPFnR7GFg9vGkBvbXdTwAQgbJG6npYaMQpwoQEGmBLJJAbVQFt2jkeSEo00pQn7pgwY');
-            
-            const { error } = await stripe.redirectToCheckout({
-                lineItems: [{ price: selectedPriceId, quantity: 1 }],
-                mode: 'payment',
-                successUrl: window.location.origin + '?success=true',
-                cancelUrl: window.location.origin + '?canceled=true',
-            });
-
-            if (error) {
-                console.error(error.message);
-                stripeCheckoutBtn.innerText = 'Error: ' + error.message;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            stripeCheckoutBtn.innerText = 'Error loading Stripe';
-        }
+        // Redirect to Stripe Payment Link
+        window.location.href = "https://buy.stripe.com/aFa8wI2jI7QgajdaqR1Fe00";
     });
 }
 
