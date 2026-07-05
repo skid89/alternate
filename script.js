@@ -118,18 +118,8 @@ if (npBtn) {
     });
 }
 
-// Copy Address Logic
-document.querySelector('.copy-btn').addEventListener('click', () => {
-    const address = document.getElementById('crypto-address').innerText;
-    navigator.clipboard.writeText(address).then(() => {
-        const btn = document.querySelector('.copy-btn');
-        const originalText = btn.innerText;
-        btn.innerText = 'Copied!';
-        setTimeout(() => {
-            btn.innerText = originalText;
-        }, 2000);
-    });
-});
+
+
 
 // --- Stripe Checkout Logic ---
 const stripeCheckoutBtn = document.getElementById('stripe-checkout-btn');
