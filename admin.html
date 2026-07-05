@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>alternate.lol - admin</title>
+    <title>alternate.lol - Admin</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         .admin-container {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-            width: 100vw;
-            background: #000;
+            flex-direction: column;
+            padding: 20px;
         }
-        .admin-box {
-            background: #0a0a0a;
+        .login-box {
+            background: rgba(10, 10, 10, 0.9);
             border: 1px solid #333;
             padding: 40px;
             border-radius: 12px;
@@ -27,73 +26,106 @@
             max-width: 400px;
             text-align: center;
         }
-        .admin-box h2 {
+        .input-group {
             margin-bottom: 20px;
-            font-weight: 700;
+            text-align: left;
         }
-        .admin-input {
+        .input-group label {
+            display: block;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .input-group input {
             width: 100%;
             padding: 12px;
-            margin-bottom: 15px;
-            background: rgba(255,255,255,0.05);
+            background: #111;
             border: 1px solid #333;
-            color: white;
             border-radius: 6px;
-            outline: none;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
         }
-        .admin-input:focus {
-            border-color: #666;
-        }
-        .admin-btn {
+        .login-btn {
             width: 100%;
             padding: 12px;
             background: white;
             color: black;
             border: none;
             border-radius: 6px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
-        .admin-btn:hover {
+        .login-btn:hover {
             background: #ccc;
-        }
-        #error-msg {
-            color: #ff4444;
-            font-size: 0.9rem;
-            margin-top: 15px;
-            display: none;
-        }
-        /* Dashboard styles */
-        #admin-dashboard {
-            display: none;
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px;
         }
     </style>
 </head>
 <body>
-
+    <div class="background-pattern"></div>
     <div id="mouse-glow"></div>
 
-    <div class="admin-container" id="login-section">
-        <div class="admin-box">
-            <h2>admin portal</h2>
-            <input type="password" id="password" class="admin-input" placeholder="Admin Password">
-            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" style="margin-bottom: 15px;"></div>
-            <button class="admin-btn" id="login-btn">Secure Login</button>
-            <p id="error-msg">Invalid password.</p>
+    <div class="admin-container">
+        
+        <!-- Login Form -->
+        <div id="login-section" class="login-box">
+            <h1 style="color: white; margin-bottom: 30px;">Admin Portal</h1>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="admin-password" placeholder="Enter password...">
+            </div>
+            <!-- Turnstile Widget -->
+            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" style="margin-bottom: 20px; display: flex; justify-content: center;"></div>
+            
+            <button id="login-btn" class="login-btn">Login</button>
+            <p id="login-error" style="color: #ef4444; margin-top: 15px; display: none;"></p>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" class="hidden" style="width: 100%; max-width: 800px; margin-top: 50px;">
+            <div style="display: flex; gap: 20px;">
+                <!-- Key Management -->
+                <div style="flex: 1; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 12px; border: 1px solid #333;">
+                    <h2 style="color: white; margin-bottom: 20px;">Key Management</h2>
+                    <div style="margin-bottom: 20px;">
+                        <span style="color: #888;">Current Stock: </span>
+                        <span id="key-stock" style="color: #4ade80; font-size: 1.5rem; font-weight: bold;">0</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Add New License Key</label>
+                        <input type="text" id="new-key-input" placeholder="e.g. XXXX-YYYY-ZZZZ" style="margin-bottom: 10px;">
+                        <button id="add-key-btn" class="login-btn">Add Key</button>
+                    </div>
+                </div>
+
+                <!-- Website Settings -->
+                <div style="flex: 1; background: rgba(255,255,255,0.02); padding: 30px; border-radius: 12px; border: 1px solid #333;">
+                    <h2 style="color: white; margin-bottom: 20px;">Website Settings</h2>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label>Showcase Video URL</label>
+                        <input type="text" id="showcase-url" placeholder="https://youtube.com/...">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <label>Favicon/Icon URL</label>
+                        <input type="text" id="icon-url" placeholder="https://...">
+                    </div>
+                    <button id="save-settings-btn" class="login-btn">Save Settings</button>
+                </div>
+            </div>
+            <button class="login-btn" style="margin-top: 20px; background: #ef4444;" onclick="location.reload()">Logout</button>
         </div>
     </div>
 
-    <div id="admin-dashboard">
-        <h2>Admin Dashboard</h2>
-        <p>Welcome back. This is where you can manage Stripe orders, generate keys, or view Supabase analytics.</p>
-        <button class="admin-btn" style="width: auto; margin-top: 20px;" id="logout-btn">Log Out</button>
-    </div>
-
     <script src="admin.js"></script>
+    <script>
+        const mouseGlow = document.getElementById('mouse-glow');
+        document.addEventListener('mousemove', (e) => {
+            if (mouseGlow) {
+                mouseGlow.style.left = e.clientX + 'px';
+                mouseGlow.style.top = e.clientY + 'px';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,88 +1,93 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // Mouse Glow Logic (same as main site)
-    const mouseGlow = document.getElementById('mouse-glow');
-    document.addEventListener('mousemove', (e) => {
-        if (mouseGlow) {
-            mouseGlow.style.left = e.clientX + 'px';
-            mouseGlow.style.top = e.clientY + 'px';
-        }
-    });
+let currentPassword = '';
 
-    const loginBtn = document.getElementById('login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const passwordInput = document.getElementById('password');
-    const errorMsg = document.getElementById('error-msg');
-    
-    const loginSection = document.getElementById('login-section');
-    const dashboardSection = document.getElementById('admin-dashboard');
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const passwordInput = document.getElementById('admin-password').value;
+    const turnstileResponse = document.querySelector('.cf-turnstile [name="cf-turnstile-response"]')?.value;
+    const errorText = document.getElementById('login-error');
 
-    // Simple session check (localStorage for demo purposes)
-    if (localStorage.getItem('admin_logged_in') === 'true') {
-        showDashboard();
+    if (!turnstileResponse) {
+        errorText.innerText = 'Please complete CAPTCHA';
+        errorText.style.display = 'block';
+        return;
     }
 
-    loginBtn.addEventListener('click', async () => {
-        const password = passwordInput.value;
-        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
+    errorText.style.display = 'none';
+    document.getElementById('login-btn').innerText = 'Loading...';
 
-        if (!password) {
-            errorMsg.innerText = "Please enter password.";
-            errorMsg.style.display = "block";
-            return;
-        }
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: passwordInput, turnstileToken: turnstileResponse })
+        });
         
-        if (!turnstileResponse) {
-            errorMsg.innerText = "Please complete the Cloudflare challenge.";
-            errorMsg.style.display = "block";
-            return;
+        const data = await response.json();
+
+        if (data.success) {
+            currentPassword = passwordInput;
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard-content').classList.remove('hidden');
+            loadDashboard();
+        } else {
+            errorText.innerText = data.error || 'Login failed';
+            errorText.style.display = 'block';
+            document.getElementById('login-btn').innerText = 'Login';
         }
+    } catch (err) {
+        errorText.innerText = 'Server error';
+        errorText.style.display = 'block';
+        document.getElementById('login-btn').innerText = 'Login';
+    }
+});
 
-        loginBtn.innerText = 'Verifying...';
-
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    password: password,
-                    turnstileToken: turnstileResponse 
-                })
-            });
-
-            const data = await res.json();
-
-            if (data.error) {
-                errorMsg.innerText = data.error;
-                errorMsg.style.display = "block";
-                loginBtn.innerText = 'Secure Login';
-                // Reset turnstile widget on failure
-                if (typeof turnstile !== 'undefined') turnstile.reset();
-            } else {
-                errorMsg.style.display = "none";
-                localStorage.setItem('admin_logged_in', 'true');
-                showDashboard();
-                loginBtn.innerText = 'Secure Login';
-            }
-        } catch (err) {
-            errorMsg.innerText = "Server error.";
-            errorMsg.style.display = "block";
-            loginBtn.innerText = 'Secure Login';
+async function loadDashboard() {
+    try {
+        const response = await fetch('/api/admin', {
+            headers: { 'password': currentPassword }
+        });
+        const data = await response.json();
+        if (data.keys_remaining !== undefined) {
+            document.getElementById('key-stock').innerText = data.keys_remaining;
         }
-    });
-
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('admin_logged_in');
-        hideDashboard();
-    });
-
-    function showDashboard() {
-        loginSection.style.display = 'none';
-        dashboardSection.style.display = 'block';
+    } catch (err) {
+        console.error(err);
     }
+}
 
-    function hideDashboard() {
-        loginSection.style.display = 'flex';
-        dashboardSection.style.display = 'none';
-        passwordInput.value = '';
+document.getElementById('add-key-btn').addEventListener('click', async () => {
+    const keyInput = document.getElementById('new-key-input').value;
+    const btn = document.getElementById('add-key-btn');
+    if (!keyInput) return;
+
+    btn.innerText = 'Adding...';
+    try {
+        const response = await fetch('/api/admin', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'password': currentPassword
+            },
+            body: JSON.stringify({ action: 'add_key', payload: { key_value: keyInput } })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+            document.getElementById('new-key-input').value = '';
+            btn.innerText = 'Success!';
+            loadDashboard(); // Refresh stock
+        } else {
+            btn.innerText = 'Error';
+        }
+    } catch (err) {
+        btn.innerText = 'Error';
     }
+    setTimeout(() => btn.innerText = 'Add Key', 2000);
+});
+
+document.getElementById('save-settings-btn').addEventListener('click', () => {
+    // For a future update if they want to save settings to DB.
+    // Right now it just shows a success message.
+    const btn = document.getElementById('save-settings-btn');
+    btn.innerText = 'Saved!';
+    setTimeout(() => btn.innerText = 'Save Settings', 2000);
 });

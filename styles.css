@@ -26,15 +26,14 @@ body {
    ========================================= */
 #mouse-glow {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0) 70%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 70%);
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
-    z-index: 1; /* Below content but above background */
+    z-index: 1;
+    mix-blend-mode: screen;
     opacity: 1;
     transition: opacity 0.3s;
 }

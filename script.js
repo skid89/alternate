@@ -164,13 +164,13 @@ async function fetchRealStats() {
         const stats = await res.json();
 
         // Update DOM numbers
-        document.getElementById('total-buyers-text').innerText = stats.buyers || 10000;
-        document.getElementById('total-viewers-text').innerText = stats.viewers || 142000;
+        document.getElementById('total-buyers-text').innerText = stats.buyers || 0;
+        document.getElementById('total-stock-text').innerText = stats.keys_remaining || 0;
 
         return stats;
     } catch (err) {
         console.error("Failed to load real stats", err);
-        return { viewers: 142000, buyers: 10000 };
+        return { viewers: 0, buyers: 0, keys_remaining: 0 };
     }
 }
 
@@ -185,34 +185,51 @@ document.addEventListener('DOMContentLoaded', async () => {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
                 datasets: [
                     {
-                        label: 'Total Viewers',
-                        // Just a dummy growth curve ending in their real stat
-                        data: [20000, 35000, 50000, 75000, 100000, 120000, stats.viewers],
-                        borderColor: '#888888',
-                        backgroundColor: 'rgba(136, 136, 136, 0.1)',
+                        label: 'Key Stock',
+                        // Dummy history ending in real current stock
+                        data: [50, 45, 40, 35, 25, 20, stats.keys_remaining],
+                        borderColor: '#4ade80',
+                        backgroundColor: 'rgba(74, 222, 128, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointBackgroundColor: '#4ade80',
+                        pointRadius: 4,
+                        pointHoverRadius: 7
                     },
                     {
                         label: 'Total Buyers',
-                        data: [500, 1200, 2500, 4800, 7000, 8500, stats.buyers],
+                        data: [0, 5, 10, 15, 25, 30, stats.buyers],
                         borderColor: '#ffffff',
                         backgroundColor: 'rgba(255, 255, 255, 0.2)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointRadius: 4,
+                        pointHoverRadius: 7
                     }
                 ]
             },
             options: {
                 responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
                 plugins: {
                     legend: {
                         labels: { color: '#ffffff' }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: '#333',
+                        borderWidth: 1
                     }
                 },
                 scales: {
-                    x: { ticks: { color: '#888888' }, grid: { color: '#333333' } },
-                    y: { ticks: { color: '#888888' }, grid: { color: '#333333' } }
+                    x: { ticks: { color: '#888888' }, grid: { color: '#222222' } },
+                    y: { ticks: { color: '#888888' }, grid: { color: '#222222' } }
                 }
             }
         });

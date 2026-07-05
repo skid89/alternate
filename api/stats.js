@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         
         if (!supabaseUrl || !supabaseKey) {
             // Fallback for development if keys aren't set in .env
-            return res.status(200).json({ viewers: 142000, buyers: 10000 });
+            return res.status(200).json({ viewers: 142000, buyers: 10000, keys_remaining: 15 });
         }
 
         const supabase = createClient(supabaseUrl, supabaseKey);
@@ -29,16 +29,20 @@ export default async function handler(req, res) {
             if (action === 'buy') newBuyers += 1;
 
             await supabase.from('stats').update({ viewers: newViewers, buyers: newBuyers }).eq('id', data.id);
+            const { count: keysRemaining } = await supabase.from('keys').select('*', { count: 'exact', head: true }).eq('used', false);
             
-            return res.status(200).json({ viewers: newViewers, buyers: newBuyers });
+            return res.status(200).json({ viewers: newViewers, buyers: newBuyers, keys_remaining: keysRemaining || 0 });
         } else {
             // GET
             const { data, error } = await supabase.from('stats').select('*').single();
             if (error) throw error;
-            return res.status(200).json({ viewers: data.viewers, buyers: data.buyers });
+            
+            const { count: keysRemaining } = await supabase.from('keys').select('*', { count: 'exact', head: true }).eq('used', false);
+            
+            return res.status(200).json({ viewers: data.viewers, buyers: data.buyers, keys_remaining: keysRemaining || 0 });
         }
     } catch (err) {
         // Fallback on error
-        res.status(500).json({ error: err.message, viewers: 142000, buyers: 10000 });
+        res.status(500).json({ error: err.message, viewers: 142000, buyers: 10000, keys_remaining: 15 });
     }
 }
