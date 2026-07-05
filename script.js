@@ -130,58 +130,26 @@ async function fetchRealStats() {
             if (el4) el4.innerHTML = '<div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>';
         }
 
-        // Fetch current stats
-        const { data: statsData, error: statsError } = await supabaseClient.from('stats').select('*').single();
-        if (statsError) throw statsError;
+        // Fetch stats from our backend (which now uses SellAuth API)
+        const statsRes = await fetch('/api/stats');
+        const stats = await statsRes.json();
 
-        // Fetch key stock securely using our custom SQL function so hackers can't read the keys table
-        const { data: keysRemaining, error: keysError } = await supabaseClient.rpc('get_stock');
-        
-        if (keysError) throw keysError;
-
-        const stats = {
-            viewers: (statsData.viewers || 0) + 1,
-            buyers: statsData.buyers || 0,
-            keys_remaining: keysRemaining || 0
-        };
-
-        // Increment view count silently
-        supabaseClient.from('stats').update({ viewers: stats.viewers }).eq('id', statsData.id).then();
-
-        // Update DOM numbers for panels
-        document.getElementById('total-buyers-text').innerText = stats.buyers;
-        document.getElementById('total-stock-text').innerText = stats.keys_remaining;
-
-        // Update Top Right Badges
+        // Update Top Right Badges (if they exist)
         const badgeBuyers = document.getElementById('badge-buyers');
         const badgeStock = document.getElementById('badge-stock');
         if (badgeBuyers) badgeBuyers.innerText = stats.buyers;
         if (badgeStock) badgeStock.innerText = stats.keys_remaining;
 
-        // Out of stock logic
-        if (stats.keys_remaining <= 0) {
-            const stripeContainer = document.getElementById('stripe-embed-container');
-            const oosMsg = document.getElementById('out-of-stock-msg');
-            if (stripeContainer && oosMsg) {
-                stripeContainer.classList.add('hidden');
-                oosMsg.classList.remove('hidden');
-            }
-        }
-
         return stats;
     } catch (err) {
-        console.error("Failed to load real stats via Client Supabase", err);
+        console.error("Failed to load real stats", err);
         const fallback = { viewers: 0, buyers: 0, keys_remaining: 0 };
         
         const bBuyers = document.getElementById('badge-buyers');
         const bStock = document.getElementById('badge-stock');
-        const tBuyers = document.getElementById('total-buyers-text');
-        const tStock = document.getElementById('total-stock-text');
         
         if (bBuyers) bBuyers.innerText = 0;
         if (bStock) bStock.innerText = 0;
-        if (tBuyers) tBuyers.innerText = 0;
-        if (tStock) tStock.innerText = 0;
         
         return fallback;
     }
