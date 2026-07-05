@@ -177,7 +177,28 @@ async function fetchRealStats() {
         return stats;
     } catch (err) {
         console.error("Failed to load real stats", err);
-        return { viewers: 0, buyers: 0, keys_remaining: 0 };
+        const fallback = { viewers: 0, buyers: 0, keys_remaining: 0 };
+        
+        // Ensure DOM updates even if it fails
+        const bBuyers = document.getElementById('badge-buyers');
+        const bStock = document.getElementById('badge-stock');
+        const tBuyers = document.getElementById('total-buyers-text');
+        const tStock = document.getElementById('total-stock-text');
+        
+        if (bBuyers) bBuyers.innerText = 0;
+        if (bStock) bStock.innerText = 0;
+        if (tBuyers) tBuyers.innerText = 0;
+        if (tStock) tStock.innerText = 0;
+        
+        // Out of stock logic
+        const stripeContainer = document.getElementById('stripe-embed-container');
+        const oosMsg = document.getElementById('out-of-stock-msg');
+        if (stripeContainer && oosMsg) {
+            stripeContainer.classList.add('hidden');
+            oosMsg.classList.remove('hidden');
+        }
+
+        return fallback;
     }
 }
 
