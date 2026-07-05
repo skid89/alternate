@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>alternate.lol</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=5">
     <!-- Clean, basic modern font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Ionicons for Social Icons -->
@@ -73,7 +73,24 @@
         <div class="bottom-nav">
             <button class="nav-btn" data-target="pricing">pricing</button>
             <button class="nav-btn" data-target="info">info</button>
-            <button class="nav-btn" data-target="showcases">showcases</button>
+        </div>
+
+        <div class="video-slider">
+            <button class="slider-btn prev" aria-label="Previous video"><ion-icon name="chevron-up"></ion-icon></button>
+            <div class="slider-viewport">
+                <div class="slider-track">
+                    <div class="slide active">
+                        <iframe src="https://www.youtube.com/embed/aoUNlBti2NU" title="Showcase 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="slide">
+                        <iframe src="https://www.youtube.com/embed/8diqEQ7ymVY" title="Showcase 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <div class="slide">
+                        <iframe src="https://www.youtube.com/embed/dO95v1Kbb1w?start=5" title="Showcase 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-btn next" aria-label="Next video"><ion-icon name="chevron-down"></ion-icon></button>
         </div>
 
         <div class="social-links">
@@ -150,19 +167,7 @@
         </div>
     </div>
 
-    <!-- Showcases Panel -->
-    <div class="sliding-panel" id="panel-showcases">
-        <button class="close-btn">&times;</button>
-        <h2>showcases</h2>
-        <div class="panel-content">
-            <p>Check out what our community is doing with alternate.lol!</p>
-            <div id="display-showcase-container" style="margin-top: 20px;">
-                <div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=5"></script>
 </body>
 
 </html>

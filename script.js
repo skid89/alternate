@@ -77,7 +77,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Stats & Chart ---
     loadStats();
+
+    // --- 3D Video Slider ---
+    initVideoSlider();
 });
+
+function initVideoSlider() {
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.querySelector('.slider-btn.prev');
+    const nextBtn = document.querySelector('.slider-btn.next');
+    if (!slides.length || !prevBtn || !nextBtn) return;
+
+    let current = 0;
+    let autoSlide;
+
+    function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === index);
+        });
+    }
+
+    function next() {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+    }
+
+    function prev() {
+        current = (current - 1 + slides.length) % slides.length;
+        showSlide(current);
+    }
+
+    function startAuto() {
+        stopAuto();
+        autoSlide = setInterval(next, 8000);
+    }
+
+    function stopAuto() {
+        if (autoSlide) clearInterval(autoSlide);
+    }
+
+    prevBtn.addEventListener('click', () => {
+        prev();
+        startAuto();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        next();
+        startAuto();
+    });
+
+    slides.forEach(slide => {
+        slide.addEventListener('mouseenter', stopAuto);
+        slide.addEventListener('mouseleave', startAuto);
+    });
+
+    showSlide(current);
+    startAuto();
+}
 
 async function loadStats() {
     try {
