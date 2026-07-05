@@ -107,17 +107,10 @@
                 </div>
             </div>
 
-            <div id="crypto-info" class="payment-info hidden">
-                <div class="crypto-tabs">
-                    <button class="crypto-tab active" onclick="showCrypto('btc')">BTC</button>
-                    <button class="crypto-tab" onclick="showCrypto('ltc')">LTC</button>
-                    <button class="crypto-tab" onclick="showCrypto('eth')">ETH</button>
-                </div>
-                <div class="crypto-display">
-                    <div id="qrcode"></div>
-                    <p id="crypto-address" class="address-text">Select a currency...</p>
-                    <button class="copy-btn">Copy Address</button>
-                </div>
+            <div id="crypto-info" class="payment-info hidden" style="text-align: center;">
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 20px;">Pay securely with BTC, ETH, LTC, and more. You will be redirected to our payment processor, NOWPayments.</p>
+                <button id="nowpayments-btn" class="nav-btn" style="background: #111; color: white; border: 1px solid #333; width: 100%; max-width: 300px; margin: 0 auto;">Pay with Crypto</button>
+                <p id="crypto-error" style="color: #ef4444; margin-top: 10px; display: none; font-size: 0.8rem;"></p>
             </div>
         </div>
     </div>

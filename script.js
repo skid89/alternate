@@ -88,44 +88,33 @@ function showPaymentMethod(method) {
         selected.classList.remove('hidden');
     }
 
-    // If crypto is selected, default to BTC
-    if (method === 'crypto') {
-        showCrypto('btc');
-    }
+    // If crypto is selected, nothing special needed
 }
 
-// Crypto Data Placeholders
-let cryptoData = {
-    btc: { address: 'Loading from database...' },
-    ltc: { address: 'Loading from database...' },
-    eth: { address: 'Loading from database...' }
-};
-
-let currentQrcode = null;
-
-function showCrypto(currency) {
-    // Update active tab styling
-    document.querySelectorAll('.crypto-tab').forEach(tab => {
-        tab.classList.remove('active');
-        if (tab.innerText.toLowerCase() === currency) {
-            tab.classList.add('active');
+// NOWPayments Checkout Logic
+const npBtn = document.getElementById('nowpayments-btn');
+if (npBtn) {
+    npBtn.addEventListener('click', async () => {
+        const errText = document.getElementById('crypto-error');
+        errText.style.display = 'none';
+        npBtn.innerText = 'Creating Invoice...';
+        
+        try {
+            const res = await fetch('/api/create-crypto-payment', { method: 'POST' });
+            const data = await res.json();
+            
+            if (data.invoice_url) {
+                window.location.href = data.invoice_url;
+            } else {
+                errText.innerText = data.error || 'Failed to connect to NOWPayments';
+                errText.style.display = 'block';
+                npBtn.innerText = 'Pay with Crypto';
+            }
+        } catch (e) {
+            errText.innerText = 'Server error. Please try again later.';
+            errText.style.display = 'block';
+            npBtn.innerText = 'Pay with Crypto';
         }
-    });
-
-    const data = cryptoData[currency];
-    document.getElementById('crypto-address').innerText = data.address;
-
-    // Generate QR Code
-    const qrContainer = document.getElementById('qrcode');
-    qrContainer.innerHTML = ''; // Clear previous QR
-
-    currentQrcode = new QRCode(qrContainer, {
-        text: data.address,
-        width: 150,
-        height: 150,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
     });
 }
 
@@ -199,11 +188,6 @@ async function fetchRealStats() {
             } else {
                 document.getElementById('display-showcase-container').innerHTML = '<div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>';
             }
-            
-            // Update Crypto Addresses
-            if (settingsData.crypto_btc) cryptoData.btc.address = settingsData.crypto_btc;
-            if (settingsData.crypto_ltc) cryptoData.ltc.address = settingsData.crypto_ltc;
-            if (settingsData.crypto_eth) cryptoData.eth.address = settingsData.crypto_eth;
             
         } else {
             const el1 = document.getElementById('display-features');

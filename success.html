@@ -118,6 +118,7 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             const sessionId = urlParams.get('session_id');
+            const cryptoSessionId = urlParams.get('crypto_session_id');
 
             const loadingEl = document.getElementById('loading-key');
             const keyContainer = document.getElementById('key-container');
@@ -125,12 +126,42 @@
             const errorContainer = document.getElementById('error-container');
             const errorMsg = document.getElementById('error-msg');
 
-            if (!sessionId) {
+            if (!sessionId && !cryptoSessionId) {
                 loadingEl.classList.add('hidden');
                 errorContainer.classList.remove('hidden');
                 errorMsg.innerText = "No session ID found. Are you sure you bought this?";
                 return;
             }
+
+            // --- Crypto Checkout Polling Logic ---
+            if (cryptoSessionId) {
+                loadingEl.innerText = "Waiting for Blockchain Confirmation (This may take a few minutes)...";
+                
+                const pollInterval = setInterval(async () => {
+                    try {
+                        const res = await fetch(`/api/poll-crypto-payment?session_id=${cryptoSessionId}`);
+                        const data = await res.json();
+
+                        if (data.status === 'paid' && data.license_key) {
+                            clearInterval(pollInterval);
+                            loadingEl.classList.add('hidden');
+                            keyContainer.classList.remove('hidden');
+                            keyEl.innerText = data.license_key;
+                        } else if (data.error) {
+                            clearInterval(pollInterval);
+                            loadingEl.classList.add('hidden');
+                            errorContainer.classList.remove('hidden');
+                            errorMsg.innerText = data.error;
+                        }
+                    } catch (e) {
+                        // ignore fetch errors and keep polling
+                    }
+                }, 5000); // Check every 5 seconds
+                
+                return;
+            }
+
+            // --- Stripe Checkout Logic ---
 
             try {
                 const response = await fetch(`/api/verify?session_id=${sessionId}`);
