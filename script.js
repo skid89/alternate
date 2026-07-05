@@ -128,13 +128,6 @@ const stripeCheckoutBtn = document.getElementById('stripe-checkout-btn');
 
 if (stripeCheckoutBtn) {
     stripeCheckoutBtn.addEventListener('click', async () => {
-        const turnstileResponse = document.querySelector('#stripe-info [name="cf-turnstile-response"]')?.value;
-
-        if (!turnstileResponse) {
-            stripeCheckoutBtn.innerText = 'Please complete CAPTCHA';
-            return;
-        }
-
         stripeCheckoutBtn.innerText = 'Redirecting...';
         
         // Ping analytics silently
