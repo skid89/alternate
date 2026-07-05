@@ -19,6 +19,15 @@ module.exports = async function handler(req, res) {
 
     if (req.method === 'GET') {
         try {
+            const { action } = req.query;
+
+            // Securely return all keys for the Admin Key Manager
+            if (action === 'get_keys') {
+                const { data: allKeys, error: keysError } = await supabase.from('keys').select('id, key_value, used').order('id', { ascending: false });
+                if (keysError) throw keysError;
+                return res.status(200).json({ keys: allKeys });
+            }
+
             const { count: keysRemaining } = await supabase
                 .from('keys')
                 .select('*', { count: 'exact', head: true })

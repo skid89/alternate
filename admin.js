@@ -86,6 +86,30 @@ async function loadDashboard() {
             document.getElementById('cms-features').value = settingsData.features_html || '';
             document.getElementById('cms-executors').value = settingsData.executors_html || '';
             document.getElementById('cms-games').value = settingsData.games_html || '';
+            
+            document.getElementById('cms-crypto-btc').value = settingsData.crypto_btc || '';
+            document.getElementById('cms-crypto-ltc').value = settingsData.crypto_ltc || '';
+            document.getElementById('cms-crypto-eth').value = settingsData.crypto_eth || '';
+        }
+
+        // 4. Load All Keys for Key Manager
+        const keysResponse = await fetch('/api/admin?action=get_keys', { headers: { 'password': currentPassword } });
+        const keysData = await keysResponse.json();
+        const tbody = document.getElementById('key-manager-list');
+        
+        if (keysData.keys && keysData.keys.length > 0) {
+            tbody.innerHTML = keysData.keys.map(k => `
+                <tr style="border-bottom: 1px solid #333;">
+                    <td style="padding: 10px; font-family: monospace;">${k.key_value}</td>
+                    <td style="padding: 10px;">
+                        <span style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; background: ${k.used ? '#451a1a; color: #ef4444;' : '#143823; color: #4ade80;'}">
+                            ${k.used ? 'USED' : 'AVAILABLE'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tbody.innerHTML = '<tr><td colspan="2" style="padding: 10px; text-align: center; color: #888;">No keys found.</td></tr>';
         }
 
     } catch (err) {
@@ -159,7 +183,10 @@ document.getElementById('save-cms-btn').addEventListener('click', async () => {
         showcase_url: document.getElementById('cms-showcase').value,
         features_html: document.getElementById('cms-features').value,
         executors_html: document.getElementById('cms-executors').value,
-        games_html: document.getElementById('cms-games').value
+        games_html: document.getElementById('cms-games').value,
+        crypto_btc: document.getElementById('cms-crypto-btc').value,
+        crypto_ltc: document.getElementById('cms-crypto-ltc').value,
+        crypto_eth: document.getElementById('cms-crypto-eth').value
     };
 
     try {

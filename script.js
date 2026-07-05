@@ -95,10 +95,10 @@ function showPaymentMethod(method) {
 }
 
 // Crypto Data Placeholders
-const cryptoData = {
-    btc: { address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' },
-    ltc: { address: 'ltc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh' },
-    eth: { address: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F' }
+let cryptoData = {
+    btc: { address: 'Loading from database...' },
+    ltc: { address: 'Loading from database...' },
+    eth: { address: 'Loading from database...' }
 };
 
 let currentQrcode = null;
@@ -199,6 +199,12 @@ async function fetchRealStats() {
             } else {
                 document.getElementById('display-showcase-container').innerHTML = '<div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>';
             }
+            
+            // Update Crypto Addresses
+            if (settingsData.crypto_btc) cryptoData.btc.address = settingsData.crypto_btc;
+            if (settingsData.crypto_ltc) cryptoData.ltc.address = settingsData.crypto_ltc;
+            if (settingsData.crypto_eth) cryptoData.eth.address = settingsData.crypto_eth;
+            
         } else {
             const el1 = document.getElementById('display-features');
             const el2 = document.getElementById('display-executors');

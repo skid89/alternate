@@ -179,19 +179,57 @@
                         </div>
                     </div>
 
+                    <h2 style="color: white; margin-bottom: 10px; font-size: 1.2rem; margin-top: 30px;">Crypto Addresses (Manual Payment)</h2>
+                    <div class="input-group">
+                        <label>BTC Address</label>
+                        <input type="text" id="cms-crypto-btc" placeholder="bc1qxy...">
+                    </div>
+                    <div class="input-group">
+                        <label>LTC Address</label>
+                        <input type="text" id="cms-crypto-ltc" placeholder="ltc1qxy...">
+                    </div>
+                    <div class="input-group">
+                        <label>ETH Address</label>
+                        <input type="text" id="cms-crypto-eth" placeholder="0x...">
+                    </div>
+
                     <button id="save-cms-btn" class="login-btn" style="margin-top: 10px;">Save All Website Content</button>
                 </div>
 
                 <!-- Keys Tab -->
                 <div id="tab-keys" class="tab-content">
-                    <div style="margin-bottom: 20px;">
-                        <span style="color: #888;">Current Real Stock: </span>
-                        <span id="key-stock" style="color: #4ade80; font-size: 1.5rem; font-weight: bold;">...</span>
+                    <div class="sub-tabs">
+                        <button class="sub-tab active" data-sub="sub-upload">Bulk Upload</button>
+                        <button class="sub-tab" data-sub="sub-manager">Key Manager</button>
                     </div>
-                    <div class="input-group">
-                        <label>Bulk Upload License Keys (One per line)</label>
-                        <textarea id="new-key-input" rows="8" placeholder="XXXX-YYYY-ZZZZ&#10;AAAA-BBBB-CCCC" style="margin-bottom: 10px; resize: vertical;"></textarea>
-                        <button id="add-key-btn" class="login-btn">Upload Keys</button>
+
+                    <div id="sub-upload" class="sub-tab-content active">
+                        <div style="margin-bottom: 20px;">
+                            <span style="color: #888;">Current Real Stock: </span>
+                            <span id="key-stock" style="color: #4ade80; font-size: 1.5rem; font-weight: bold;">...</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Bulk Upload License Keys (One per line)</label>
+                            <textarea id="new-key-input" rows="8" placeholder="XXXX-YYYY-ZZZZ&#10;AAAA-BBBB-CCCC" style="margin-bottom: 10px; resize: vertical;"></textarea>
+                            <button id="add-key-btn" class="login-btn">Upload Keys</button>
+                        </div>
+                    </div>
+
+                    <div id="sub-manager" class="sub-tab-content">
+                        <h2 style="color: white; margin-bottom: 15px; font-size: 1.2rem;">All Keys</h2>
+                        <div style="max-height: 300px; overflow-y: auto; background: #0a0a0a; border: 1px solid #333; border-radius: 6px; padding: 10px;">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse; color: white;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #333;">
+                                        <th style="padding: 10px;">Key</th>
+                                        <th style="padding: 10px; width: 100px;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="key-manager-list">
+                                    <tr><td colspan="2" style="padding: 10px; text-align: center; color: #888;">Loading keys...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
