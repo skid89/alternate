@@ -266,7 +266,7 @@ function showToast() {
     const randomBuyer = fakeBuyers[Math.floor(Math.random() * fakeBuyers.length)];
     const toast = document.createElement('div');
     toast.className = 'fomo-toast';
-    toast.innerHTML = <ion-icon name="cart" class="icon"></ion-icon> Someone from <span class="highlight"> + randomBuyer.country + </span> just bought a Lifetime Key for $<span class="highlight"> + randomBuyer.price + </span>!;
+    toast.innerHTML = `<ion-icon name="cart" class="icon"></ion-icon> Someone from <span class="highlight">` + randomBuyer.country + `</span> just bought a Lifetime Key for $<span class="highlight">` + randomBuyer.price + `</span>!`;
     
     toastContainer.appendChild(toast);
     
