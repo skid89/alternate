@@ -14,6 +14,7 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <!-- Stripe JS for Checkout -->
     <script src="https://js.stripe.com/v3/"></script>
+    <script async src="https://js.stripe.com/v3/buy-button.js"></script>
     <!-- QR Code generation -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
     <!-- Chart.js for Analytics -->
@@ -78,7 +79,12 @@
 
             <div id="stripe-info" class="payment-info hidden">
                 <p style="margin-bottom: 10px;">Pay securely via Stripe.</p>
-                <button id="stripe-checkout-btn" class="action-btn">Purchase Script ($8.00)</button>
+                <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
+                    <stripe-buy-button
+                        buy-button-id="buy_btn_1TpiBe2OaP3owCzDhLgUzefl"
+                        publishable-key="pk_live_51SKTKz2OaP3owCzDs5rWpsYEoOmAZLtSPFnR7GFg9vGkBvbXdTwAQgbJG6npYaMQpwoQEGmBLJJAbVQFt2jkeSEo00pQn7pgwY">
+                    </stripe-buy-button>
+                </div>
             </div>
 
             <div id="crypto-info" class="payment-info hidden">
