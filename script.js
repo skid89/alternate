@@ -144,17 +144,17 @@ if (stripeCheckoutBtn) {
 
 const SUPABASE_URL = 'https://snkcqfnzvjmjwltioomo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNua2NxZm56dmptandsdGlvb21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMTkxMDgsImV4cCI6MjA5ODc5NTEwOH0.Hn4fJzrdJ9bDaFLZMp-wkkVJUWvVwcnmwzHU6tKVAko';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- Chart.js & Real Analytics Logic ---
 async function fetchRealStats() {
     try {
         // Fetch current stats
-        const { data: statsData, error: statsError } = await supabase.from('stats').select('*').single();
+        const { data: statsData, error: statsError } = await supabaseClient.from('stats').select('*').single();
         if (statsError) throw statsError;
 
         // Fetch key stock securely using our custom SQL function so hackers can't read the keys table
-        const { data: keysRemaining, error: keysError } = await supabase.rpc('get_stock');
+        const { data: keysRemaining, error: keysError } = await supabaseClient.rpc('get_stock');
         
         if (keysError) throw keysError;
 
@@ -165,7 +165,7 @@ async function fetchRealStats() {
         };
 
         // Increment view count silently
-        supabase.from('stats').update({ viewers: stats.viewers }).eq('id', statsData.id).then();
+        supabaseClient.from('stats').update({ viewers: stats.viewers }).eq('id', statsData.id).then();
 
         // Update DOM numbers for panels
         document.getElementById('total-buyers-text').innerText = stats.buyers;
