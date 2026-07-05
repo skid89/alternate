@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>alternate.lol</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=4">
     <!-- Clean, basic modern font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Ionicons for Social Icons -->
@@ -24,15 +24,27 @@
     <div id="mouse-glow"></div>
 
     <!-- Top Right Stat Badges -->
-    <div style="position: fixed; top: 20px; right: 20px; z-index: 50; display: flex; gap: 15px; align-items: center;">
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
-            <ion-icon name="cart" style="color: #4ade80;"></ion-icon>
-            <span id="badge-buyers">Loading...</span> Buyers
+    <div style="position: fixed; top: 20px; right: 20px; z-index: 50; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
+                <ion-icon name="cart" style="color: #4ade80;"></ion-icon>
+                <span id="badge-buyers">Loading...</span> Buyers
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
+                <ion-icon name="key" style="color: #60a5fa;"></ion-icon>
+                <span id="badge-stock">Loading...</span> in Stock
+            </div>
         </div>
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
-            <ion-icon name="key" style="color: #60a5fa;"></ion-icon>
-            <span id="badge-stock">Loading...</span> in Stock
-        </div>
+
+        <a href="https://discord.gg/VFmsjbbwHS" target="_blank" class="mc-badge" title="join discord below for whitelist { client only }">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px); transition: all 0.2s;">
+                <ion-icon name="cube" style="color: #4ade80;"></ion-icon>
+                <span id="mc-ip">alternatelol.mcplay.fun</span>
+                <button type="button" class="mc-copy-btn" onclick="copyMCIP(event)" aria-label="Copy server IP">
+                    <ion-icon name="copy-outline"></ion-icon>
+                </button>
+            </div>
+        </a>
     </div>
 
     <!-- Loading Screen -->
@@ -150,7 +162,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=4"></script>
 </body>
 
 </html>

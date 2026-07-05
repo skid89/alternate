@@ -128,6 +128,39 @@ async function loadStats() {
     }
 }
 
+function copyMCIP(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const ip = document.getElementById('mc-ip').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ip).then(() => {
+            const btn = event.currentTarget;
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
+            setTimeout(() => btn.innerHTML = originalIcon, 1500);
+        }).catch(() => {
+            fallbackCopy(ip);
+        });
+    } else {
+        fallbackCopy(ip);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+    } catch (e) {
+        console.error('Copy failed', e);
+    }
+    document.body.removeChild(textarea);
+}
+
 function renderChart(stats) {
     const ctx = document.getElementById('analyticsChart');
     if (!ctx || typeof Chart === 'undefined') return;

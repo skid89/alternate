@@ -644,6 +644,63 @@ body {
 @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
 /* =========================================
+   MINECRAFT SERVER BADGE
+   ========================================= */
+.mc-badge {
+    text-decoration: none;
+    position: relative;
+}
+
+.mc-badge:hover > div {
+    background: rgba(255,255,255,0.08) !important;
+    border-color: rgba(74, 222, 128, 0.4) !important;
+}
+
+.mc-badge[title]::after {
+    content: attr(title);
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: rgba(10, 10, 10, 0.95);
+    border: 1px solid #333;
+    color: #aaa;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
+    transition: all 0.2s ease;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.mc-badge:hover[title]::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.mc-copy-btn {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.mc-copy-btn:hover {
+    color: #4ade80;
+}
+
+/* =========================================
    TOTAL SALES COUNTER
    ========================================= */
 .sales-counter {
