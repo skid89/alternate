@@ -70,9 +70,9 @@
         </div>
 
         <div class="social-links">
-            <a href="#" target="_blank"><ion-icon name="logo-tiktok"></ion-icon></a>
-            <a href="#" target="_blank"><ion-icon name="logo-discord"></ion-icon></a>
-            <a href="#" target="_blank"><ion-icon name="logo-youtube"></ion-icon></a>
+            <a href="https://www.tiktok.com/@koniburger" target="_blank"><ion-icon name="logo-tiktok"></ion-icon></a>
+            <a href="https://discord.gg/Tg8tvkk5qY" target="_blank"><ion-icon name="logo-discord"></ion-icon></a>
+            <a href="https://www.youtube.com/@koni683" target="_blank"><ion-icon name="logo-youtube"></ion-icon></a>
         </div>
     </main>
 
@@ -91,11 +91,17 @@
 
             <div id="stripe-info" class="payment-info hidden">
                 <p style="margin-bottom: 10px;">Pay securely via Stripe.</p>
-                <div style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
+                
+                <div id="stripe-embed-container" style="display: flex; justify-content: center; width: 100%; margin-top: 10px;">
                     <stripe-buy-button
                         buy-button-id="buy_btn_1TpiBe2OaP3owCzDhLgUzefl"
                         publishable-key="pk_live_51SKTKz2OaP3owCzDs5rWpsYEoOmAZLtSPFnR7GFg9vGkBvbXdTwAQgbJG6npYaMQpwoQEGmBLJJAbVQFt2jkeSEo00pQn7pgwY">
                     </stripe-buy-button>
+                </div>
+
+                <div id="out-of-stock-msg" class="hidden" style="margin-top: 15px; padding: 15px; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; border-radius: 8px;">
+                    <p style="color: #ef4444; font-weight: bold; margin: 0;">OUT OF STOCK</p>
+                    <p style="color: #ccc; font-size: 0.9rem; margin-top: 5px;">Please check back later.</p>
                 </div>
             </div>
 

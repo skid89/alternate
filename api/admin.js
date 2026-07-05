@@ -24,7 +24,15 @@ export default async function handler(req, res) {
                 .select('*', { count: 'exact', head: true })
                 .eq('used', false);
             
-            return res.status(200).json({ keys_remaining: keysRemaining || 0 });
+            const { data: statsData } = await supabase.from('stats').select('*').single();
+            const viewers = statsData ? statsData.viewers : 0;
+            const buyers = statsData ? statsData.buyers : 0;
+            
+            return res.status(200).json({ 
+                keys_remaining: keysRemaining || 0,
+                viewers: viewers,
+                buyers: buyers
+            });
         } catch (e) {
             return res.status(500).json({ error: e.message });
         }
@@ -34,13 +42,17 @@ export default async function handler(req, res) {
         const { action, payload } = req.body;
         
         if (action === 'add_key') {
-            const { key_value } = payload;
-            if (!key_value) return res.status(400).json({ error: 'No key provided' });
+            const { keys } = payload;
+            if (!keys || !Array.isArray(keys) || keys.length === 0) {
+                return res.status(400).json({ error: 'No keys provided' });
+            }
 
-            const { error } = await supabase.from('keys').insert([{ key_value: key_value, used: false }]);
+            const insertPayload = keys.map(k => ({ key_value: k, used: false }));
+            
+            const { error } = await supabase.from('keys').insert(insertPayload);
             if (error) return res.status(500).json({ error: error.message });
 
-            return res.status(200).json({ success: true });
+            return res.status(200).json({ success: true, count: keys.length });
         }
 
         return res.status(400).json({ error: 'Invalid action' });

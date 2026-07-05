@@ -164,6 +164,16 @@ async function fetchRealStats() {
         if (badgeBuyers) badgeBuyers.innerText = stats.buyers || 0;
         if (badgeStock) badgeStock.innerText = stats.keys_remaining || 0;
 
+        // Out of stock logic
+        if ((stats.keys_remaining || 0) <= 0) {
+            const stripeContainer = document.getElementById('stripe-embed-container');
+            const oosMsg = document.getElementById('out-of-stock-msg');
+            if (stripeContainer && oosMsg) {
+                stripeContainer.classList.add('hidden');
+                oosMsg.classList.remove('hidden');
+            }
+        }
+
         return stats;
     } catch (err) {
         console.error("Failed to load real stats", err);

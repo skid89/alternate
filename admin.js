@@ -40,14 +40,30 @@ document.getElementById('login-btn').addEventListener('click', async () => {
     }
 });
 
+// Tab Switching Logic
+document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        // Remove active class from all tabs and contents
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab and its target content
+        tab.classList.add('active');
+        document.getElementById(tab.getAttribute('data-tab')).classList.add('active');
+    });
+});
+
 async function loadDashboard() {
     try {
         const response = await fetch('/api/admin', {
             headers: { 'password': currentPassword }
         });
         const data = await response.json();
+        
         if (data.keys_remaining !== undefined) {
             document.getElementById('key-stock').innerText = data.keys_remaining;
+            document.getElementById('admin-buyers').innerText = data.buyers || 0;
+            document.getElementById('admin-viewers').innerText = data.viewers || 0;
         }
     } catch (err) {
         console.error(err);
@@ -57,9 +73,13 @@ async function loadDashboard() {
 document.getElementById('add-key-btn').addEventListener('click', async () => {
     const keyInput = document.getElementById('new-key-input').value;
     const btn = document.getElementById('add-key-btn');
-    if (!keyInput) return;
+    if (!keyInput.trim()) return;
 
-    btn.innerText = 'Adding...';
+    // Split by newlines and remove empty lines
+    const keysArray = keyInput.split('\n').map(k => k.trim()).filter(k => k !== '');
+    if (keysArray.length === 0) return;
+
+    btn.innerText = 'Uploading...';
     try {
         const response = await fetch('/api/admin', {
             method: 'POST',
@@ -67,13 +87,13 @@ document.getElementById('add-key-btn').addEventListener('click', async () => {
                 'Content-Type': 'application/json',
                 'password': currentPassword
             },
-            body: JSON.stringify({ action: 'add_key', payload: { key_value: keyInput } })
+            body: JSON.stringify({ action: 'add_key', payload: { keys: keysArray } })
         });
         const data = await response.json();
         
         if (data.success) {
             document.getElementById('new-key-input').value = '';
-            btn.innerText = 'Success!';
+            btn.innerText = `Success (${data.count} keys)`;
             loadDashboard(); // Refresh stock
         } else {
             btn.innerText = 'Error';
@@ -81,12 +101,10 @@ document.getElementById('add-key-btn').addEventListener('click', async () => {
     } catch (err) {
         btn.innerText = 'Error';
     }
-    setTimeout(() => btn.innerText = 'Add Key', 2000);
+    setTimeout(() => btn.innerText = 'Upload Keys', 3000);
 });
 
 document.getElementById('save-settings-btn').addEventListener('click', () => {
-    // For a future update if they want to save settings to DB.
-    // Right now it just shows a success message.
     const btn = document.getElementById('save-settings-btn');
     btn.innerText = 'Saved!';
     setTimeout(() => btn.innerText = 'Save Settings', 2000);
