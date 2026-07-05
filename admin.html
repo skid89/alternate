@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alternate.lol - admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Supabase JS SDK via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100vw;
+            background: #000;
+        }
+        .admin-box {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .admin-box h2 {
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .admin-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            color: white;
+            border-radius: 6px;
+            outline: none;
+        }
+        .admin-input:focus {
+            border-color: #666;
+        }
+        .admin-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: black;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .admin-btn:hover {
+            background: #ccc;
+        }
+        #error-msg {
+            color: #ff4444;
+            font-size: 0.9rem;
+            margin-top: 15px;
+            display: none;
+        }
+        /* Dashboard styles */
+        #admin-dashboard {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="mouse-glow"></div>
+
+    <div class="admin-container" id="login-section">
+        <div class="admin-box">
+            <h2>admin portal</h2>
+            <input type="email" id="email" class="admin-input" placeholder="Admin Email">
+            <input type="password" id="password" class="admin-input" placeholder="Password">
+            <button class="admin-btn" id="login-btn">Secure Login</button>
+            <p id="error-msg">Invalid credentials.</p>
+        </div>
+    </div>
+
+    <div id="admin-dashboard">
+        <h2>Admin Dashboard</h2>
+        <p>Welcome back. This is where you can manage Stripe orders, generate keys, or view Supabase analytics.</p>
+        <button class="admin-btn" style="width: auto; margin-top: 20px;" id="logout-btn">Log Out</button>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

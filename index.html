@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alternate.lol</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Clean, basic modern font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Ionicons for Social Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- Stripe JS for Checkout -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- QR Code generation -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+    <!-- Interactive Mouse Glow -->
+    <div id="mouse-glow"></div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-content">
+            <div class="favicons-container" id="favicons-container">
+                <!-- Replace this src with your own favicon image path -->
+                <img id="favicon-image" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="favicon" width="50" height="50">
+            </div>
+            <div class="loading-text" id="loading-text">alternate.lol</div>
+        </div>
+    </div>
+
+    <!-- Main Website -->
+    <main id="main-content" class="hidden">
+        <div class="background-pattern"></div>
+        
+        <div class="hero">
+            <h1 class="glitch" data-text="alternate.lol">alternate.lol</h1>
+            <p class="subtitle">best dahood/hoodcustoms/datrack script</p>
+        </div>
+
+        <div class="bottom-nav">
+            <button class="nav-btn" data-target="pricing">pricing</button>
+            <button class="nav-btn" data-target="info">info</button>
+            <button class="nav-btn" data-target="analytics">analytics</button>
+            <button class="nav-btn" data-target="showcases">showcases</button>
+        </div>
+
+        <div class="social-links">
+            <a href="#" target="_blank"><ion-icon name="logo-tiktok"></ion-icon></a>
+            <a href="#" target="_blank"><ion-icon name="logo-discord"></ion-icon></a>
+            <a href="#" target="_blank"><ion-icon name="logo-youtube"></ion-icon></a>
+        </div>
+    </main>
+
+    <!-- Sliding Panels -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Pricing Panel -->
+    <div class="sliding-panel" id="panel-pricing">
+        <button class="close-btn">&times;</button>
+        <h2>pricing</h2>
+        <div class="panel-content">
+            <div class="payment-options">
+                <button class="payment-btn" onclick="showPaymentMethod('stripe')">Stripe</button>
+                <button class="payment-btn" onclick="showPaymentMethod('crypto')">Crypto</button>
+                <button class="payment-btn" onclick="showPaymentMethod('robux')">Robux (Manual)</button>
+            </div>
+            
+            <div id="stripe-info" class="payment-info hidden">
+                <p>Pay securely with credit card via Stripe.</p>
+                <button class="action-btn">Checkout with Stripe</button>
+            </div>
+
+            <div id="crypto-info" class="payment-info hidden">
+                <div class="crypto-tabs">
+                    <button class="crypto-tab active" onclick="showCrypto('btc')">BTC</button>
+                    <button class="crypto-tab" onclick="showCrypto('ltc')">LTC</button>
+                    <button class="crypto-tab" onclick="showCrypto('eth')">ETH</button>
+                </div>
+                <div class="crypto-display">
+                    <div id="qrcode"></div>
+                    <p id="crypto-address" class="address-text">Select a currency...</p>
+                    <button class="copy-btn">Copy Address</button>
+                </div>
+            </div>
+
+            <div id="robux-info" class="payment-info hidden">
+                <p>To pay with Robux, please open a ticket in our Discord.</p>
+                <a href="#" class="action-btn">Join Discord</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Panel -->
+    <div class="sliding-panel" id="panel-info">
+        <button class="close-btn">&times;</button>
+        <h2>info</h2>
+        <div class="panel-content">
+            <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
+        </div>
+    </div>
+
+    <!-- Analytics Panel -->
+    <div class="sliding-panel" id="panel-analytics">
+        <button class="close-btn">&times;</button>
+        <h2>analytics</h2>
+        <div class="panel-content">
+            <p>View real-time statistics of our script usage, ban rates (0%), and community growth.</p>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+                <div style="text-align: center;">
+                    <h3 style="font-size: 2rem; color: white;">10k+</h3>
+                    <p style="font-size: 0.8rem; color: #888;">Users</p>
+                </div>
+                <div style="text-align: center;">
+                    <h3 style="font-size: 2rem; color: white;">0%</h3>
+                    <p style="font-size: 0.8rem; color: #888;">Ban Rate</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Showcases Panel -->
+    <div class="sliding-panel" id="panel-showcases">
+        <button class="close-btn">&times;</button>
+        <h2>showcases</h2>
+        <div class="panel-content">
+            <p>Check out what our community is doing with alternate.lol!</p>
+            <div style="margin-top: 20px; padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
