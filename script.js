@@ -77,68 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// --- Pricing Panel Logic ---
-function showPaymentMethod(method) {
-    // Hide all payment infos
-    document.querySelectorAll('.payment-info').forEach(el => el.classList.add('hidden'));
-
-    // Show selected payment info
-    const selected = document.getElementById(`${method}-info`);
-    if (selected) {
-        selected.classList.remove('hidden');
-    }
-
-    // If crypto is selected, nothing special needed
-}
-
-// NOWPayments Checkout Logic
-const npBtn = document.getElementById('nowpayments-btn');
-if (npBtn) {
-    npBtn.addEventListener('click', async () => {
-        const errText = document.getElementById('crypto-error');
-        errText.style.display = 'none';
-        npBtn.innerText = 'Creating Invoice...';
-        
-        try {
-            const res = await fetch('/api/create-crypto-payment', { method: 'POST' });
-            const data = await res.json();
-            
-            if (data.invoice_url) {
-                window.location.href = data.invoice_url;
-            } else {
-                errText.innerText = data.error || 'Failed to connect to NOWPayments';
-                errText.style.display = 'block';
-                npBtn.innerText = 'Pay with Crypto';
-            }
-        } catch (e) {
-            errText.innerText = 'Server error. Please try again later.';
-            errText.style.display = 'block';
-            npBtn.innerText = 'Pay with Crypto';
-        }
-    });
-}
 
 
-
-
-// --- Stripe Checkout Logic ---
-const stripeCheckoutBtn = document.getElementById('stripe-checkout-btn');
-
-if (stripeCheckoutBtn) {
-    stripeCheckoutBtn.addEventListener('click', async () => {
-        stripeCheckoutBtn.innerText = 'Redirecting...';
-        
-        // Ping analytics silently
-        fetch('/api/stats', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'buy' })
-        }).catch(() => {});
-
-        // Redirect to Stripe Payment Link
-        window.location.href = "https://buy.stripe.com/aFa8wI2jI7QgajdaqR1Fe00";
-    });
-}
 
 const SUPABASE_URL = 'https://snkcqfnzvjmjwltioomo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNua2NxZm56dmptandsdGlvb21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMyMTkxMDgsImV4cCI6MjA5ODc5NTEwOH0.Hn4fJzrdJ9bDaFLZMp-wkkVJUWvVwcnmwzHU6tKVAko';
