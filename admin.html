@@ -142,7 +142,6 @@
                 <div class="admin-tabs">
                     <button class="admin-tab active" data-tab="tab-mainlink">Main Link (CMS)</button>
                     <button class="admin-tab" data-tab="tab-keys">Key Stock</button>
-                    <button class="admin-tab" data-tab="tab-analytics">Analytics Overrides</button>
                 </div>
 
                 <!-- Main Link / CMS Tab -->
@@ -231,25 +230,6 @@
                             </table>
                         </div>
                     </div>
-                </div>
-
-                <!-- Analytics Tab -->
-                <div id="tab-analytics" class="tab-content">
-                    <h2 style="color: white; margin-bottom: 20px;">Fake Analytics Overrides</h2>
-                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 20px;">Change these numbers to fake the stats on the main page. (Key Stock is real and cannot be faked here to prevent crashes).</p>
-                    
-                    <div style="display: flex; gap: 20px;">
-                        <div class="input-group" style="flex: 1;">
-                            <label>Total Buyers</label>
-                            <input type="number" id="override-buyers" value="0">
-                        </div>
-                        <div class="input-group" style="flex: 1;">
-                            <label>Total Viewers</label>
-                            <input type="number" id="override-viewers" value="0">
-                        </div>
-                    </div>
-                    
-                    <button id="save-stats-btn" class="login-btn">Override Analytics</button>
                 </div>
                 
             </div>

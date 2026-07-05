@@ -151,28 +151,6 @@ document.getElementById('add-key-btn').addEventListener('click', async () => {
     setTimeout(() => btn.innerText = 'Upload Keys', 3000);
 });
 
-// Save Stats Overrides
-document.getElementById('save-stats-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('save-stats-btn');
-    btn.innerText = 'Saving...';
-    
-    const newBuyers = parseInt(document.getElementById('override-buyers').value);
-    const newViewers = parseInt(document.getElementById('override-viewers').value);
-
-    try {
-        // Because stats has only 1 row, we just fetch it first to get the ID, then update
-        const { data: statsData } = await supabaseClient.from('stats').select('id').single();
-        if (statsData) {
-            await supabaseClient.from('stats').update({ buyers: newBuyers, viewers: newViewers }).eq('id', statsData.id);
-            btn.innerText = 'Saved!';
-        } else {
-            btn.innerText = 'Error';
-        }
-    } catch (e) {
-        btn.innerText = 'Error';
-    }
-    setTimeout(() => btn.innerText = 'Override Analytics', 2000);
-});
 
 // Save CMS Settings
 document.getElementById('save-cms-btn').addEventListener('click', async () => {
