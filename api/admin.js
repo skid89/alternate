@@ -1,6 +1,6 @@
 const { createClient } = require('@supabase/supabase-js');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     const { password } = req.headers;
     const adminPassword = process.env.ADMIN_PASSWORD;
 
