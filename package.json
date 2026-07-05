@@ -1,9 +1,6 @@
 {
   "name": "alternate.lol-backend",
   "version": "1.0.0",
-  "description": "Backend serverless functions for Stripe",
-  "dependencies": {
-    "stripe": "^13.0.0",
-    "@supabase/supabase-js": "^2.39.0"
-  }
+  "description": "Backend serverless functions for SellAuth stats",
+  "dependencies": {}
 }

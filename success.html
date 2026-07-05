@@ -75,30 +75,17 @@
             <h1>Payment Successful!</h1>
             <p>Thank you for your purchase. Your order is complete.</p>
             
-            <div id="loading-key" style="margin-bottom: 20px;">
-                <p style="color: #fff; font-weight: bold; font-size: 1.2rem;">Generating your unique license key...</p>
-            </div>
-
-            <div id="key-container" class="instructions hidden" style="background: rgba(74, 222, 128, 0.1); border: 1px solid #4ade80;">
-                <h3 style="color: #4ade80; margin-bottom: 15px; text-align: center;">YOUR PRODUCT KEY:</h3>
-                <p id="license-key" style="color: white; font-family: monospace; font-size: 1.3rem; text-align: center; letter-spacing: 2px; margin-bottom: 0;">LOADING...</p>
-            </div>
-
-            <div id="error-container" class="instructions hidden" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444;">
-                <p id="error-msg" style="color: #ef4444; font-weight: bold; text-align: center; margin-bottom: 0;">Failed to fetch key.</p>
-            </div>
-            
             <div class="instructions">
-                <h3 style="color: white; margin-bottom: 15px;">How to use your key:</h3>
+                <h3 style="color: white; margin-bottom: 15px;">How to get your key:</h3>
                 <ol>
-                    <li>Copy your Product Key above.</li>
+                    <li>Check your email for your product key from SellAuth.</li>
                     <li>Join our Discord server using the button below.</li>
                     <li>Go to the <strong>#panel</strong> channel and open a ticket.</li>
                     <li>Redeem your key to get the script!</li>
                 </ol>
             </div>
 
-            <a href="#" class="discord-btn">Join Discord Server</a>
+            <a href="https://discord.gg/Tg8tvkk5qY" class="discord-btn">Join Discord Server</a>
             <br><br>
             <a href="/" style="color: #888; text-decoration: none; font-size: 0.9rem;">Return to homepage</a>
         </div>
@@ -111,75 +98,6 @@
             if (mouseGlow) {
                 mouseGlow.style.left = e.clientX + 'px';
                 mouseGlow.style.top = e.clientY + 'px';
-            }
-        });
-
-        // Key Dispensing Logic
-        window.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const sessionId = urlParams.get('session_id');
-            const cryptoSessionId = urlParams.get('crypto_session_id');
-
-            const loadingEl = document.getElementById('loading-key');
-            const keyContainer = document.getElementById('key-container');
-            const keyEl = document.getElementById('license-key');
-            const errorContainer = document.getElementById('error-container');
-            const errorMsg = document.getElementById('error-msg');
-
-            if (!sessionId && !cryptoSessionId) {
-                loadingEl.classList.add('hidden');
-                errorContainer.classList.remove('hidden');
-                errorMsg.innerText = "No session ID found. Are you sure you bought this?";
-                return;
-            }
-
-            // --- Crypto Checkout Polling Logic ---
-            if (cryptoSessionId) {
-                loadingEl.innerText = "Waiting for Blockchain Confirmation (This may take a few minutes)...";
-                
-                const pollInterval = setInterval(async () => {
-                    try {
-                        const res = await fetch(`/api/poll-crypto-payment?session_id=${cryptoSessionId}`);
-                        const data = await res.json();
-
-                        if (data.status === 'paid' && data.license_key) {
-                            clearInterval(pollInterval);
-                            loadingEl.classList.add('hidden');
-                            keyContainer.classList.remove('hidden');
-                            keyEl.innerText = data.license_key;
-                        } else if (data.error) {
-                            clearInterval(pollInterval);
-                            loadingEl.classList.add('hidden');
-                            errorContainer.classList.remove('hidden');
-                            errorMsg.innerText = data.error;
-                        }
-                    } catch (e) {
-                        // ignore fetch errors and keep polling
-                    }
-                }, 5000); // Check every 5 seconds
-                
-                return;
-            }
-
-            // --- Stripe Checkout Logic ---
-
-            try {
-                const response = await fetch(`/api/verify?session_id=${sessionId}`);
-                const data = await response.json();
-
-                loadingEl.classList.add('hidden');
-
-                if (data.error) {
-                    errorContainer.classList.remove('hidden');
-                    errorMsg.innerText = data.error;
-                } else {
-                    keyContainer.classList.remove('hidden');
-                    keyEl.innerText = data.key;
-                }
-            } catch (err) {
-                loadingEl.classList.add('hidden');
-                errorContainer.classList.remove('hidden');
-                errorMsg.innerText = "Server error. Please open a ticket in Discord.";
             }
         });
     </script>

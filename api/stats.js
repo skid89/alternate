@@ -4,11 +4,14 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-        const SELLAUTH_API_KEY = '5912277|jm75V0YRt2JREdvXlFwqinEeqzrxwHtPlRWqAPQy5451ad08';
-        const SHOP_ID = '250507';
-        const PRODUCT_ID = '780475';
+        const SELLAUTH_API_KEY = process.env.SELLAUTH_API_KEY;
+        const SHOP_ID = process.env.SELLAUTH_SHOP_ID;
+        const PRODUCT_ID = process.env.SELLAUTH_PRODUCT_ID;
 
-        // Fetch product details from SellAuth
+        if (!SELLAUTH_API_KEY || !SHOP_ID || !PRODUCT_ID) {
+            return res.status(500).json({ error: 'SellAuth credentials not configured' });
+        }
+
         const response = await fetch(`https://api.sellauth.com/v1/shops/${SHOP_ID}/products/${PRODUCT_ID}`, {
             headers: {
                 'Authorization': `Bearer ${SELLAUTH_API_KEY}`,
@@ -22,21 +25,15 @@ module.exports = async function handler(req, res) {
 
         const productData = await response.json();
         
-        // Extract real stock and sold counts
         const stock = productData.stock_count || 0;
         const sold = productData.products_sold || 0;
-        
-        // We can still return a static or random viewer count since SellAuth doesn't track active viewers
-        const fakeViewers = Math.floor(Math.random() * (1200 - 800 + 1) + 800); 
 
         return res.status(200).json({ 
-            viewers: fakeViewers, 
             buyers: sold, 
             keys_remaining: stock 
         });
 
     } catch (err) {
-        // Fallback on error
-        res.status(500).json({ error: err.message, viewers: 800, buyers: 0, keys_remaining: 0 });
+        res.status(500).json({ error: err.message, buyers: 0, keys_remaining: 0 });
     }
 }
