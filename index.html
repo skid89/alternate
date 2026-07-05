@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,10 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode_js@1.0.0/qrcode.min.js"></script>
     <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
+
 <body>
 
     <!-- Interactive Mouse Glow -->
@@ -28,7 +32,8 @@
             <div class="loading-wrapper">
                 <div class="favicons-container" id="favicons-container">
                     <!-- HOW TO ADD FAVICON: Replace the URL in the src="" attribute below with the link to your own image -->
-                    <img id="favicon-image" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="favicon" width="50" height="50">
+                    <img id="favicon-image" src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg"
+                        alt="favicon" width="50" height="50">
                 </div>
                 <div class="loading-text" id="loading-text">alternate.lol</div>
             </div>
@@ -38,7 +43,7 @@
     <!-- Main Website -->
     <main id="main-content" class="hidden">
         <div class="background-pattern"></div>
-        
+
         <div class="hero">
             <h1 class="glitch" data-text="alternate.lol">alternate.lol</h1>
             <p class="subtitle">best dahood/hoodcustoms/datrack script</p>
@@ -71,10 +76,17 @@
                 <button class="payment-btn" onclick="showPaymentMethod('crypto')">Crypto</button>
                 <button class="payment-btn" onclick="showPaymentMethod('robux')">Robux (Manual)</button>
             </div>
-            
+
             <div id="stripe-info" class="payment-info hidden">
-                <p>Pay securely with credit card via Stripe.</p>
-                <button class="action-btn">Checkout with Stripe</button>
+                <p style="margin-bottom: 10px;">Select your product and pay securely via Stripe.</p>
+                <select id="stripe-product-select"
+                    style="width: 100%; padding: 10px; margin-bottom: 15px; background: #111; color: white; border: 1px solid #333; border-radius: 6px;">
+                    <option value="prod_UpMJZUnbX0Pktn">Lifetime Script ($40.00)</option>
+                </select>
+                <!-- Turnstile Widget -->
+                <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark"
+                    style="margin-bottom: 15px;"></div>
+                <button class="action-btn" id="stripe-checkout-btn">Checkout with Stripe</button>
             </div>
 
             <div id="crypto-info" class="payment-info hidden">
@@ -102,7 +114,8 @@
         <button class="close-btn">&times;</button>
         <h2>info</h2>
         <div class="panel-content">
-            <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
+            <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best
+                performance, undetected features, and active updates.</p>
         </div>
     </div>
 
@@ -117,11 +130,11 @@
             </div>
             <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
                 <div style="text-align: center;">
-                    <h3 style="font-size: 2rem; color: white;">10k+</h3>
+                    <h3 id="total-buyers-text" style="font-size: 2rem; color: white;">10000</h3>
                     <p style="font-size: 0.8rem; color: #888;">Total Buyers</p>
                 </div>
                 <div style="text-align: center;">
-                    <h3 style="font-size: 2rem; color: white;">142k</h3>
+                    <h3 id="total-viewers-text" style="font-size: 2rem; color: white;">142000</h3>
                     <p style="font-size: 0.8rem; color: #888;">Total Viewers</p>
                 </div>
             </div>
@@ -134,10 +147,12 @@
         <h2>showcases</h2>
         <div class="panel-content">
             <p>Check out what our community is doing with alternate.lol!</p>
-            <div style="margin-top: 20px; padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>
+            <div style="margin-top: 20px; padding: 40px; background: #111; text-align: center; border: 1px solid #333;">
+                Video Coming Soon</div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>

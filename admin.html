@@ -6,8 +6,8 @@
     <title>alternate.lol - admin</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <!-- Supabase JS SDK via CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         .admin-container {
             display: flex;
@@ -81,10 +81,10 @@
     <div class="admin-container" id="login-section">
         <div class="admin-box">
             <h2>admin portal</h2>
-            <input type="email" id="email" class="admin-input" placeholder="Admin Email">
-            <input type="password" id="password" class="admin-input" placeholder="Password">
+            <input type="password" id="password" class="admin-input" placeholder="Admin Password">
+            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" style="margin-bottom: 15px;"></div>
             <button class="admin-btn" id="login-btn">Secure Login</button>
-            <p id="error-msg">Invalid credentials.</p>
+            <p id="error-msg">Invalid password.</p>
         </div>
     </div>
 

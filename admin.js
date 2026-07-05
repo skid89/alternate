@@ -1,9 +1,3 @@
-// Initialize Supabase (You must replace these placeholders with your actual Supabase URL and Anon Key)
-const SUPABASE_URL = 'https://YOUR_PROJECT_REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 document.addEventListener('DOMContentLoaded', () => {
     // Mouse Glow Logic (same as main site)
     const mouseGlow = document.getElementById('mouse-glow');
@@ -16,49 +10,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
-    const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const errorMsg = document.getElementById('error-msg');
     
     const loginSection = document.getElementById('login-section');
     const dashboardSection = document.getElementById('admin-dashboard');
 
-    // Check if already logged in
-    checkSession();
-
-    async function checkSession() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            showDashboard();
-        }
+    // Simple session check (localStorage for demo purposes)
+    if (localStorage.getItem('admin_logged_in') === 'true') {
+        showDashboard();
     }
 
     loginBtn.addEventListener('click', async () => {
-        const email = emailInput.value;
         const password = passwordInput.value;
+        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
 
-        if (!email || !password) {
-            errorMsg.innerText = "Please enter both email and password.";
+        if (!password) {
+            errorMsg.innerText = "Please enter password.";
+            errorMsg.style.display = "block";
+            return;
+        }
+        
+        if (!turnstileResponse) {
+            errorMsg.innerText = "Please complete the Cloudflare challenge.";
             errorMsg.style.display = "block";
             return;
         }
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+        loginBtn.innerText = 'Verifying...';
 
-        if (error) {
-            errorMsg.innerText = error.message;
+        try {
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    password: password,
+                    turnstileToken: turnstileResponse 
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.error) {
+                errorMsg.innerText = data.error;
+                errorMsg.style.display = "block";
+                loginBtn.innerText = 'Secure Login';
+                // Reset turnstile widget on failure
+                if (typeof turnstile !== 'undefined') turnstile.reset();
+            } else {
+                errorMsg.style.display = "none";
+                localStorage.setItem('admin_logged_in', 'true');
+                showDashboard();
+                loginBtn.innerText = 'Secure Login';
+            }
+        } catch (err) {
+            errorMsg.innerText = "Server error.";
             errorMsg.style.display = "block";
-        } else {
-            errorMsg.style.display = "none";
-            showDashboard();
+            loginBtn.innerText = 'Secure Login';
         }
     });
 
-    logoutBtn.addEventListener('click', async () => {
-        await supabase.auth.signOut();
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('admin_logged_in');
         hideDashboard();
     });
 
@@ -70,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideDashboard() {
         loginSection.style.display = 'flex';
         dashboardSection.style.display = 'none';
-        emailInput.value = '';
         passwordInput.value = '';
     }
 });

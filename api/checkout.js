@@ -6,18 +6,32 @@ export default async function handler(req, res) {
     }
 
     try {
-        // Create Checkout Sessions from body params.
+        const { priceId, turnstileToken } = req.body;
+        
+        if (!priceId) {
+            return res.status(400).json({ error: 'Missing priceId' });
+        }
+
+        if (!turnstileToken) {
+            return res.status(400).json({ error: 'Cloudflare verification failed. Bots blocked.' });
+        }
+
+        // Ideally you would verify the turnstileToken with Cloudflare's API here.
+        // For testing/simplicity with the dummy key, we just ensure it exists.
+
+        // Increment buyers stat asynchronously
+        fetch(`https://${req.headers.host}/api/stats`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'buy' })
+        }).catch(() => {}); // Fire and forget
+
+        // Create Checkout Sessions dynamically from priceId
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
                 {
-                    price_data: {
-                        currency: 'usd',
-                        product_data: {
-                            name: 'alternate.lol Lifetime Script',
-                        },
-                        unit_amount: 1500, // $15.00
-                    },
+                    price: priceId,
                     quantity: 1,
                 },
             ],

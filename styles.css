@@ -322,6 +322,7 @@ body {
 
 .payment-options {
     display: flex;
+    flex-wrap: wrap; /* Fix overlapping buttons */
     gap: 15px;
     margin-bottom: 25px;
 }
