@@ -140,6 +140,36 @@ async function fetchRealStats() {
         if (badgeBuyers) badgeBuyers.innerText = stats.buyers;
         if (badgeStock) badgeStock.innerText = stats.keys_remaining;
 
+        // Dynamic Stock Bar Logic
+        const maxStock = 100;
+        const currentStock = stats.keys_remaining || 0;
+        const stockPercent = Math.min((currentStock / maxStock) * 100, 100);
+        
+        const stockText = document.getElementById('dynamic-stock-count');
+        const stockFill = document.getElementById('stock-bar-fill');
+        const stockWarning = document.getElementById('stock-warning-text');
+        
+        if (stockText) stockText.innerText = currentStock;
+        if (stockFill) {
+            stockFill.style.width = stockPercent + '%';
+            if (currentStock <= 20) {
+                stockFill.classList.add('low');
+                if (stockWarning) stockWarning.style.display = 'block';
+            } else {
+                stockFill.classList.remove('low');
+                if (stockWarning) stockWarning.style.display = 'none';
+            }
+        }
+
+        // Live Total Sales Counter (Add the 8 manual ones)
+        const totalSales = stats.buyers + 8;
+        const salesNumberEl = document.getElementById('sales-number');
+        const salesCounterEl = document.getElementById('sales-counter');
+        if (salesNumberEl && salesCounterEl) {
+            salesNumberEl.innerText = totalSales;
+            salesCounterEl.style.display = 'block';
+        }
+
         return stats;
     } catch (err) {
         console.error("Failed to load real stats", err);
@@ -216,3 +246,49 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 });
+// --- FOMO Toasts Logic ---
+const fakeBuyers = [
+    { country: 'Australia', price: 5 },
+    { country: 'USA', price: 5 },
+    { country: 'Britain', price: 5 },
+    { country: 'Britain', price: 5 },
+    { country: 'USA', price: 5 },
+    { country: 'Australia', price: 5 },
+    { country: 'EU', price: 5 },
+    { country: 'EU', price: 5 },
+    { country: 'USA', price: 6 }
+];
+
+function showToast() {
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    const randomBuyer = fakeBuyers[Math.floor(Math.random() * fakeBuyers.length)];
+    const toast = document.createElement('div');
+    toast.className = 'fomo-toast';
+    toast.innerHTML = <ion-icon name="cart" class="icon"></ion-icon> Someone from <span class="highlight"> + randomBuyer.country + </span> just bought a Lifetime Key for $<span class="highlight"> + randomBuyer.price + </span>!;
+    
+    toastContainer.appendChild(toast);
+    
+    // Slide in
+    setTimeout(() => {
+        toast.classList.add('show');
+    }, 100);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500);
+    }, 5000);
+}
+
+// Trigger toasts randomly every 12 to 25 seconds
+function startToasts() {
+    setTimeout(() => {
+        showToast();
+        startToasts();
+    }, Math.floor(Math.random() * (25000 - 12000 + 1) + 12000));
+}
+
+// Start toasts slightly after load
+setTimeout(startToasts, 5000);
