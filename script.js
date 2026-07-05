@@ -143,3 +143,44 @@ if (stripeCheckoutBtn) {
         }
     });
 }
+
+// --- Chart.js Analytics Logic ---
+const ctx = document.getElementById('analyticsChart');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [
+                {
+                    label: 'Total Viewers',
+                    data: [20000, 35000, 50000, 75000, 100000, 120000, 142000],
+                    borderColor: '#888888',
+                    backgroundColor: 'rgba(136, 136, 136, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                },
+                {
+                    label: 'Total Buyers',
+                    data: [500, 1200, 2500, 4800, 7000, 8500, 10000],
+                    borderColor: '#ffffff',
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { color: '#ffffff' }
+                }
+            },
+            scales: {
+                x: { ticks: { color: '#888888' }, grid: { color: '#333333' } },
+                y: { ticks: { color: '#888888' }, grid: { color: '#333333' } }
+            }
+        }
+    });
+}

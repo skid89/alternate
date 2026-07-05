@@ -60,21 +60,23 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    width: 350px; /* enough space for movement */
+    height: 100vh;
+}
+
+.loading-wrapper {
+    display: flex;
+    align-items: center;
+    transform: translateX(40px); /* Start shifted slightly right */
+    animation: slideWrapperLeft 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
 }
 
 .favicons-container {
     width: 50px;
     height: 50px;
-    /* animation: zoom out fast, move left */
-    animation: zoomOutBlur 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards,
-               moveLeft 1s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(10);
+    animation: zoomOutBlur 0.5s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
     filter: blur(20px);
     opacity: 0;
+    transform: scale(10);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -90,27 +92,25 @@ body {
     font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: 1px;
+    margin-left: 20px;
     opacity: 0;
-    position: absolute;
-    /* start slightly right, text reveal */
-    animation: revealText 0.8s ease-out 1s forwards;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    animation: revealText 0.8s ease-out 0.8s forwards;
+    transform: translateX(20px);
 }
 
 @keyframes zoomOutBlur {
-    0% { transform: translate(-50%, -50%) scale(10); filter: blur(20px); opacity: 0; }
-    100% { transform: translate(-50%, -50%) scale(1); filter: blur(0px); opacity: 1; }
+    0% { transform: scale(10); filter: blur(20px); opacity: 0; }
+    100% { transform: scale(1); filter: blur(0px); opacity: 1; }
 }
 
-@keyframes moveLeft {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    100% { transform: translate(-140px, -50%) scale(1); } /* move left enough to make room for text */
+@keyframes slideWrapperLeft {
+    0% { transform: translateX(40px); }
+    100% { transform: translateX(-40px); } 
 }
 
 @keyframes revealText {
-    0% { opacity: 0; margin-left: 20px; }
-    100% { opacity: 1; margin-left: 30px; } /* text appears to the right of the icon */
+    0% { opacity: 0; transform: translateX(20px); }
+    100% { opacity: 1; transform: translateX(0); } 
 }
 
 /* =========================================
@@ -171,7 +171,7 @@ body {
     letter-spacing: -2px;
     margin-bottom: 5px;
     color: white;
-    text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 5px #ffffff, 0 0 10px #ffffff, 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
 .hero .subtitle {
