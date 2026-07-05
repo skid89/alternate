@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         .admin-container {
             display: flex;
@@ -60,7 +61,7 @@
         .login-btn:hover {
             background: #ccc;
         }
-        /* Tabs styling */
+        /* Top Tabs styling */
         .admin-tabs {
             display: flex;
             gap: 10px;
@@ -85,12 +86,32 @@
         .admin-tab:hover {
             color: white;
         }
-        .tab-content {
-            display: none;
+        
+        /* Sub Tabs styling */
+        .sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
         }
-        .tab-content.active {
-            display: block;
+        .sub-tab {
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            cursor: pointer;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: 0.2s;
         }
+        .sub-tab.active {
+            background: white;
+            color: black;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
     </style>
 </head>
 <body>
@@ -119,50 +140,78 @@
             <div style="background: rgba(10, 10, 10, 0.9); padding: 30px; border-radius: 12px; border: 1px solid #333; width: 100%;">
                 
                 <div class="admin-tabs">
-                    <button class="admin-tab active" data-tab="tab-keys">Keys</button>
-                    <button class="admin-tab" data-tab="tab-analytics">Analytics</button>
-                    <button class="admin-tab" data-tab="tab-settings">Settings</button>
+                    <button class="admin-tab active" data-tab="tab-mainlink">Main Link (CMS)</button>
+                    <button class="admin-tab" data-tab="tab-keys">Key Stock</button>
+                    <button class="admin-tab" data-tab="tab-analytics">Analytics Overrides</button>
+                </div>
+
+                <!-- Main Link / CMS Tab -->
+                <div id="tab-mainlink" class="tab-content active">
+                    <h2 style="color: white; margin-bottom: 10px; font-size: 1.2rem;">Showcase Settings</h2>
+                    <div class="input-group">
+                        <label>YouTube Showcase Link</label>
+                        <input type="text" id="cms-showcase" placeholder="https://youtube.com/...">
+                    </div>
+                    
+                    <h2 style="color: white; margin-bottom: 10px; font-size: 1.2rem; margin-top: 30px;">Information Manager</h2>
+                    <div class="sub-tabs">
+                        <button class="sub-tab active" data-sub="sub-features">Feature List</button>
+                        <button class="sub-tab" data-sub="sub-executors">Supported Executors</button>
+                        <button class="sub-tab" data-sub="sub-games">Supported Games</button>
+                    </div>
+
+                    <div id="sub-features" class="sub-tab-content active">
+                        <div class="input-group">
+                            <label>Features (HTML format)</label>
+                            <textarea id="cms-features" rows="6"><li>Aimbot</li><li>ESP</li></textarea>
+                        </div>
+                    </div>
+                    <div id="sub-executors" class="sub-tab-content">
+                        <div class="input-group">
+                            <label>Supported Executors (HTML format)</label>
+                            <textarea id="cms-executors" rows="6"><li>Synapse</li><li>Krnl</li></textarea>
+                        </div>
+                    </div>
+                    <div id="sub-games" class="sub-tab-content">
+                        <div class="input-group">
+                            <label>Supported Games (HTML format)</label>
+                            <textarea id="cms-games" rows="6"><li>Arsenal</li><li>Phantom Forces</li></textarea>
+                        </div>
+                    </div>
+
+                    <button id="save-cms-btn" class="login-btn" style="margin-top: 10px;">Save All Website Content</button>
                 </div>
 
                 <!-- Keys Tab -->
-                <div id="tab-keys" class="tab-content active">
+                <div id="tab-keys" class="tab-content">
                     <div style="margin-bottom: 20px;">
-                        <span style="color: #888;">Current Stock: </span>
-                        <span id="key-stock" style="color: #4ade80; font-size: 1.5rem; font-weight: bold;">Loading...</span>
+                        <span style="color: #888;">Current Real Stock: </span>
+                        <span id="key-stock" style="color: #4ade80; font-size: 1.5rem; font-weight: bold;">...</span>
                     </div>
                     <div class="input-group">
                         <label>Bulk Upload License Keys (One per line)</label>
-                        <textarea id="new-key-input" rows="8" placeholder="XXXX-YYYY-ZZZZ&#10;AAAA-BBBB-CCCC&#10;1111-2222-3333" style="margin-bottom: 10px; resize: vertical;"></textarea>
+                        <textarea id="new-key-input" rows="8" placeholder="XXXX-YYYY-ZZZZ&#10;AAAA-BBBB-CCCC" style="margin-bottom: 10px; resize: vertical;"></textarea>
                         <button id="add-key-btn" class="login-btn">Upload Keys</button>
                     </div>
                 </div>
 
                 <!-- Analytics Tab -->
                 <div id="tab-analytics" class="tab-content">
-                    <h2 style="color: white; margin-bottom: 20px;">Traffic Overview</h2>
-                    <div style="display: flex; gap: 20px; text-align: center;">
-                        <div style="flex: 1; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid #222;">
-                            <h3 id="admin-buyers" style="font-size: 2rem; color: white;">...</h3>
-                            <p style="color: #888; font-size: 0.9rem;">Total Buyers</p>
+                    <h2 style="color: white; margin-bottom: 20px;">Fake Analytics Overrides</h2>
+                    <p style="color: #888; font-size: 0.9rem; margin-bottom: 20px;">Change these numbers to fake the stats on the main page. (Key Stock is real and cannot be faked here to prevent crashes).</p>
+                    
+                    <div style="display: flex; gap: 20px;">
+                        <div class="input-group" style="flex: 1;">
+                            <label>Total Buyers</label>
+                            <input type="number" id="override-buyers" value="0">
                         </div>
-                        <div style="flex: 1; background: rgba(255,255,255,0.02); padding: 20px; border-radius: 8px; border: 1px solid #222;">
-                            <h3 id="admin-viewers" style="font-size: 2rem; color: white;">...</h3>
-                            <p style="color: #888; font-size: 0.9rem;">Total Viewers</p>
+                        <div class="input-group" style="flex: 1;">
+                            <label>Total Viewers</label>
+                            <input type="number" id="override-viewers" value="0">
                         </div>
                     </div>
-                </div>
-
-                <!-- Settings Tab -->
-                <div id="tab-settings" class="tab-content">
-                    <div class="input-group" style="margin-bottom: 15px;">
-                        <label>Showcase Video URL</label>
-                        <input type="text" id="showcase-url" placeholder="https://youtube.com/...">
-                    </div>
-                    <div class="input-group" style="margin-bottom: 15px;">
-                        <label>Favicon/Icon URL</label>
-                        <input type="text" id="icon-url" placeholder="https://...">
-                    </div>
-                    <button id="save-settings-btn" class="login-btn">Save Settings</button>
+                    
+                    <button id="save-stats-btn" class="login-btn">Override Analytics</button>
                 </div>
                 
             </div>
@@ -173,14 +222,5 @@
     </div>
 
     <script src="admin.js"></script>
-    <script>
-        const mouseGlow = document.getElementById('mouse-glow');
-        document.addEventListener('mousemove', (e) => {
-            if (mouseGlow) {
-                mouseGlow.style.left = e.clientX + 'px';
-                mouseGlow.style.top = e.clientY + 'px';
-            }
-        });
-    </script>
 </body>
 </html>

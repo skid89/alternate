@@ -127,8 +127,29 @@
         <button class="close-btn">&times;</button>
         <h2>info</h2>
         <div class="panel-content">
-            <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best
-                performance, undetected features, and active updates.</p>
+            <p style="margin-bottom: 20px; color: #888;">alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
+            
+            <div class="info-tabs">
+                <button class="info-tab active" data-target="info-features">Features</button>
+                <button class="info-tab" data-target="info-executors">Executors</button>
+                <button class="info-tab" data-target="info-games">Games</button>
+            </div>
+            
+            <div id="info-features" class="info-content active">
+                <ul id="display-features" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+            <div id="info-executors" class="info-content">
+                <ul id="display-executors" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+            <div id="info-games" class="info-content">
+                <ul id="display-games" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
+                    <li>Loading...</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -160,8 +181,9 @@
         <h2>showcases</h2>
         <div class="panel-content">
             <p>Check out what our community is doing with alternate.lol!</p>
-            <div style="margin-top: 20px; padding: 40px; background: #111; text-align: center; border: 1px solid #333;">
-                Video Coming Soon</div>
+            <div id="display-showcase-container" style="margin-top: 20px;">
+                <div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Loading Video...</div>
+            </div>
         </div>
     </div>
 

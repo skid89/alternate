@@ -56,6 +56,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     overlay.addEventListener('click', closePanel);
+
+    // --- Info Sub-Tabs Logic ---
+    document.querySelectorAll('.info-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.info-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.info-content').forEach(c => {
+                c.classList.remove('active');
+                c.classList.add('hidden');
+            });
+            
+            tab.classList.add('active');
+            const targetId = tab.getAttribute('data-target');
+            const targetContent = document.getElementById(targetId);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+                targetContent.classList.add('active');
+            }
+        });
+    });
 });
 
 // --- Pricing Panel Logic ---
@@ -149,6 +168,48 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 // --- Chart.js & Real Analytics Logic ---
 async function fetchRealStats() {
     try {
+        // Fetch CMS settings
+        const { data: settingsData } = await supabaseClient.from('settings').select('*').single();
+        if (settingsData) {
+            if (settingsData.features_html) {
+                document.getElementById('display-features').innerHTML = settingsData.features_html;
+            } else {
+                document.getElementById('display-features').innerHTML = '<li>No features listed yet.</li>';
+            }
+            if (settingsData.executors_html) {
+                document.getElementById('display-executors').innerHTML = settingsData.executors_html;
+            } else {
+                document.getElementById('display-executors').innerHTML = '<li>No executors listed yet.</li>';
+            }
+            if (settingsData.games_html) {
+                document.getElementById('display-games').innerHTML = settingsData.games_html;
+            } else {
+                document.getElementById('display-games').innerHTML = '<li>No games listed yet.</li>';
+            }
+            if (settingsData.showcase_url) {
+                // If it's a youtube link, embed it properly
+                const url = settingsData.showcase_url;
+                let embedUrl = url;
+                if (url.includes('youtube.com/watch?v=')) {
+                    embedUrl = url.replace('youtube.com/watch?v=', 'youtube.com/embed/');
+                } else if (url.includes('youtu.be/')) {
+                    embedUrl = url.replace('youtu.be/', 'youtube.com/embed/');
+                }
+                document.getElementById('display-showcase-container').innerHTML = `<iframe width="100%" height="250" src="${embedUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+            } else {
+                document.getElementById('display-showcase-container').innerHTML = '<div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>';
+            }
+        } else {
+            const el1 = document.getElementById('display-features');
+            const el2 = document.getElementById('display-executors');
+            const el3 = document.getElementById('display-games');
+            const el4 = document.getElementById('display-showcase-container');
+            if (el1) el1.innerHTML = '<li>No features listed yet.</li>';
+            if (el2) el2.innerHTML = '<li>No executors listed yet.</li>';
+            if (el3) el3.innerHTML = '<li>No games listed yet.</li>';
+            if (el4) el4.innerHTML = '<div style="padding: 40px; background: #111; text-align: center; border: 1px solid #333;">Video Coming Soon</div>';
+        }
+
         // Fetch current stats
         const { data: statsData, error: statsError } = await supabaseClient.from('stats').select('*').single();
         if (statsError) throw statsError;
