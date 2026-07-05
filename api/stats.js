@@ -1,48 +1,42 @@
-const { createClient } = require('@supabase/supabase-js');
-
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST' && req.method !== 'GET') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
     try {
-        const supabaseUrl = process.env.SUPABASE_URL;
-        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+        const SELLAUTH_API_KEY = '5912277|jm75V0YRt2JREdvXlFwqinEeqzrxwHtPlRWqAPQy5451ad08';
+        const SHOP_ID = '250507';
+        const PRODUCT_ID = '780475';
+
+        // Fetch product details from SellAuth
+        const response = await fetch(`https://api.sellauth.com/v1/shops/${SHOP_ID}/products/${PRODUCT_ID}`, {
+            headers: {
+                'Authorization': `Bearer ${SELLAUTH_API_KEY}`,
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`SellAuth API error: ${response.statusText}`);
+        }
+
+        const productData = await response.json();
         
-        if (!supabaseUrl || !supabaseKey) {
-            // Fallback for development if keys aren't set in .env
-            return res.status(200).json({ viewers: 142000, buyers: 10000, keys_remaining: 15 });
-        }
+        // Extract real stock and sold counts
+        const stock = productData.stock_count || 0;
+        const sold = productData.products_sold || 0;
+        
+        // We can still return a static or random viewer count since SellAuth doesn't track active viewers
+        const fakeViewers = Math.floor(Math.random() * (1200 - 800 + 1) + 800); 
 
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        return res.status(200).json({ 
+            viewers: fakeViewers, 
+            buyers: sold, 
+            keys_remaining: stock 
+        });
 
-        if (req.method === 'POST') {
-            const { action } = req.body;
-            
-            const { data, error } = await supabase.from('stats').select('*').single();
-            if (error) throw error;
-
-            let newViewers = data.viewers;
-            let newBuyers = data.buyers;
-
-            if (action === 'view') newViewers += 1;
-            if (action === 'buy') newBuyers += 1;
-
-            await supabase.from('stats').update({ viewers: newViewers, buyers: newBuyers }).eq('id', data.id);
-            const { count: keysRemaining } = await supabase.from('keys').select('*', { count: 'exact', head: true }).eq('used', false);
-            
-            return res.status(200).json({ viewers: newViewers, buyers: newBuyers, keys_remaining: keysRemaining || 0 });
-        } else {
-            // GET
-            const { data, error } = await supabase.from('stats').select('*').single();
-            if (error) throw error;
-            
-            const { count: keysRemaining } = await supabase.from('keys').select('*', { count: 'exact', head: true }).eq('used', false);
-            
-            return res.status(200).json({ viewers: data.viewers, buyers: data.buyers, keys_remaining: keysRemaining || 0 });
-        }
     } catch (err) {
         // Fallback on error
-        res.status(500).json({ error: err.message, viewers: 142000, buyers: 10000, keys_remaining: 15 });
+        res.status(500).json({ error: err.message, viewers: 800, buyers: 0, keys_remaining: 0 });
     }
 }
