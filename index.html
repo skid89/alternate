@@ -77,15 +77,12 @@
             </div>
 
             <div id="stripe-info" class="payment-info hidden">
-                <p style="margin-bottom: 10px;">Select your product and pay securely via Stripe.</p>
-                <select id="stripe-product-select"
-                    style="width: 100%; padding: 10px; margin-bottom: 15px; background: #111; color: white; border: 1px solid #333; border-radius: 6px;">
-                    <option value="price_1Tphb02OaP3owCzD7V63gEUu">Lifetime Script ($8.00)</option>
-                </select>
+                <p style="margin-bottom: 10px;">Pay securely via Stripe.</p>
                 <!-- Turnstile Widget -->
                 <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark"
                     style="margin-bottom: 15px;"></div>
-                <button class="action-btn" id="stripe-checkout-btn">Checkout with Stripe</button>
+                
+                <button id="stripe-checkout-btn" class="action-btn">Purchase Script ($8.00)</button>
             </div>
 
             <div id="crypto-info" class="payment-info hidden">

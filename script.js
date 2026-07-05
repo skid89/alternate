@@ -125,11 +125,9 @@ document.querySelector('.copy-btn').addEventListener('click', () => {
 
 // --- Stripe Checkout Logic ---
 const stripeCheckoutBtn = document.getElementById('stripe-checkout-btn');
-const stripeProductSelect = document.getElementById('stripe-product-select');
 
-if (stripeCheckoutBtn && stripeProductSelect) {
+if (stripeCheckoutBtn) {
     stripeCheckoutBtn.addEventListener('click', async () => {
-        const selectedPriceId = stripeProductSelect.value;
         const turnstileResponse = document.querySelector('#stripe-info [name="cf-turnstile-response"]')?.value;
 
         if (!turnstileResponse) {
