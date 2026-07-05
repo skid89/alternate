@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>alternate.lol</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
     <!-- Clean, basic modern font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Ionicons for Social Icons -->
@@ -38,9 +38,14 @@
 
         <a href="https://discord.gg/VFmsjbbwHS" target="_blank" class="mc-badge" title="click to apply for whitelist { client only }">
             <div class="mc-badge-inner">
-                <ion-icon name="cube" class="mc-icon"></ion-icon>
-                <span class="mc-text">apply to join</span>
-                <ion-icon name="logo-discord" class="mc-discord"></ion-icon>
+                <div class="mc-ip-row">
+                    <ion-icon name="cube" class="mc-icon"></ion-icon>
+                    <span class="mc-ip">alternatelol.mcplay.fun</span>
+                </div>
+                <div class="mc-apply-row">
+                    <span class="mc-text">apply to join</span>
+                    <ion-icon name="logo-discord" class="mc-discord"></ion-icon>
+                </div>
             </div>
         </a>
     </div>
@@ -144,50 +149,60 @@
         <button class="close-btn">&times;</button>
         <h2>info</h2>
         <div class="panel-content">
-            <div class="info-intro">
-                <ion-icon name="information-circle" class="info-icon"></ion-icon>
-                <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
-            </div>
+            <p class="info-desc">alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
             
             <div class="info-tabs">
-                <button class="info-tab active" data-target="info-features"><ion-icon name="flash"></ion-icon> Features</button>
-                <button class="info-tab" data-target="info-executors"><ion-icon name="code-slash"></ion-icon> Executors</button>
-                <button class="info-tab" data-target="info-games"><ion-icon name="game-controller"></ion-icon> Games</button>
+                <button class="info-tab active" data-target="info-features">Features</button>
+                <button class="info-tab" data-target="info-executors">Executors</button>
+                <button class="info-tab" data-target="info-games">Games</button>
             </div>
             
             <div id="info-features" class="info-content active">
-                <div class="info-grid">
-                    <div class="info-item"><ion-icon name="eye"></ion-icon><span>Advanced Aimbot</span></div>
-                    <div class="info-item"><ion-icon name="people"></ion-icon><span>Player ESP</span></div>
-                    <div class="info-item"><ion-icon name="cash"></ion-icon><span>Auto-farm</span></div>
-                    <div class="info-item"><ion-icon name="videocam"></ion-icon><span>Stream-proof</span></div>
-                    <div class="info-item"><ion-icon name="shield-checkmark"></ion-icon><span>Undetected</span></div>
-                    <div class="info-item"><ion-icon name="rocket"></ion-icon><span>Active Updates</span></div>
-                </div>
+                <ul class="info-list">
+                    <li>Advanced Aimbot with prediction</li>
+                    <li>Player ESP (skeleton, box, health)</li>
+                    <li>Auto-farm & silent aim</li>
+                    <li>Stream-proof mode</li>
+                    <li>Undetected by mainstream anti-cheats</li>
+                    <li>Regular updates & active support</li>
+                </ul>
             </div>
             <div id="info-executors" class="info-content">
-                <div class="info-grid">
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Synapse Z</span></div>
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Krnl</span></div>
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Fluxus</span></div>
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Wave</span></div>
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Codex</span></div>
-                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Level 8+</span></div>
+                <div class="executor-section working">
+                    <h4 class="executor-heading"><ion-icon name="checkmark-circle"></ion-icon> Working</h4>
+                    <ul class="info-list">
+                        <li>project real</li>
+                        <li>synapse z</li>
+                        <li>volt</li>
+                        <li>velocity</li>
+                        <li>madium</li>
+                        <li>pottasium</li>
+                        <li>codex</li>
+                    </ul>
+                </div>
+                <div class="executor-section not-working">
+                    <h4 class="executor-heading"><ion-icon name="close-circle"></ion-icon> Not Working</h4>
+                    <ul class="info-list">
+                        <li>xeno</li>
+                        <li>solara</li>
+                        <li>sirhut</li>
+                        <li>and other ones</li>
+                    </ul>
                 </div>
             </div>
             <div id="info-games" class="info-content">
-                <div class="info-grid">
-                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Da Hood</span></div>
-                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Hood Customs</span></div>
-                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Da Track</span></div>
-                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Arsenal</span></div>
-                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Phantom Forces</span></div>
-                </div>
+                <ul class="info-list">
+                    <li>Da Hood</li>
+                    <li>Hood Customs</li>
+                    <li>Da Track</li>
+                    <li>Arsenal</li>
+                    <li>Phantom Forces</li>
+                </ul>
             </div>
         </div>
     </div>
 
-    <script src="script.js?v=7"></script>
+    <script src="script.js?v=8"></script>
 </body>
 
 </html>
