@@ -134,6 +134,9 @@ async function fetchRealStats() {
         const statsRes = await fetch('/api/stats');
         const stats = await statsRes.json();
 
+        // Apply 8 manual buyers to global stats
+        stats.buyers = (stats.buyers || 0) + 8;
+
         // Update Top Right Badges (if they exist)
         const badgeBuyers = document.getElementById('badge-buyers');
         const badgeStock = document.getElementById('badge-stock');
@@ -161,8 +164,8 @@ async function fetchRealStats() {
             }
         }
 
-        // Live Total Sales Counter (Add the 8 manual ones)
-        const totalSales = stats.buyers + 8;
+        // Live Total Sales Counter
+        const totalSales = stats.buyers;
         const salesNumberEl = document.getElementById('sales-number');
         const salesCounterEl = document.getElementById('sales-counter');
         if (salesNumberEl && salesCounterEl) {
