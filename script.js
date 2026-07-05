@@ -154,9 +154,15 @@ async function fetchRealStats() {
 
         const stats = await res.json();
 
-        // Update DOM numbers
+        // Update DOM numbers for panels
         document.getElementById('total-buyers-text').innerText = stats.buyers || 0;
         document.getElementById('total-stock-text').innerText = stats.keys_remaining || 0;
+
+        // Update Top Right Badges
+        const badgeBuyers = document.getElementById('badge-buyers');
+        const badgeStock = document.getElementById('badge-stock');
+        if (badgeBuyers) badgeBuyers.innerText = stats.buyers || 0;
+        if (badgeStock) badgeStock.innerText = stats.keys_remaining || 0;
 
         return stats;
     } catch (err) {
