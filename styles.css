@@ -237,6 +237,25 @@ body {
 .social-links a:hover {
     color: var(--text-main);
     transform: translateY(-2px);
+}
+
+/* =========================================
+   MODAL PANELS (Clean & Sleek)
+   ========================================= */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
 
 .overlay.active {
     opacity: 1;
@@ -249,9 +268,9 @@ body {
     left: 50%;
     transform: translate(-50%, -45%);
     width: 90%;
-    max-width: 800px; /* Made wider from 600px */
-    max-height: 85vh; /* Added max-height */
-    overflow-y: auto; /* Added scrollability */
+    max-width: 800px;
+    max-height: 85vh;
+    overflow-y: auto;
     background: #0a0a0a;
     border: 1px solid var(--border-color);
     border-radius: 12px;
@@ -419,37 +438,34 @@ body {
     background: rgba(255,255,255,0.2);
 }
 
-/* Info Tabs styling */
-.info-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 25px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 10px;
-}
-.info-tab {
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-.info-tab.active {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-}
-.info-tab:hover {
-    color: white;
-}
-
-/* CMS STYLES */
+ / *   I n f o   T a b s   s t y l i n g   * / 
+ . i n f o - t a b s   { 
+         d i s p l a y :   f l e x ; 
+         g a p :   1 0 p x ; 
+         m a r g i n - b o t t o m :   1 5 p x ; 
+ } 
+ . i n f o - t a b   { 
+         b a c k g r o u n d :   # 1 1 1 ; 
+         b o r d e r :   1 p x   s o l i d   # 3 3 3 ; 
+         c o l o r :   # 8 8 8 ; 
+         c u r s o r :   p o i n t e r ; 
+         p a d d i n g :   6 p x   1 5 p x ; 
+         b o r d e r - r a d i u s :   2 0 p x ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+         t r a n s i t i o n :   0 . 2 s ; 
+ } 
+ . i n f o - t a b . a c t i v e   { 
+         b a c k g r o u n d :   w h i t e ; 
+         c o l o r :   b l a c k ; 
+ } 
+ . i n f o - c o n t e n t   { 
+         d i s p l a y :   n o n e ; 
+ } 
+ . i n f o - c o n t e n t . a c t i v e   { 
+         d i s p l a y :   b l o c k ; 
+ } 
+  
+ /* CMS STYLES */
 .feature-category {
     margin-bottom: 20px;
 }
@@ -641,32 +657,4 @@ body {
     color: white;
     font-weight: 900;
     text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-/* =========================================
-   MODAL PANELS (Clean & Sleek)
-   ========================================= */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 40;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-}
-.info-content {
-    display: none;
-    animation: fadeIn 0.3s ease;
-}
-.info-content.active {
-    display: block;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
 }
