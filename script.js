@@ -86,10 +86,12 @@ function initVideoSlider() {
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
     const nextBtn = document.querySelector('.slider-btn.next');
+    const playBtn = document.getElementById('slider-play-btn');
     if (!slides.length || !prevBtn || !nextBtn) return;
 
     let current = 0;
     let autoSlide;
+    let playing = true;
 
     function showSlide(index) {
         slides.forEach((slide, i) => {
@@ -108,12 +110,22 @@ function initVideoSlider() {
     }
 
     function startAuto() {
+        if (!playing) return;
         stopAuto();
         autoSlide = setInterval(next, 8000);
     }
 
     function stopAuto() {
         if (autoSlide) clearInterval(autoSlide);
+    }
+
+    function updatePlayButton() {
+        if (!playBtn) return;
+        playBtn.innerHTML = playing
+            ? '<ion-icon name="pause"></ion-icon>'
+            : '<ion-icon name="play"></ion-icon>';
+        playBtn.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
+        playBtn.classList.toggle('paused', !playing);
     }
 
     prevBtn.addEventListener('click', () => {
@@ -126,12 +138,27 @@ function initVideoSlider() {
         startAuto();
     });
 
+    if (playBtn) {
+        playBtn.addEventListener('click', () => {
+            playing = !playing;
+            updatePlayButton();
+            if (playing) {
+                startAuto();
+            } else {
+                stopAuto();
+            }
+        });
+    }
+
     slides.forEach(slide => {
         slide.addEventListener('mouseenter', stopAuto);
-        slide.addEventListener('mouseleave', startAuto);
+        slide.addEventListener('mouseleave', () => {
+            if (playing) startAuto();
+        });
     });
 
     showSlide(current);
+    updatePlayButton();
     startAuto();
 }
 
@@ -167,10 +194,8 @@ async function loadStats() {
             }
         }
 
-        const salesNumberEl = document.getElementById('sales-number');
         const salesCounterEl = document.getElementById('sales-counter');
-        if (salesNumberEl && salesCounterEl) {
-            salesNumberEl.textContent = buyers;
+        if (salesCounterEl) {
             salesCounterEl.style.display = 'block';
         }
 
@@ -181,6 +206,8 @@ async function loadStats() {
         const bStock = document.getElementById('badge-stock');
         if (bBuyers) bBuyers.textContent = '0';
         if (bStock) bStock.textContent = '0';
+        const salesCounterEl = document.getElementById('sales-counter');
+        if (salesCounterEl) salesCounterEl.style.display = 'block';
     }
 }
 
