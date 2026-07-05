@@ -149,9 +149,10 @@ if (stripeCheckoutBtn && stripeProductSelect) {
             });
             const session = await response.json();
 
-            if (session.error) {
-                console.error(session.error);
-                stripeCheckoutBtn.innerText = 'Error: ' + session.error;
+            if (session.error || session.message) {
+                const errorMsg = session.error || session.message;
+                console.error(errorMsg);
+                stripeCheckoutBtn.innerText = 'Error: ' + errorMsg;
                 return;
             }
 
