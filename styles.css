@@ -188,11 +188,12 @@ body {
     gap: 40px;
     z-index: 10;
     margin-bottom: 40px;
+    perspective: 800px;
 }
 
 .nav-btn {
-    background: none;
-    border: none;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
     color: var(--text-muted);
     font-size: 1.1rem;
     font-weight: 500;
@@ -200,6 +201,24 @@ body {
     text-transform: lowercase;
     transition: all 0.3s ease;
     position: relative;
+    padding: 10px 24px;
+    border-radius: 24px;
+    transform-style: preserve-3d;
+    transform: rotateY(12deg) rotateX(4deg);
+    box-shadow:
+        inset 0 0 12px rgba(0,0,0,0.4),
+        0 8px 20px rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+}
+
+.nav-btn:hover {
+    color: var(--text-main);
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+    transform: rotateY(6deg) rotateX(2deg) scale(1.05);
+    box-shadow:
+        inset 0 0 16px rgba(255,255,255,0.05),
+        0 10px 25px rgba(0,0,0,0.5);
 }
 
 .nav-btn::after {
@@ -214,12 +233,8 @@ body {
     transition: width 0.3s ease;
 }
 
-.nav-btn:hover {
-    color: var(--text-main);
-}
-
 .nav-btn:hover::after {
-    width: 100%;
+    width: 60%;
 }
 
 /* Social Links */
@@ -238,6 +253,37 @@ body {
 .social-links a:hover {
     color: var(--text-main);
     transform: translateY(-2px);
+}
+
+/* =========================================
+   TOP STAT BADGES
+   ========================================= */
+.stat-badge {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    backdrop-filter: blur(5px);
+    transform-style: preserve-3d;
+    transform: rotateY(-10deg) rotateX(3deg);
+    box-shadow:
+        inset 0 0 10px rgba(0,0,0,0.35),
+        0 6px 16px rgba(0,0,0,0.35);
+    transition: all 0.2s ease;
+}
+
+.stat-badge:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+    transform: rotateY(-5deg) rotateX(1deg) scale(1.03);
+    box-shadow:
+        inset 0 0 12px rgba(255,255,255,0.03),
+        0 8px 20px rgba(0,0,0,0.45);
 }
 
 /* =========================================
@@ -370,40 +416,6 @@ body {
 
 .slider-btn ion-icon {
     pointer-events: none;
-}
-
-.slider-play-btn {
-    background: rgba(74, 222, 128, 0.12);
-    border: 1px solid rgba(74, 222, 128, 0.35);
-    color: #4ade80;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 10;
-    font-size: 1.3rem;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-}
-
-.slider-play-btn:hover {
-    background: rgba(74, 222, 128, 0.22);
-    transform: scale(1.12);
-    border-color: rgba(74, 222, 128, 0.55);
-}
-
-.slider-play-btn.paused {
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.35);
-    color: #ef4444;
-}
-
-.slider-play-btn.paused:hover {
-    background: rgba(239, 68, 68, 0.22);
-    border-color: rgba(239, 68, 68, 0.55);
 }
 
 /* =========================================
@@ -816,17 +828,42 @@ body {
 .mc-badge {
     text-decoration: none;
     position: relative;
+    display: inline-block;
+    perspective: 800px;
 }
 
-.mc-badge:hover > div {
-    background: rgba(255,255,255,0.08) !important;
-    border-color: rgba(74, 222, 128, 0.4) !important;
+.mc-badge-inner {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 8px 16px;
+    border-radius: 24px;
+    color: #fff;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+    transition: all 0.2s ease;
+    transform-style: preserve-3d;
+    transform: rotateY(-12deg) rotateX(4deg);
+    box-shadow:
+        inset 0 0 12px rgba(0,0,0,0.4),
+        0 8px 20px rgba(0,0,0,0.4);
+}
+
+.mc-badge:hover .mc-badge-inner {
+    background: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.35);
+    transform: rotateY(-6deg) rotateX(2deg) scale(1.03);
+    box-shadow:
+        inset 0 0 16px rgba(74, 222, 128, 0.1),
+        0 10px 25px rgba(0,0,0,0.5);
 }
 
 .mc-badge[title]::after {
     content: attr(title);
     position: absolute;
-    top: calc(100% + 8px);
+    top: calc(100% + 10px);
     right: 0;
     background: rgba(10, 10, 10, 0.95);
     border: 1px solid #333;
@@ -848,23 +885,270 @@ body {
     transform: translateY(0);
 }
 
-.mc-copy-btn {
-    background: none;
+.mc-icon {
+    color: #4ade80;
+    font-size: 1rem;
+}
+
+.mc-text {
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.mc-discord {
+    color: #5865F2;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.mc-badge:hover .mc-discord {
+    color: #7289da;
+}
+
+/* =========================================
+   PRICING PANEL
+   ========================================= */
+.pricing-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(0,0,0,0.3));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    box-shadow:
+        inset 0 0 30px rgba(0,0,0,0.5),
+        0 15px 40px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+.pricing-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(
+        120deg,
+        rgba(74, 222, 128, 0.08) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(0,0,0,0.3) 100%
+    );
+    pointer-events: none;
+}
+
+.pricing-badge {
+    display: inline-block;
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    color: #4ade80;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.pricing-title {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: lowercase;
+}
+
+.pricing-price {
+    color: #4ade80;
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.pricing-price .currency {
+    font-size: 1.5rem;
+    margin-top: 6px;
+}
+
+.pricing-price .cents {
+    font-size: 1.5rem;
+    margin-top: 6px;
+}
+
+.pricing-desc {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+.stock-block {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.stock-header {
+    display: flex;
+    justify-content: space-between;
+    color: #aaa;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+}
+
+.stock-header span:last-child {
+    color: white;
+    font-weight: 700;
+}
+
+.pricing-features {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 24px;
+}
+
+.pricing-features li {
+    color: #ccc;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.pricing-features li ion-icon {
+    color: #4ade80;
+    font-size: 1.1rem;
+}
+
+.purchase-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: black;
     border: none;
-    color: rgba(255,255,255,0.6);
+    padding: 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     cursor: pointer;
-    padding: 0;
-    margin-left: 4px;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
     font-size: 1rem;
-    transition: color 0.2s;
-    line-height: 1;
 }
 
-.mc-copy-btn:hover {
+.purchase-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.5);
+}
+
+/* =========================================
+   INFO PANEL
+   ========================================= */
+.info-intro {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.info-intro .info-icon {
     color: #4ade80;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+.info-intro p {
+    color: #aaa;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.info-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.info-tab {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #888;
+    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 24px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transform-style: preserve-3d;
+    transform: rotateY(8deg) rotateX(2deg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.info-tab ion-icon {
+    font-size: 1rem;
+}
+
+.info-tab:hover {
+    color: white;
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.info-tab.active {
+    background: white;
+    color: black;
+    border-color: white;
+    transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255,255,255,0.15);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.info-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ccc;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.info-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.18);
+    transform: translateX(4px);
+}
+
+.info-item ion-icon {
+    color: #4ade80;
+    font-size: 1.2rem;
 }
 
 /* =========================================

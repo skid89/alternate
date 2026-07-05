@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>alternate.lol</title>
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=7">
     <!-- Clean, basic modern font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- Ionicons for Social Icons -->
@@ -26,23 +26,21 @@
     <!-- Top Right Stat Badges -->
     <div style="position: fixed; top: 20px; right: 20px; z-index: 50; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
         <div style="display: flex; gap: 15px; align-items: center;">
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
+            <div class="stat-badge">
                 <ion-icon name="cart" style="color: #4ade80;"></ion-icon>
                 <span id="badge-buyers">Loading...</span> Buyers
             </div>
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px);">
+            <div class="stat-badge">
                 <ion-icon name="key" style="color: #60a5fa;"></ion-icon>
                 <span id="badge-stock">Loading...</span> in Stock
             </div>
         </div>
 
-        <a href="https://discord.gg/VFmsjbbwHS" target="_blank" class="mc-badge" title="join discord below for whitelist { client only }">
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 8px 15px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(5px); transition: all 0.2s;">
-                <ion-icon name="cube" style="color: #4ade80;"></ion-icon>
-                <span id="mc-ip">alternatelol.mcplay.fun</span>
-                <button type="button" class="mc-copy-btn" onclick="copyMCIP(event)" aria-label="Copy server IP">
-                    <ion-icon name="copy-outline"></ion-icon>
-                </button>
+        <a href="https://discord.gg/VFmsjbbwHS" target="_blank" class="mc-badge" title="click to apply for whitelist { client only }">
+            <div class="mc-badge-inner">
+                <ion-icon name="cube" class="mc-icon"></ion-icon>
+                <span class="mc-text">apply to join</span>
+                <ion-icon name="logo-discord" class="mc-discord"></ion-icon>
             </div>
         </a>
     </div>
@@ -92,9 +90,6 @@
                 </div>
             </div>
             <button class="slider-btn next" aria-label="Next video"><ion-icon name="chevron-down"></ion-icon></button>
-            <button class="slider-play-btn" id="slider-play-btn" aria-label="Pause slideshow">
-                <ion-icon name="pause"></ion-icon>
-            </button>
         </div>
 
         <div class="social-links">
@@ -111,17 +106,35 @@
     <div class="sliding-panel" id="panel-pricing">
         <button class="close-btn">&times;</button>
         <h2>pricing</h2>
-            <div style="background: #111; border: 1px solid #333; border-radius: 8px; padding: 20px; text-align: center; margin-top: 10px;">
-                <h3 style="color: white; font-size: 1.2rem; margin-bottom: 5px;">Lifetime alternate key</h3>
-                <p style="color: #4ade80; font-size: 1.5rem; font-weight: bold; margin-bottom: 5px;">$8.00</p>
-                
-                <div style="color: #888; font-size: 0.9rem; margin-bottom: 5px;">Stock: <span id="dynamic-stock-count" style="color: white; font-weight: bold;">...</span> / 100</div>
-                <div class="stock-bar-container">
-                    <div id="stock-bar-fill" class="stock-bar-fill" style="width: 100%;"></div>
+        <div class="panel-content">
+            <div class="pricing-card">
+                <div class="pricing-badge">lifetime</div>
+                <h3 class="pricing-title">alternate key</h3>
+                <div class="pricing-price">
+                    <span class="currency">$</span>8<span class="cents">.00</span>
                 </div>
-                <div id="stock-warning-text" class="stock-warning-text">HURRY! ALMOST SOLD OUT!</div>
+                <p class="pricing-desc">One-time purchase. Lifetime access to alternate.lol.</p>
                 
-                <button onclick="window.open('https://alternateshop.mysellauth.com/', 'SellAuthCheckout', 'width=900,height=700,left=200,top=100');" style="display: block; width: 100%; background: linear-gradient(135deg, #4ade80, #22c55e); color: black; border: none; padding: 14px; border-radius: 6px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; margin-top: 25px; box-shadow: 0 0 15px rgba(74, 222, 128, 0.4);" onmouseover="this.style.transform='scale(1.02)'; this.style.boxShadow='0 0 25px rgba(74, 222, 128, 0.6)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 0 15px rgba(74, 222, 128, 0.4)';">Purchase Now</button>
+                <div class="stock-block">
+                    <div class="stock-header">
+                        <span>Stock Available</span>
+                        <span><span id="dynamic-stock-count">...</span> / 100</span>
+                    </div>
+                    <div class="stock-bar-container">
+                        <div id="stock-bar-fill" class="stock-bar-fill" style="width: 100%;"></div>
+                    </div>
+                    <div id="stock-warning-text" class="stock-warning-text">HURRY! ALMOST SOLD OUT!</div>
+                </div>
+                
+                <ul class="pricing-features">
+                    <li><ion-icon name="checkmark"></ion-icon> Lifetime updates</li>
+                    <li><ion-icon name="checkmark"></ion-icon> All supported games</li>
+                    <li><ion-icon name="checkmark"></ion-icon> Discord support</li>
+                </ul>
+                
+                <button class="purchase-btn" onclick="window.open('https://alternateshop.mysellauth.com/', 'SellAuthCheckout', 'width=900,height=700,left=200,top=100');">
+                    <ion-icon name="cart"></ion-icon> Purchase Now
+                </button>
             </div>
         </div>
     </div>
@@ -131,47 +144,50 @@
         <button class="close-btn">&times;</button>
         <h2>info</h2>
         <div class="panel-content">
-            <p style="margin-bottom: 20px; color: #888;">alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
+            <div class="info-intro">
+                <ion-icon name="information-circle" class="info-icon"></ion-icon>
+                <p>alternate.lol is the premium choice for Da Hood, Hood Customs, and Da Track. We offer the best performance, undetected features, and active updates.</p>
+            </div>
             
             <div class="info-tabs">
-                <button class="info-tab active" data-target="info-features">Features</button>
-                <button class="info-tab" data-target="info-executors">Executors</button>
-                <button class="info-tab" data-target="info-games">Games</button>
+                <button class="info-tab active" data-target="info-features"><ion-icon name="flash"></ion-icon> Features</button>
+                <button class="info-tab" data-target="info-executors"><ion-icon name="code-slash"></ion-icon> Executors</button>
+                <button class="info-tab" data-target="info-games"><ion-icon name="game-controller"></ion-icon> Games</button>
             </div>
             
             <div id="info-features" class="info-content active">
-                <ul id="display-features" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
-                    <li>Advanced Aimbot with prediction</li>
-                    <li>Player ESP (skeleton, box, health)</li>
-                    <li>Auto-farm & silent aim</li>
-                    <li>Stream-proof mode</li>
-                    <li>Undetected by mainstream anti-cheats</li>
-                    <li>Regular updates & active support</li>
-                </ul>
+                <div class="info-grid">
+                    <div class="info-item"><ion-icon name="eye"></ion-icon><span>Advanced Aimbot</span></div>
+                    <div class="info-item"><ion-icon name="people"></ion-icon><span>Player ESP</span></div>
+                    <div class="info-item"><ion-icon name="cash"></ion-icon><span>Auto-farm</span></div>
+                    <div class="info-item"><ion-icon name="videocam"></ion-icon><span>Stream-proof</span></div>
+                    <div class="info-item"><ion-icon name="shield-checkmark"></ion-icon><span>Undetected</span></div>
+                    <div class="info-item"><ion-icon name="rocket"></ion-icon><span>Active Updates</span></div>
+                </div>
             </div>
             <div id="info-executors" class="info-content">
-                <ul id="display-executors" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
-                    <li>Synapse Z</li>
-                    <li>Krnl</li>
-                    <li>Fluxus</li>
-                    <li>Wave</li>
-                    <li>Codex</li>
-                    <li>Most Level 8 executors</li>
-                </ul>
+                <div class="info-grid">
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Synapse Z</span></div>
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Krnl</span></div>
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Fluxus</span></div>
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Wave</span></div>
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Codex</span></div>
+                    <div class="info-item"><ion-icon name="checkmark-circle"></ion-icon><span>Level 8+</span></div>
+                </div>
             </div>
             <div id="info-games" class="info-content">
-                <ul id="display-games" style="color: #ccc; margin-left: 20px; line-height: 1.8;">
-                    <li>Da Hood</li>
-                    <li>Hood Customs</li>
-                    <li>Da Track</li>
-                    <li>Arsenal</li>
-                    <li>Phantom Forces</li>
-                </ul>
+                <div class="info-grid">
+                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Da Hood</span></div>
+                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Hood Customs</span></div>
+                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Da Track</span></div>
+                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Arsenal</span></div>
+                    <div class="info-item"><ion-icon name="logo-firebase"></ion-icon><span>Phantom Forces</span></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=7"></script>
 </body>
 
 </html>

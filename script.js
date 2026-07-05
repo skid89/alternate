@@ -86,12 +86,10 @@ function initVideoSlider() {
     const slides = document.querySelectorAll('.slide');
     const prevBtn = document.querySelector('.slider-btn.prev');
     const nextBtn = document.querySelector('.slider-btn.next');
-    const playBtn = document.getElementById('slider-play-btn');
     if (!slides.length || !prevBtn || !nextBtn) return;
 
     let current = 0;
     let autoSlide;
-    let playing = true;
 
     function showSlide(index) {
         slides.forEach((slide, i) => {
@@ -110,22 +108,12 @@ function initVideoSlider() {
     }
 
     function startAuto() {
-        if (!playing) return;
         stopAuto();
         autoSlide = setInterval(next, 8000);
     }
 
     function stopAuto() {
         if (autoSlide) clearInterval(autoSlide);
-    }
-
-    function updatePlayButton() {
-        if (!playBtn) return;
-        playBtn.innerHTML = playing
-            ? '<ion-icon name="pause"></ion-icon>'
-            : '<ion-icon name="play"></ion-icon>';
-        playBtn.setAttribute('aria-label', playing ? 'Pause slideshow' : 'Play slideshow');
-        playBtn.classList.toggle('paused', !playing);
     }
 
     prevBtn.addEventListener('click', () => {
@@ -138,27 +126,12 @@ function initVideoSlider() {
         startAuto();
     });
 
-    if (playBtn) {
-        playBtn.addEventListener('click', () => {
-            playing = !playing;
-            updatePlayButton();
-            if (playing) {
-                startAuto();
-            } else {
-                stopAuto();
-            }
-        });
-    }
-
     slides.forEach(slide => {
         slide.addEventListener('mouseenter', stopAuto);
-        slide.addEventListener('mouseleave', () => {
-            if (playing) startAuto();
-        });
+        slide.addEventListener('mouseleave', startAuto);
     });
 
     showSlide(current);
-    updatePlayButton();
     startAuto();
 }
 
@@ -209,39 +182,6 @@ async function loadStats() {
         const salesCounterEl = document.getElementById('sales-counter');
         if (salesCounterEl) salesCounterEl.style.display = 'block';
     }
-}
-
-function copyMCIP(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    const ip = document.getElementById('mc-ip').textContent;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(ip).then(() => {
-            const btn = event.currentTarget;
-            const originalIcon = btn.innerHTML;
-            btn.innerHTML = '<ion-icon name="checkmark-outline"></ion-icon>';
-            setTimeout(() => btn.innerHTML = originalIcon, 1500);
-        }).catch(() => {
-            fallbackCopy(ip);
-        });
-    } else {
-        fallbackCopy(ip);
-    }
-}
-
-function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        document.execCommand('copy');
-    } catch (e) {
-        console.error('Copy failed', e);
-    }
-    document.body.removeChild(textarea);
 }
 
 function renderChart(stats) {
