@@ -139,26 +139,26 @@ if (stripeCheckoutBtn && stripeProductSelect) {
 
         stripeCheckoutBtn.innerText = 'Loading...';
         try {
-            const response = await fetch('/api/checkout', {
+            // Ping analytics silently
+            fetch('/api/stats', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    priceId: selectedPriceId,
-                    turnstileToken: turnstileResponse
-                })
-            });
-            const session = await response.json();
+                body: JSON.stringify({ action: 'buy' })
+            }).catch(() => {});
 
-            if (session.error || session.message) {
-                const errorMsg = session.error || session.message;
-                console.error(errorMsg);
-                stripeCheckoutBtn.innerText = 'Error: ' + errorMsg;
-                return;
-            }
-
-            // Replace with your real public stripe key
             const stripe = Stripe('pk_live_51SKTKz2OaP3owCzDs5rWpsYEoOmAZLtSPFnR7GFg9vGkBvbXdTwAQgbJG6npYaMQpwoQEGmBLJJAbVQFt2jkeSEo00pQn7pgwY');
-            await stripe.redirectToCheckout({ sessionId: session.id });
+            
+            const { error } = await stripe.redirectToCheckout({
+                lineItems: [{ price: selectedPriceId, quantity: 1 }],
+                mode: 'payment',
+                successUrl: window.location.origin + '?success=true',
+                cancelUrl: window.location.origin + '?canceled=true',
+            });
+
+            if (error) {
+                console.error(error.message);
+                stripeCheckoutBtn.innerText = 'Error: ' + error.message;
+            }
         } catch (error) {
             console.error('Error:', error);
             stripeCheckoutBtn.innerText = 'Error loading Stripe';
