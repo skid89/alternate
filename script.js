@@ -81,8 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3D Video Slider ---
     initVideoSlider();
 
-    // --- Minecraft Badge Context Menu ---
-    initMCBadgeContextMenu();
 });
 
 function initVideoSlider() {
@@ -136,38 +134,6 @@ function initVideoSlider() {
 
     showSlide(current);
     startAuto();
-}
-
-function initMCBadgeContextMenu() {
-    const mcBadge = document.getElementById('mc-badge');
-    const menu = document.getElementById('mc-context-menu');
-    if (!mcBadge || !menu) return;
-
-    mcBadge.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        menu.style.top = e.clientY + 'px';
-        menu.style.left = e.clientX + 'px';
-        menu.classList.add('active');
-    });
-
-    document.addEventListener('click', (e) => {
-        if (!menu.contains(e.target) && !mcBadge.contains(e.target)) {
-            menu.classList.remove('active');
-        }
-    });
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            menu.classList.remove('active');
-        }
-    });
-}
-
-function closeMCBadge() {
-    const mcBadge = document.getElementById('mc-badge');
-    const menu = document.getElementById('mc-context-menu');
-    if (mcBadge) mcBadge.style.display = 'none';
-    if (menu) menu.classList.remove('active');
 }
 
 async function loadStats() {
