@@ -62,118 +62,8 @@
     closeBtn?.addEventListener('click', () => { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); });
     overlay?.addEventListener('click', e => { if(e.target === overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }});
 
-    // Data matching script.lua Map exactly
-    const data = {
-        combat: {
-            subtabs: ['Aimbot', 'Silent', 'Aimbot+'],
-            content: {
-                'Aimbot': {
-                    left: [
-                        { title: 'Aimbot', controls: [
-                            {t:'check',l:'Enabled',on:true},{t:'check',l:'Prediction',on:true},{t:'slider',l:'FOV Radius',v:120,m:500},
-                            {t:'check',l:'Show FOV'},{t:'drop',l:'Target Part',v:'Head'},{t:'check',l:'Smoothing',on:true},
-                            {t:'slider',l:'Smoothness',v:8,m:20},{t:'key',l:'Keybind',v:'MB2'},{t:'check',l:'Use Offsets'},
-                            {t:'check',l:'Air Offset'},{t:'slider',l:'Lock Time',v:0,m:500},{t:'check',l:'Delay Jump'},
-                            {t:'check',l:'Fall Delay'},{t:'check',l:'Unlock Delay'},{t:'slider',l:'Miss Chance',v:0,m:100},
-                            {t:'check',l:'Use Easing'}
-                        ]}
-                    ],
-                    right: [
-                        { title: 'Target / Main', controls: [
-                            {t:'drop',l:'Priority',v:'Closest'},{t:'check',l:'Ignore Knocked',on:true},{t:'check',l:'Ignore Friends',on:true},
-                            {t:'check',l:'Wall Check'},{t:'check',l:'Target HUD',on:true},{t:'slider',l:'Air X Smoothing',v:55,m:100},
-                            {t:'check',l:'Advanced Prediction',on:true},{t:'drop',l:'Pred Style',v:'Classic'},
-                            {t:'slider',l:'Ground Pred Right',v:39,m:100},{t:'slider',l:'Ground Pred Left',v:26,m:100},
-                            {t:'slider',l:'Air Pred Up',v:12,m:100},{t:'slider',l:'Air Pred Down',v:10,m:100},
-                            {t:'slider',l:'Air Pred Right',v:28,m:100},{t:'slider',l:'Air Pred Left',v:10,m:100},
-                            {t:'check',l:'Deadzone'},{t:'check',l:'Aim Sway',on:true},
-                            {t:'slider',l:'Y Offset (Grounded)',v:6,m:10},{t:'slider',l:'Y Offset (Jumping)',v:8,m:10},
-                            {t:'slider',l:'Y Offset (Falling)',v:7,m:10},{t:'slider',l:'Sway Amount',v:3,m:10}
-                        ]}
-                    ]
-                },
-                'Silent': {
-                    left: [{ title: 'Silent Aim', controls: [
-                        {t:'check',l:'Enabled'},{t:'slider',l:'FOV Radius',v:80,m:500},{t:'check',l:'Show FOV'},
-                        {t:'drop',l:'Target Part',v:'Head'},{t:'slider',l:'Hit Chance',v:100,m:100},{t:'key',l:'Keybind',v:'None'}
-                    ]}],
-                    right: [{ title: 'Target / Main', controls: [
-                        {t:'drop',l:'Priority',v:'Closest'},{t:'check',l:'Ignore Knocked',on:true},{t:'check',l:'Wall Check'}
-                    ]}]
-                },
-                'Aimbot+': {
-                    left: [{ title: 'Settings', controls: [
-                        {t:'check',l:'Anti-Lock'},{t:'check',l:'Resolver'},{t:'drop',l:'Anti-Aim',v:'Off'},{t:'key',l:'AA Keybind',v:'None'}
-                    ]}],
-                    right: [{ title: 'Aimbot+', controls: [
-                        {t:'check',l:'Auto Shoot'},{t:'check',l:'Rage Mode'},{t:'slider',l:'Min Damage',v:0,m:100}
-                    ]}]
-                }
-            }
-        },
-        visuals: {
-            subtabs: ['ESP/Chams', 'World'],
-            content: {
-                'ESP/Chams': {
-                    left: [{ title: 'ESP', controls: [
-                        {t:'check',l:'Enabled'},{t:'check',l:'Boxes',on:true},{t:'check',l:'Names',on:true},
-                        {t:'check',l:'Health Bars',on:true},{t:'check',l:'Distance'},{t:'check',l:'Weapon',on:true},
-                        {t:'check',l:'Tracers'},{t:'check',l:'Flags'}
-                    ]}],
-                    right: [{ title: 'Chams', controls: [
-                        {t:'check',l:'Enabled'},{t:'drop',l:'Material',v:'ForceField'},{t:'slider',l:'Transparency',v:50,m:100},
-                        {t:'check',l:'Self Chams'},{t:'check',l:'Weapon Chams'}
-                    ]}]
-                },
-                'World': {
-                    left: [
-                        { title: 'Lighting', controls: [{t:'check',l:'Custom Lighting'},{t:'slider',l:'Brightness',v:2,m:10},{t:'slider',l:'Ambient',v:100,m:255},{t:'check',l:'No Fog'},{t:'slider',l:'Clock Time',v:12,m:24},{t:'check',l:'Fullbright'}]},
-                        { title: 'Weather', controls: [{t:'check',l:'No Weather'},{t:'check',l:'No Rain'},{t:'check',l:'No Clouds'}]}
-                    ],
-                    right: [
-                        { title: 'Skybox', controls: [{t:'check',l:'Custom Skybox'},{t:'drop',l:'Skybox',v:'Space'},{t:'check',l:'Remove Sun'},{t:'check',l:'Remove Moon'}]},
-                        { title: 'Materials', controls: [{t:'check',l:'Custom Materials'},{t:'drop',l:'Char Material',v:'ForceField'},{t:'drop',l:'Tool Material',v:'ForceField'},{t:'check',l:'Self Material'},{t:'drop',l:'Self Material Type',v:'Neon'}]}
-                    ]
-                }
-            }
-        },
-        misc: {
-            subtabs: ['Misc', 'Playerlist'],
-            content: {
-                'Misc': {
-                    left: [{ title: 'Movement', controls: [
-                        {t:'check',l:'Speed Boost'},{t:'slider',l:'Speed',v:16,m:100},{t:'check',l:'Fly'},
-                        {t:'slider',l:'Fly Speed',v:50,m:200},{t:'key',l:'Fly Key',v:'None'},{t:'check',l:'No Clip'},
-                        {t:'check',l:'Infinite Jump'},{t:'slider',l:'Jump Power',v:50,m:200},{t:'check',l:'Anti Void'},
-                        {t:'check',l:'Anti Ragdoll'},{t:'check',l:'Auto Stomp'}
-                    ]}],
-                    right: [
-                        { title: 'Triggerbot / Skins', controls: [{t:'check',l:'Triggerbot'},{t:'slider',l:'Delay (ms)',v:50,m:500},{t:'check',l:'Custom Skins'},{t:'drop',l:'Skin',v:'Purple'},{t:'check',l:'Skin Particles'},{t:'check',l:'Scroll Texture'}]},
-                        { title: 'Avatar', controls: [{t:'check',l:'Custom Avatar'},{t:'check',l:'China Hat'},{t:'slider',l:'Hat Size',v:5,m:10},{t:'check',l:'Hat Light'},{t:'check',l:'Anti Backstab'}]}
-                    ]
-                },
-                'Playerlist': {
-                    left: [{ title: 'Player List', controls: [{t:'check',l:'Show Player List'},{t:'check',l:'Show Health',on:true},{t:'check',l:'Show Distance',on:true}]}],
-                    right: [{ title: 'Actions', controls: [{t:'check',l:'Teleport'},{t:'check',l:'Spectate'},{t:'check',l:'Whitelist'},{t:'check',l:'Target'}]}]
-                }
-            }
-        },
-        settings: {
-            subtabs: ['Main'],
-            content: {
-                'Main': {
-                    left: [
-                        { title: 'Configs', controls: [{t:'drop',l:'Config',v:'default'},{t:'check',l:'Auto-Load'}]},
-                        { title: 'Menu', controls: [{t:'key',l:'Toggle Menu',v:'INS'},{t:'check',l:'Watermark',on:true},{t:'check',l:'Keybind List',on:true}]}
-                    ],
-                    right: [
-                        { title: 'Notifications', controls: [{t:'check',l:'Enabled',on:true},{t:'drop',l:'Type',v:'Full'},{t:'drop',l:'Position',v:'Top Right'},{t:'slider',l:'Duration',v:3,m:10}]},
-                        { title: 'Themes', controls: [{t:'drop',l:'Theme',v:'Default'},{t:'check',l:'Custom Accent'}]}
-                    ]
-                }
-            }
-        }
-    };
+    // Data from features-data.js (extracted 1:1 from script.lua)
+    const data = FEATURES_DATA;
 
     let curTab = 'combat', curSub = 0;
 
@@ -288,4 +178,32 @@
 
     renderSubs();
     render();
+})();
+
+
+// === Simple Overlay Handlers (reseller/media/status) ===
+(function(){
+    const overlayMap = {
+        'resellerBtn': 'resellerOverlay',
+        'mediaBtn': 'mediaOverlay',
+        'statusBtn': 'statusOverlay'
+    };
+
+    for (const [btnId, overlayId] of Object.entries(overlayMap)) {
+        const btn = document.getElementById(btnId);
+        const overlay = document.getElementById(overlayId);
+        if (!btn || !overlay) continue;
+
+        btn.addEventListener('click', () => { overlay.classList.add('active'); document.body.classList.add('feat-open'); });
+        overlay.addEventListener('click', e => { if(e.target === overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }});
+    }
+
+    // Close buttons
+    document.querySelectorAll('.overlay-simple-close').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.dataset.close;
+            const overlay = document.getElementById(id);
+            if (overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }
+        });
+    });
 })();

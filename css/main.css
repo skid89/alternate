@@ -169,3 +169,11 @@ body.feat-open{overflow:hidden}
     .feat-window{width:98%;height:90vh;max-height:none}
     .feat-body{flex-direction:column}
 }
+
+/* Simple overlays (reseller/media/status) */
+.overlay-simple{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:90%;max-width:600px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.overlay-simple-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border)}
+.overlay-simple-header h3{font-size:14px;font-family:var(--mono)}
+.overlay-simple-close{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.overlay-simple-close:hover{background:var(--bg3);color:var(--text)}
+.overlay-simple-body{padding:24px;overflow-y:auto}

@@ -34,10 +34,10 @@
             <p class="hero-info">For resellers / buy / media info:</p>
             <div class="hero-links">
                 <a href="#" class="buy-btn" data-external="https://alternateshop.mysellauth.com/">Buy</a>
-                <a href="#reseller">Reseller</a>
-                <a href="#media">Media</a>
+                <button id="resellerBtn">Reseller</button>
+                <button id="mediaBtn">Media</button>
                 <button id="featuresBtn">Features</button>
-                <a href="#status">Status</a>
+                <button id="statusBtn">Status</button>
             </div>
         </div>
         <div class="hero-right">
@@ -45,52 +45,64 @@
         </div>
     </section>
 
-    <!-- Reseller -->
-    <section class="info-section" id="reseller">
-        <h2>Reseller</h2>
-        <div class="discord-preview" id="dcCard">
-            <div class="dc-icon"><i class="fab fa-discord"></i></div>
-            <div class="dc-info"><h4>alternate</h4><p>discord.gg/alternate</p></div>
-        </div>
-        <p class="info-text">Must buy in packages, lifetime costs $8.</p>
-        <a href="#" class="pink-btn" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Open Ticket</a>
-    </section>
-
-    <!-- Media -->
-    <section class="info-section" id="media">
-        <h2>Media Requirements</h2>
-        <div class="info-grid">
-            <div class="info-card"><h3><i class="fab fa-tiktok"></i> TikTok</h3><p>• 150+ followers<br>• 50+ likes per video</p></div>
-            <div class="info-card"><h3><i class="fab fa-youtube"></i> YouTube</h3><p>• 50+ subscribers<br>• 25+ likes per video</p></div>
-        </div>
-    </section>
-
-    <!-- Status -->
-    <section class="info-section" id="status">
-        <h2>Status</h2>
-        <div class="status-grid">
-            <div class="status-left">
-                <div class="dc-avatar"><i class="fab fa-discord"></i></div>
-                <h4>alternate</h4>
-                <p class="dc-sub">discord.gg/alternate</p>
-                <a href="#" class="pink-btn" data-external="https://discord.gg/alternate">Join Server</a>
-            </div>
-            <div class="status-right">
-                <div class="status-row"><span>Bot Status</span><div class="status-dot green"></div></div>
-                <div class="status-row"><span>Script Status</span><div class="status-dot green"></div></div>
-                <div class="status-row"><span>Roblox Version</span><span class="mono-sm">Latest</span></div>
-                <div class="status-row"><span>Website Status</span><div class="status-dot green"></div></div>
+    <!-- Reseller Overlay -->
+    <div class="feat-overlay" id="resellerOverlay">
+        <div class="overlay-simple">
+            <div class="overlay-simple-header"><h3>Reseller</h3><button class="overlay-simple-close" data-close="resellerOverlay">×</button></div>
+            <div class="overlay-simple-body">
+                <div class="discord-preview" id="dcCard">
+                    <div class="dc-icon"><i class="fab fa-discord"></i></div>
+                    <div class="dc-info"><h4>alternate</h4><p>discord.gg/alternate</p></div>
+                </div>
+                <p class="info-text">Must buy in packages, lifetime costs $8.</p>
+                <a href="#" class="pink-btn" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Open Ticket</a>
             </div>
         </div>
-        <div class="logs-card">
-            <h3>Recent Update Logs</h3>
-            <div class="log-item"><span class="log-d">08/01</span><span>Performance fixes & bug patches</span></div>
-            <div class="log-item"><span class="log-d">07/28</span><span>New aimbot settings added</span></div>
-            <div class="log-item"><span class="log-d">07/25</span><span>ESP visuals overhaul</span></div>
-            <div class="log-item"><span class="log-d">07/20</span><span>Hood Customs full support</span></div>
-            <div class="log-item"><span class="log-d">07/15</span><span>Silent aim improvements</span></div>
+    </div>
+
+    <!-- Media Overlay -->
+    <div class="feat-overlay" id="mediaOverlay">
+        <div class="overlay-simple">
+            <div class="overlay-simple-header"><h3>Media Requirements</h3><button class="overlay-simple-close" data-close="mediaOverlay">×</button></div>
+            <div class="overlay-simple-body">
+                <div class="info-grid">
+                    <div class="info-card"><h3><i class="fab fa-tiktok"></i> TikTok</h3><p>• 150+ followers<br>• 50+ likes per video</p></div>
+                    <div class="info-card"><h3><i class="fab fa-youtube"></i> YouTube</h3><p>• 50+ subscribers<br>• 25+ likes per video</p></div>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Status Overlay -->
+    <div class="feat-overlay" id="statusOverlay">
+        <div class="overlay-simple">
+            <div class="overlay-simple-header"><h3>Status</h3><button class="overlay-simple-close" data-close="statusOverlay">×</button></div>
+            <div class="overlay-simple-body">
+                <div class="status-grid">
+                    <div class="status-left">
+                        <div class="dc-avatar"><i class="fab fa-discord"></i></div>
+                        <h4>alternate</h4>
+                        <p class="dc-sub">discord.gg/alternate</p>
+                        <a href="#" class="pink-btn" data-external="https://discord.gg/alternate">Join Server</a>
+                    </div>
+                    <div class="status-right">
+                        <div class="status-row"><span>Bot Status</span><div class="status-dot green"></div></div>
+                        <div class="status-row"><span>Script Status</span><div class="status-dot green"></div></div>
+                        <div class="status-row"><span>Roblox Version</span><span class="mono-sm">Latest</span></div>
+                        <div class="status-row"><span>Website Status</span><div class="status-dot green"></div></div>
+                    </div>
+                </div>
+                <div class="logs-card">
+                    <h3>Recent Update Logs</h3>
+                    <div class="log-item"><span class="log-d">08/01</span><span>Performance fixes & bug patches</span></div>
+                    <div class="log-item"><span class="log-d">07/28</span><span>New aimbot settings added</span></div>
+                    <div class="log-item"><span class="log-d">07/25</span><span>ESP visuals overhaul</span></div>
+                    <div class="log-item"><span class="log-d">07/20</span><span>Hood Customs full support</span></div>
+                    <div class="log-item"><span class="log-d">07/15</span><span>Silent aim improvements</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Features Overlay (matches ui.lua exactly) -->
     <div class="feat-overlay" id="featOverlay">
@@ -128,6 +140,7 @@
         </div>
     </div>
 
+    <script src="js/features-data.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
