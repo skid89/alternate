@@ -29,13 +29,14 @@ a{text-decoration:none;color:inherit}
 #snowCanvas{position:fixed;inset:0;pointer-events:none;z-index:1}
 
 /* Notif */
-.notif{position:fixed;top:-80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;transition:top .3s;min-width:340px}
+.notif{position:fixed;top:-80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;transition:top .3s;width:90%;max-width:440px}
 .notif.active{top:20px}
-.notif-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
-.notif-text{font-size:12px;color:var(--text2)}
-.notif-text span{color:var(--accent);font-family:var(--mono);font-size:11px}
-.notif-cancel{background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer}
-.notif-bar{height:2px;background:rgba(255,255,255,.03);border-radius:0 0 10px 10px}
+.notif-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;gap:12px}
+.notif-text{font-size:12px;color:var(--text2);flex:1}
+.notif-text span{color:var(--accent);font-family:var(--mono);font-size:11px;word-break:break-all}
+.notif-cancel{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px 8px;flex-shrink:0}
+.notif-cancel:hover{color:var(--text)}
+.notif-bar{height:3px;background:rgba(255,255,255,.05);border-radius:0 0 10px 10px;overflow:hidden}
 .notif-fill{height:100%;width:0%;background:var(--accent);border-radius:0 0 10px 10px}
 
 /* Hero */
@@ -51,6 +52,8 @@ a{text-decoration:none;color:inherit}
 .hero-links a:hover,.hero-links button:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
 .buy-btn{background:var(--accent)!important;border-color:var(--accent)!important;color:#000!important;font-weight:600!important}
 .buy-btn:hover{opacity:.85!important;box-shadow:0 0 20px var(--accent-glow)!important}
+.linker-link{display:inline-block;margin-top:20px;font-size:13px;color:var(--accent);font-family:var(--mono);opacity:.7;transition:.2s;border-bottom:1px solid transparent}
+.linker-link:hover{opacity:1;border-bottom-color:var(--accent)}
 .hero-right{flex:1;display:flex;justify-content:center;align-items:center}
 .hero-img{max-width:100%;height:auto;border-radius:12px;border:1px solid var(--border2);will-change:transform;transition:transform .1s ease-out;box-shadow:0 0 40px rgba(255,107,138,.06)}
 

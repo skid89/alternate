@@ -2,7 +2,28 @@
 (function(){const c=document.getElementById('snowCanvas');if(!c)return;const ctx=c.getContext('2d');let f=[];function r(){c.width=innerWidth;c.height=innerHeight}function init(){r();f=[];for(let i=0;i<60;i++)f.push({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+.5,s:Math.random()*.7+.2,d:(Math.random()-.5)*.3,o:Math.random()*.4+.15})}function draw(){ctx.clearRect(0,0,c.width,c.height);f.forEach(p=>{p.y+=p.s;p.x+=p.d;if(p.y>c.height){p.y=-5;p.x=Math.random()*c.width}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${p.o})`;ctx.fill()});requestAnimationFrame(draw)}addEventListener('resize',r);init();draw()})();
 
 // === Notification ===
-(function(){const n=document.getElementById('notif'),u=document.getElementById('notifUrl'),f=document.getElementById('notifFill'),x=document.getElementById('notifCancel');let t=null;function show(url){clearTimeout(t);u.textContent=url.length>50?url.slice(0,50)+'...':url;f.style.transition='none';f.style.width='0%';n.classList.add('active');requestAnimationFrame(()=>{f.style.transition='width 5s linear';f.style.width='100%'});t=setTimeout(()=>{window.open(url,'_blank');hide()},5000)}function hide(){n.classList.remove('active');clearTimeout(t);f.style.transition='none';f.style.width='0%'}x?.addEventListener('click',hide);document.addEventListener('click',e=>{const el=e.target.closest('[data-external]');if(el){e.preventDefault();show(el.dataset.external)}})})();
+(function(){
+    const n=document.getElementById('notif'),u=document.getElementById('notifUrl'),f=document.getElementById('notifFill'),x=document.getElementById('notifCancel');
+    let t=null;
+    function show(url){
+        clearTimeout(t);
+        u.textContent=url.length>45?url.slice(0,45)+'...':url;
+        f.style.transition='none';
+        f.style.width='0%';
+        n.classList.add('active');
+        // Force reflow then animate
+        void f.offsetWidth;
+        f.style.transition='width 5s linear';
+        f.style.width='100%';
+        t=setTimeout(()=>{window.open(url,'_blank');hide()},5000);
+    }
+    function hide(){n.classList.remove('active');clearTimeout(t);f.style.transition='none';f.style.width='0%';}
+    x?.addEventListener('click',e=>{e.stopPropagation();hide();});
+    document.addEventListener('click',e=>{
+        const el=e.target.closest('[data-external]');
+        if(el){e.preventDefault();e.stopPropagation();show(el.dataset.external);}
+    });
+})();
 
 // === Typewriter ===
 (function(){const el=document.getElementById('heroTitle');if(!el)return;const texts=['/alternate','@2jkoni'];let idx=0,ci=0,del=false;function type(){const cur=texts[idx];if(del){ci--;el.textContent=cur.substring(0,ci);if(ci===0){del=false;idx=(idx+1)%texts.length;setTimeout(type,400);return}setTimeout(type,80)}else{ci++;el.textContent=cur.substring(0,ci);if(ci===cur.length){del=true;setTimeout(type,2000);return}setTimeout(type,100)}}setTimeout(type,2500)})();
@@ -58,9 +79,9 @@
     const openBtn = document.getElementById('featuresBtn');
     const closeBtn = document.getElementById('featClose');
 
-    openBtn?.addEventListener('click', () => { overlay.classList.add('active'); document.body.classList.add('feat-open'); });
-    closeBtn?.addEventListener('click', () => { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); });
-    overlay?.addEventListener('click', e => { if(e.target === overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }});
+    openBtn?.addEventListener('click', e => { e.stopPropagation(); overlay.classList.add('active'); document.body.classList.add('feat-open'); });
+    closeBtn?.addEventListener('click', e => { e.stopPropagation(); overlay.classList.remove('active'); document.body.classList.remove('feat-open'); });
+    overlay?.addEventListener('mousedown', e => { if(e.target === overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }});
 
     // Data from features-data.js (extracted 1:1 from script.lua)
     const data = FEATURES_DATA;
@@ -202,13 +223,25 @@
         const overlay = document.getElementById(overlayId);
         if (!btn || !overlay) continue;
 
-        btn.addEventListener('click', () => { overlay.classList.add('active'); document.body.classList.add('feat-open'); });
-        overlay.addEventListener('click', e => { if(e.target === overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }});
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            overlay.classList.add('active');
+            document.body.classList.add('feat-open');
+        });
+
+        // Only close if clicking the dark backdrop itself, not children
+        overlay.addEventListener('mousedown', e => {
+            if (e.target === overlay) {
+                overlay.classList.remove('active');
+                document.body.classList.remove('feat-open');
+            }
+        });
     }
 
     // Close buttons
     document.querySelectorAll('.overlay-simple-close').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
             const id = btn.dataset.close;
             const overlay = document.getElementById(id);
             if (overlay) { overlay.classList.remove('active'); document.body.classList.remove('feat-open'); }
