@@ -9,387 +9,129 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="dash-app">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-brand"><a href="/">/alternate</a></div>
-            <nav class="sidebar-nav">
-                <button class="sidebar-btn active" data-tab="content"><i class="fas fa-user"></i><span>Content</span></button>
-                <button class="sidebar-btn" data-tab="styling"><i class="fas fa-palette"></i><span>Styling</span></button>
-                <button class="sidebar-btn" data-tab="links"><i class="fas fa-link"></i><span>Links</span></button>
-                <button class="sidebar-btn" data-tab="media"><i class="fas fa-music"></i><span>Audio & Cursor</span></button>
-                <button class="sidebar-btn" data-tab="effects"><i class="fas fa-wand-magic-sparkles"></i><span>Effects</span></button>
-                <button class="sidebar-btn" data-tab="widgets"><i class="fas fa-puzzle-piece"></i><span>Widgets</span></button>
-                <button class="sidebar-btn" data-tab="seo"><i class="fas fa-globe"></i><span>SEO & Meta</span></button>
-            </nav>
-            <div class="sidebar-footer">
-                <button class="sidebar-action" id="previewBtn"><i class="fas fa-eye"></i> Preview</button>
-                <button class="sidebar-action save" id="saveAllBtn"><i class="fas fa-save"></i> Save All</button>
-                <button class="sidebar-action" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+<div class="app">
+    <!-- Sidebar -->
+    <aside class="side">
+        <div class="side-logo"><a href="/">/alternate</a></div>
+        <nav class="side-nav">
+            <button class="sn active" data-p="profile"><i class="fas fa-user"></i>Profile</button>
+            <button class="sn" data-p="style"><i class="fas fa-palette"></i>Style</button>
+            <button class="sn" data-p="links"><i class="fas fa-link"></i>Links</button>
+            <button class="sn" data-p="media"><i class="fas fa-music"></i>Media</button>
+            <button class="sn" data-p="integrations"><i class="fas fa-plug"></i>Integrations</button>
+            <button class="sn" data-p="effects"><i class="fas fa-sparkles"></i>Effects</button>
+            <button class="sn" data-p="seo"><i class="fas fa-chart-simple"></i>Analytics</button>
+        </nav>
+        <div class="side-foot">
+            <button class="sf save" id="saveBtn"><i class="fas fa-save"></i>Save</button>
+            <button class="sf" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>Logout</button>
+        </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="main">
+        <!-- Profile -->
+        <section class="panel active" id="p-profile">
+            <h2>Profile</h2>
+            <div class="card"><label>Display Name<input type="text" id="f-display_name"></label></div>
+            <div class="card"><label>Bio<textarea id="f-bio" rows="3"></textarea></label></div>
+            <div class="card two"><label>Pronouns<input type="text" id="f-pronouns"></label><label>Location<input type="text" id="f-location"></label></div>
+            <div class="card"><label>Avatar<div class="upload" id="avatarUpload"><i class="fas fa-camera"></i><span>Upload</span><input type="file" accept="image/*" hidden></div></label></div>
+            <div class="card">
+                <label>Avatar Effects <small>(max 2)</small></label>
+                <div class="chips multi" id="avatarFx" data-max="2">
+                    <button data-v="rainbow">🌈 Rainbow</button><button data-v="shine">✨ Shine</button>
+                    <button data-v="glow">💡 Glow</button><button data-v="pulse">💜 Pulse</button>
+                    <button data-v="border">🔲 Border</button><button data-v="spin">🔄 Spin</button>
+                </div>
             </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="dash-main">
-            <!-- Content Tab -->
-            <section class="tab-panel active" id="tab-content">
-                <div class="panel-header"><h2>Profile Content</h2><p>Manage your profile information and display settings</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="profile"><h3><i class="fas fa-user-circle"></i> Profile Info</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="form-grid">
-                            <div class="form-field"><label>Display Name</label><input type="text" id="displayName" placeholder="Your name" value="username"></div>
-                            <div class="form-field"><label>Pronouns</label><input type="text" id="pronouns" placeholder="e.g. he/him"></div>
-                        </div>
-                        <div class="form-field"><label>Bio</label><textarea id="bio" rows="3" placeholder="Write something about yourself...">alternate.lol/link user</textarea></div>
-                        <div class="form-field"><label>Location</label><input type="text" id="location" placeholder="City, Country"></div>
-                        <div class="form-field">
-                            <label>Avatar</label>
-                            <div class="upload-zone"><i class="fas fa-camera"></i><span>Click to upload avatar</span><input type="file" accept="image/*" hidden></div>
-                        </div>
-                    </div>
+            <div class="card">
+                <label>Name Effect</label>
+                <div class="chips single" id="nameFx">
+                    <button class="on" data-v="none">None</button><button data-v="gradient">Gradient</button>
+                    <button data-v="glow">Glow</button><button data-v="animated">Animated</button>
                 </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="avatar-fx"><h3><i class="fas fa-sparkles"></i> Avatar Effects</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <p class="hint">Select up to 2 effects</p>
-                        <div class="chip-grid" id="avatarEffects">
-                            <button class="chip" data-val="rainbow">🌈 Rainbow</button>
-                            <button class="chip" data-val="shine">✨ Shine</button>
-                            <button class="chip" data-val="glow">💡 Glow</button>
-                            <button class="chip" data-val="pulse">💜 Pulse</button>
-                            <button class="chip" data-val="border">🔲 Border</button>
-                            <button class="chip" data-val="spin">🔄 Spin</button>
-                        </div>
-                        <p class="error-msg" id="fxError"></p>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="name-fx"><h3><i class="fas fa-font"></i> Name Effects</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="chip-grid single" id="nameEffects">
-                            <button class="chip active" data-val="none">None</button>
-                            <button class="chip" data-val="gradient">Gradient</button>
-                            <button class="chip" data-val="glow">Glow</button>
-                            <button class="chip" data-val="animated">Animated</button>
-                            <button class="chip" data-val="typewriter">Typewriter</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="badges"><h3><i class="fas fa-certificate"></i> Badges</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="upload-zone"><i class="fas fa-image"></i><span>Upload badge (GIF/PNG)</span><input type="file" accept="image/*" hidden></div>
-                        <div class="badge-list" id="badgeList"><span class="empty">No badges</span></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="display"><h3><i class="fas fa-sliders"></i> Display Settings</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="toggle-row"><span>Show View Count</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Show Online Status</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Page Active</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Styling Tab -->
-            <section class="tab-panel" id="tab-styling">
-                <div class="panel-header"><h2>Appearance</h2><p>Customize your card style, background, and colors</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="card-style"><h3><i class="fas fa-layer-group"></i> Card Style</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="chip-grid single" id="cardStyles">
-                            <button class="chip active" data-val="compact">Compact</button>
-                            <button class="chip" data-val="full">Full</button>
-                            <button class="chip" data-val="horizontal">Horizontal</button>
-                            <button class="chip" data-val="invisible">Invisible</button>
-                            <button class="chip" data-val="minimal">Minimal</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="bg"><h3><i class="fas fa-image"></i> Background</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="form-field"><label>Type</label><select id="bgType"><option value="video">Video (MP4)</option><option value="image">Image</option><option value="gif">GIF</option><option value="color">Solid Color</option><option value="gradient">Gradient</option></select></div>
-                        <div class="upload-zone" id="bgUploadZone"><i class="fas fa-film"></i><span>Upload background (MP4/PNG/GIF/WebP)</span><input type="file" accept="video/mp4,image/*" hidden></div>
-                        <div class="form-field"><label>Overlay Opacity</label><div class="range-row"><input type="range" min="0" max="100" value="60" id="bgOpacity"><span id="bgOpacityVal">60%</span></div></div>
-                        <div class="form-field"><label>Background Blur</label><div class="range-row"><input type="range" min="0" max="20" value="2" id="bgBlur"><span id="bgBlurVal">2px</span></div></div>
-                        <div class="form-field"><label>Fit Mode</label><select id="bgFit"><option value="cover">Cover</option><option value="contain">Contain</option><option value="manual">Manual Offset</option></select></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="colors"><h3><i class="fas fa-droplet"></i> Colors & Fonts</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="form-grid">
-                            <div class="form-field"><label>Accent Color</label><input type="color" value="#b48eff" id="accentColor" class="color-pick"></div>
-                            <div class="form-field"><label>Card BG Color</label><input type="color" value="#0a0a0a" id="cardBgColor" class="color-pick"></div>
-                            <div class="form-field"><label>Text Color</label><input type="color" value="#ffffff" id="textColor" class="color-pick"></div>
-                            <div class="form-field"><label>Border Color</label><input type="color" value="#1a1a1a" id="borderColor" class="color-pick"></div>
-                        </div>
-                        <div class="form-field"><label>Card Blur</label><div class="range-row"><input type="range" min="0" max="30" value="16" id="cardBlur"><span id="cardBlurVal">16px</span></div></div>
-                        <div class="form-field"><label>Card Border Radius</label><div class="range-row"><input type="range" min="0" max="32" value="16" id="cardRadius"><span id="cardRadiusVal">16px</span></div></div>
-                        <div class="form-field"><label>Font Family</label><select id="fontFamily"><option value="Inter">Inter</option><option value="Geist Mono">Geist Mono</option><option value="monospace">Monospace</option><option value="system-ui">System UI</option><option value="custom">Custom Font URL</option></select></div>
-                        <div class="form-field" id="customFontField" style="display:none"><label>Custom Font URL</label><input type="url" placeholder="https://fonts.googleapis.com/..."></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="custom-css"><h3><i class="fas fa-code"></i> Custom CSS</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="form-field"><textarea id="customCss" rows="6" placeholder="/* your custom css */" class="code-area"></textarea></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Links Tab -->
-            <section class="tab-panel" id="tab-links">
-                <div class="panel-header"><h2>Links & Socials</h2><p>Add social icons and custom buttons</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="socials"><h3><i class="fas fa-share-alt"></i> Social Icons</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <p class="hint">Up to 12 social links displayed as icons</p>
-                        <div class="link-list" id="socialList">
-                            <div class="link-item"><select><option>Discord</option><option>TikTok</option><option>YouTube</option><option>Twitter/X</option><option>Instagram</option><option>GitHub</option><option>Roblox</option><option>Steam</option><option>Spotify</option><option>Twitch</option><option>Telegram</option><option>SoundCloud</option><option>Kick</option><option>Custom</option></select><input type="url" placeholder="https://"><button class="rm-btn"><i class="fas fa-trash"></i></button></div>
-                        </div>
-                        <button class="add-btn" id="addSocialBtn"><i class="fas fa-plus"></i> Add Social</button>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="buttons"><h3><i class="fas fa-rectangle-list"></i> Custom Buttons</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <p class="hint">Styled link buttons on your card</p>
-                        <div class="link-list" id="buttonList">
-                            <div class="link-item"><input type="text" placeholder="Button label" class="lbl-input"><input type="url" placeholder="https://"><button class="rm-btn"><i class="fas fa-trash"></i></button></div>
-                        </div>
-                        <button class="add-btn" id="addBtnBtn"><i class="fas fa-plus"></i> Add Button</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Media Tab -->
-            <section class="tab-panel" id="tab-media">
-                <div class="panel-header"><h2>Audio & Cursor</h2><p>Background music, sound effects, and custom cursor</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="music"><h3><i class="fas fa-headphones"></i> Background Music</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="toggle-row"><span>Enable Music</span><label class="toggle"><input type="checkbox" id="musicEnabled"><span class="toggle-track"></span></label></div>
-                        <div class="form-field"><label>Source</label><select id="musicSource"><option value="file">Upload MP3</option><option value="spotify">Spotify Embed URL</option><option value="soundcloud">SoundCloud URL</option><option value="url">Direct URL</option></select></div>
-                        <div class="upload-zone" id="musicUploadZone"><i class="fas fa-music"></i><span>Upload MP3 (max 10MB)</span><input type="file" accept="audio/*" hidden></div>
-                        <div class="form-field" id="musicUrlField" style="display:none"><label>Music URL</label><input type="url" id="musicUrl" placeholder="Paste Spotify/SoundCloud/direct URL"></div>
-                        <div class="form-grid">
-                            <div class="form-field"><label>Song Title</label><input type="text" id="songTitle" placeholder="Song name"></div>
-                            <div class="form-field"><label>Artist</label><input type="text" id="songArtist" placeholder="Artist name"></div>
-                        </div>
-                        <div class="form-field"><label>Volume</label><div class="range-row"><input type="range" min="0" max="100" value="50" id="musicVol"><span id="musicVolVal">50%</span></div></div>
-                        <div class="toggle-row"><span>Autoplay (with warning page)</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="music-warn"><h3><i class="fas fa-triangle-exclamation"></i> Music Warning Page</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="form-field"><label>Title</label><input type="text" value="This page has music enabled"></div>
-                        <div class="form-field"><label>Message</label><input type="text" value="Still want to visit?"></div>
-                        <div class="form-grid">
-                            <div class="form-field"><label>Accept Text</label><input type="text" value="Yes, Continue"></div>
-                            <div class="form-field"><label>Decline Text</label><input type="text" value="No, Go Back"></div>
-                        </div>
-                        <div class="form-grid">
-                            <div class="form-field"><label>BG Color</label><input type="color" value="#000000" class="color-pick"></div>
-                            <div class="form-field"><label>Button Color</label><input type="color" value="#b48eff" class="color-pick"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="sfx"><h3><i class="fas fa-volume-high"></i> Sound Effects</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="form-grid">
-                            <div class="form-field"><label>Click Sound</label><select><option value="none">None</option><option value="pop">Pop</option><option value="click">Click</option><option value="soft">Soft</option><option value="custom">Custom</option></select></div>
-                            <div class="form-field"><label>Hover Sound</label><select><option value="none">None</option><option value="tick">Tick</option><option value="swoosh">Swoosh</option><option value="custom">Custom</option></select></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="cursor"><h3><i class="fas fa-arrow-pointer"></i> Custom Cursor</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="form-field"><label>Cursor Type</label><select id="cursorType"><option value="ring">Ring (default)</option><option value="dot">Dot</option><option value="crosshair">Crosshair</option><option value="custom">Custom Image</option><option value="none">System Default</option></select></div>
-                        <div class="upload-zone"><i class="fas fa-arrow-pointer"></i><span>Upload cursor (PNG/SVG/CUR, max 2MB)</span><input type="file" accept="image/png,image/svg+xml,.cur" hidden></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Effects Tab -->
-            <section class="tab-panel" id="tab-effects">
-                <div class="panel-header"><h2>Effects & Animations</h2><p>Particles, overlays, and card animations</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="particles"><h3><i class="fas fa-snowflake"></i> Particles</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="form-field"><label>Type</label><select id="particleType"><option value="none">None</option><option value="snow">Snowfall</option><option value="stars">Stars</option><option value="fireflies">Fireflies</option><option value="rain">Rain</option><option value="matrix">Matrix Rain</option><option value="floating">Floating Shapes</option></select></div>
-                        <div class="form-field"><label>Count</label><div class="range-row"><input type="range" min="10" max="200" value="50" id="particleCount"><span id="particleCountVal">50</span></div></div>
-                        <div class="form-field"><label>Particle Color</label><input type="color" value="#b48eff" class="color-pick"></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="overlays"><h3><i class="fas fa-film"></i> Overlays</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="chip-grid single" id="overlayType">
-                            <button class="chip active" data-val="none">None</button>
-                            <button class="chip" data-val="vignette">Vignette</button>
-                            <button class="chip" data-val="scanlines">Scanlines</button>
-                            <button class="chip" data-val="noise">Film Grain</button>
-                            <button class="chip" data-val="crt">CRT</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="card-anim"><h3><i class="fas fa-bolt"></i> Card Animation</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="chip-grid single" id="cardAnim">
-                            <button class="chip active" data-val="fadeUp">Fade Up</button>
-                            <button class="chip" data-val="fadeIn">Fade In</button>
-                            <button class="chip" data-val="slideLeft">Slide Left</button>
-                            <button class="chip" data-val="scale">Scale</button>
-                            <button class="chip" data-val="glitch">Glitch</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="special-fx"><h3><i class="fas fa-star"></i> Special Effects</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="toggle-row"><span>3D Hover Tilt</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Neon Glow</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Glitch Effect</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Typewriter Bio</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Light Rays</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Widgets Tab -->
-            <section class="tab-panel" id="tab-widgets">
-                <div class="panel-header"><h2>Integrations & Widgets</h2><p>Connect platforms and add live widgets</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="discord"><h3><i class="fab fa-discord"></i> Discord Presence</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="toggle-row"><span>Enable Discord Status</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="form-field"><label>Discord User ID</label><input type="text" placeholder="Your Discord User ID"></div>
-                        <div class="toggle-row"><span>Show Activity</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Show Status</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Show Avatar</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="spotify"><h3><i class="fab fa-spotify"></i> Spotify / Last.fm</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="toggle-row"><span>Enable Now Playing</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="form-field"><label>Source</label><select><option value="lastfm">Last.fm</option><option value="spotify">Spotify API</option></select></div>
-                        <div class="form-field"><label>Username / Client ID</label><input type="text" placeholder="Last.fm username or Spotify Client ID"></div>
-                        <div class="form-field"><label>Display Style</label><select><option value="card">Card Widget</option><option value="bar">Bottom Bar</option><option value="minimal">Minimal Text</option><option value="album">Album Art</option></select></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="roblox"><h3><i class="fas fa-gamepad"></i> Roblox Presence</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="toggle-row"><span>Enable Roblox Presence</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="form-field"><label>Roblox Username / User ID</label><input type="text" placeholder="Username or ID"></div>
-                        <div class="toggle-row"><span>Show Current Game</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Show Online Status</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Show Avatar</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="extra-widgets"><h3><i class="fas fa-grid-2"></i> Extra Widgets</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="toggle-row"><span>Visitor Counter</span><label class="toggle"><input type="checkbox" checked><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Weather Widget</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Clock / Timezone</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>GitHub Stats</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>WakaTime Stats</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                        <div class="toggle-row"><span>Last Updated</span><label class="toggle"><input type="checkbox"><span class="toggle-track"></span></label></div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SEO Tab -->
-            <section class="tab-panel" id="tab-seo">
-                <div class="panel-header"><h2>SEO & Metadata</h2><p>Optimize for search and social sharing</p></div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="meta"><h3><i class="fas fa-tag"></i> Meta Tags</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="form-field"><label>Page Title</label><input type="text" placeholder="alternate.lol/username"></div>
-                        <div class="form-field"><label>Meta Description</label><textarea rows="2" placeholder="Description for search engines"></textarea></div>
-                        <div class="form-field"><label>Meta Keywords</label><input type="text" placeholder="keyword1, keyword2"></div>
-                        <div class="form-field"><label>OG Title</label><input type="text" placeholder="Social share title"></div>
-                        <div class="form-field"><label>OG Description</label><textarea rows="2" placeholder="Social share description"></textarea></div>
-                        <div class="form-field"><label>OG Image URL</label><input type="url" placeholder="https://..."></div>
-                        <div class="form-field"><label>Theme/Embed Color</label><input type="color" value="#b48eff" class="color-pick"></div>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="alias"><h3><i class="fas fa-at"></i> Page Alias</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body">
-                        <div class="form-field"><label>Custom URL Alias</label><input type="text" placeholder="my-custom-url"></div>
-                        <p class="hint">Your page will be accessible at: alternate.lol/your-alias</p>
-                    </div>
-                </div>
-
-                <div class="dash-card">
-                    <div class="card-header" data-collapse="analytics"><h3><i class="fas fa-chart-simple"></i> Analytics</h3><i class="fas fa-chevron-down"></i></div>
-                    <div class="card-body open">
-                        <div class="stats-row">
-                            <div class="stat"><span class="stat-num">1,234</span><span class="stat-lbl">Total Views</span></div>
-                            <div class="stat"><span class="stat-num">89</span><span class="stat-lbl">Link Clicks</span></div>
-                            <div class="stat"><span class="stat-num">12</span><span class="stat-lbl">Today</span></div>
-                            <div class="stat"><span class="stat-num">45</span><span class="stat-lbl">This Week</span></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Live Preview -->
-        <aside class="preview-panel" id="previewPanel">
-            <div class="preview-header"><span>Live Preview</span><button id="closePreview"><i class="fas fa-times"></i></button></div>
-            <div class="preview-frame">
-                <div class="pv-bg"><div class="pv-overlay"></div></div>
-                <div class="pv-card">
-                    <div class="pv-avatar"><img src="../assets/avatar.png" onerror="this.style.background='var(--accent)'"></div>
-                    <div class="pv-name" id="pvName">username</div>
-                    <div class="pv-bio" id="pvBio">alternate.lol/link user</div>
-                    <div class="pv-socials"><span><i class="fab fa-discord"></i></span><span><i class="fab fa-tiktok"></i></span></div>
-                    <div class="pv-presence"><span class="dot green"></span> Online</div>
-                    <div class="pv-spotify"><i class="fab fa-spotify"></i> Listening to Spotify</div>
-                    <div class="pv-views"><i class="fas fa-eye"></i> 1,234</div>
-                </div>
-                <div class="pv-music"><div class="pv-music-btn"><i class="fas fa-play"></i></div><div><span class="pv-song">Song Name</span><div class="pv-bar"><div class="pv-fill"></div></div></div></div>
             </div>
-        </aside>
-    </div>
+        </section>
 
-    <script src="dashboard.js"></script>
+        <!-- Style -->
+        <section class="panel" id="p-style">
+            <h2>Appearance</h2>
+            <div class="card"><label>Card Style</label>
+                <div class="chips single" id="cardStyle">
+                    <button class="on" data-v="compact">Compact</button><button data-v="full">Full</button>
+                    <button data-v="horizontal">Horizontal</button><button data-v="minimal">Minimal</button>
+                </div>
+            </div>
+            <div class="card"><label>Background Type<select id="f-background_type"><option>video</option><option>image</option><option>gif</option><option>color</option><option>gradient</option></select></label></div>
+            <div class="card"><label>Background File<div class="upload" id="bgUpload"><i class="fas fa-film"></i><span>Upload (MP4/PNG/GIF)</span><input type="file" accept="video/mp4,image/*" hidden></div></label></div>
+            <div class="card"><label>Overlay Opacity<input type="range" min="0" max="100" value="60" id="f-card_opacity"><span class="rv">60%</span></label></div>
+            <div class="card"><label>Background Blur<input type="range" min="0" max="20" value="2" id="f-card_blur_bg"><span class="rv">2px</span></label></div>
+            <div class="card two"><label>Accent Color<input type="color" value="#ff6b8a" id="f-accent_color"></label><label>Card BG<input type="color" value="#0d0d0f" id="f-card_bg"></label></div>
+            <div class="card"><label>Card Blur<input type="range" min="0" max="30" value="16" id="f-card_blur"><span class="rv">16px</span></label></div>
+            <div class="card"><label>Card Radius<input type="range" min="0" max="32" value="16" id="f-card_radius"><span class="rv">16px</span></label></div>
+            <div class="card"><label>Font<select id="f-font_family"><option>Inter</option><option>Geist Mono</option><option>monospace</option><option>system-ui</option></select></label></div>
+            <div class="card"><label>Custom CSS<textarea id="f-custom_css" rows="4" class="code"></textarea></label></div>
+        </section>
+
+        <!-- Links -->
+        <section class="panel" id="p-links">
+            <h2>Social Links & Buttons</h2>
+            <div class="card"><label>Social Icons</label><div id="socialList" class="link-list"></div><button class="add-btn" id="addSocial"><i class="fas fa-plus"></i> Add</button></div>
+            <div class="card"><label>Buttons</label><div id="btnList" class="link-list"></div><button class="add-btn" id="addBtn"><i class="fas fa-plus"></i> Add</button></div>
+        </section>
+
+        <!-- Media -->
+        <section class="panel" id="p-media">
+            <h2>Audio & Cursor</h2>
+            <div class="card"><label>Music<div class="toggle-row"><span>Enable</span><input type="checkbox" id="f-music_enabled"></div></label></div>
+            <div class="card"><label>Source<select id="f-music_source"><option value="file">Upload MP3</option><option value="spotify">Spotify URL</option><option value="soundcloud">SoundCloud</option><option value="url">Direct URL</option></select></label></div>
+            <div class="card"><label>Music File<div class="upload" id="musicUpload"><i class="fas fa-headphones"></i><span>Upload MP3</span><input type="file" accept="audio/*" hidden></div></label></div>
+            <div class="card two"><label>Song Title<input type="text" id="f-song_title"></label><label>Artist<input type="text" id="f-song_artist"></label></div>
+            <div class="card"><label>Volume<input type="range" min="0" max="100" value="50" id="f-music_volume"><span class="rv">50%</span></label></div>
+            <div class="card"><label>Cursor<select id="f-cursor_type"><option>ring</option><option>dot</option><option>crosshair</option><option>custom</option><option>none</option></select></label></div>
+            <div class="card two"><label>Click Sound<select id="f-click_sound"><option>none</option><option>pop</option><option>click</option><option>soft</option></select></label><label>Hover Sound<select id="f-hover_sound"><option>none</option><option>tick</option><option>swoosh</option></select></label></div>
+        </section>
+
+        <!-- Integrations -->
+        <section class="panel" id="p-integrations">
+            <h2>Integrations</h2>
+            <div class="card"><h3><i class="fab fa-discord"></i> Discord</h3><div class="toggle-row"><span>Enable</span><input type="checkbox" id="f-discord_enabled"></div><label>User ID<input type="text" id="f-discord_id"></label></div>
+            <div class="card"><h3><i class="fab fa-spotify"></i> Spotify / Last.fm</h3><div class="toggle-row"><span>Enable</span><input type="checkbox" id="f-spotify_enabled"></div><label>Source<select id="f-spotify_source"><option>lastfm</option><option>spotify</option></select></label><label>Username<input type="text" id="f-spotify_username"></label><label>Style<select id="f-spotify_style"><option>card</option><option>bar</option><option>minimal</option></select></label></div>
+            <div class="card"><h3><i class="fas fa-gamepad"></i> Roblox</h3><div class="toggle-row"><span>Enable</span><input type="checkbox" id="f-roblox_enabled"></div><label>Username/ID<input type="text" id="f-roblox_username"></label></div>
+        </section>
+
+        <!-- Effects -->
+        <section class="panel" id="p-effects">
+            <h2>Effects</h2>
+            <div class="card"><label>Particles<select id="f-particle_type"><option>none</option><option>snow</option><option>stars</option><option>fireflies</option><option>rain</option><option>matrix</option></select></label></div>
+            <div class="card"><label>Count<input type="range" min="10" max="200" value="50" id="f-particle_count"><span class="rv">50</span></label></div>
+            <div class="card"><label>Overlay<select id="f-overlay_type"><option>none</option><option>vignette</option><option>scanlines</option><option>noise</option><option>crt</option></select></label></div>
+            <div class="card"><label>Card Animation<select id="f-card_animation"><option>fadeUp</option><option>fadeIn</option><option>slideLeft</option><option>scale</option><option>glitch</option></select></label></div>
+            <div class="card">
+                <div class="toggle-row"><span>3D Tilt</span><input type="checkbox" id="f-tilt_enabled" checked></div>
+                <div class="toggle-row"><span>Glow</span><input type="checkbox" id="f-glow_enabled"></div>
+                <div class="toggle-row"><span>Glitch</span><input type="checkbox" id="f-glitch_enabled"></div>
+                <div class="toggle-row"><span>Typewriter Bio</span><input type="checkbox" id="f-typewriter_bio"></div>
+                <div class="toggle-row"><span>Light Rays</span><input type="checkbox" id="f-light_rays"></div>
+            </div>
+        </section>
+
+        <!-- Analytics -->
+        <section class="panel" id="p-seo">
+            <h2>Analytics & SEO</h2>
+            <div class="stats" id="statsGrid">
+                <div class="stat-box"><span class="sn">0</span><span class="sl">Views</span></div>
+                <div class="stat-box"><span class="sn">0</span><span class="sl">Clicks</span></div>
+                <div class="stat-box"><span class="sn">0</span><span class="sl">Today</span></div>
+                <div class="stat-box"><span class="sn">0</span><span class="sl">This Week</span></div>
+            </div>
+            <div class="card"><label>Page Title<input type="text" id="f-page_title"></label></div>
+            <div class="card"><label>Meta Description<textarea id="f-meta_description" rows="2"></textarea></label></div>
+            <div class="card"><label>Embed Color<input type="color" value="#ff6b8a" id="f-theme_color"></label></div>
+        </section>
+    </main>
+</div>
+<script src="dashboard.js"></script>
 </body>
 </html>

@@ -9,53 +9,48 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="bg-layer"><div class="bg-checker"></div></div>
-    <div class="cursor" id="cursor"></div>
+    <!-- This is the LANDING page (not logged in) -->
+    <!-- Shows: checkered bg, alias checker, pricing, login -->
+
+    <div class="bg-checker"></div>
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
 
     <main class="landing">
-        <div class="landing-card" id="linkCard">
-            <h1 class="landing-title">/alternate<span>.lol/link</span></h1>
-            <p class="landing-sub">Custom profile cards for the community</p>
+        <div class="land-card">
+            <div class="land-logo">/alternate<span>.lol/link</span></div>
+            <p class="land-sub">Custom profile cards for the community</p>
 
-            <!-- Alias checker -->
-            <div class="alias-box">
+            <div class="alias-wrap">
                 <span class="alias-pre">alternate.lol/</span>
-                <input type="text" id="aliasInput" placeholder="yourname" maxlength="20">
-                <span class="alias-result" id="aliasResult"></span>
+                <input type="text" id="aliasIn" placeholder="username" maxlength="20" autocomplete="off">
+                <span class="alias-res" id="aliasRes"></span>
             </div>
 
-            <!-- Recent users -->
-            <div class="recent-section">
-                <p class="recent-label">alternate.lol users:</p>
-                <div class="recent-list" id="recentUsers">
-                    <div class="recent-user"><span>Loading...</span></div>
-                </div>
+            <div class="land-users" id="recentUsers"></div>
+
+            <div class="land-pricing">
+                <div class="price"><span>$20</span><small>lifetime</small></div>
+                <div class="price"><span>$10</span><small>2 months</small></div>
             </div>
 
-            <!-- Pricing -->
-            <div class="pricing">
-                <div class="price-item"><span class="price-amount">$20</span><span class="price-label">lifetime</span></div>
-                <div class="price-item"><span class="price-amount">$10</span><span class="price-label">2 months</span></div>
-            </div>
-
-            <!-- Actions -->
-            <div class="landing-btns">
-                <a href="#" class="btn-pink" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Purchase (Open Ticket)</a>
-                <button class="btn-ghost" id="loginBtn">Login</button>
+            <div class="land-btns">
+                <a href="#" class="btn-pink" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Purchase</a>
+                <button class="btn-outline" id="loginOpen">Login</button>
             </div>
         </div>
     </main>
 
     <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-card">
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <button class="modal-x" id="modalClose">×</button>
             <h2>Login</h2>
             <form id="loginForm">
-                <div class="field"><label>Username</label><input type="text" id="loginUser" required></div>
-                <div class="field"><label>Password</label><input type="password" id="loginPass" required></div>
-                <p class="form-error" id="loginError"></p>
-                <button type="submit" class="btn-pink" style="width:100%">Login</button>
-                <button type="button" class="btn-ghost" id="closeLogin" style="width:100%;margin-top:8px">Cancel</button>
+                <label>Username<input type="text" id="lUser" required></label>
+                <label>Password<input type="password" id="lPass" required></label>
+                <p class="err" id="lErr"></p>
+                <button type="submit" class="btn-pink w-full">Login</button>
             </form>
         </div>
     </div>
