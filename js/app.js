@@ -109,10 +109,18 @@
                 val.textContent = Math.round(pct * c.m);
             }
         } else if (c.t === 'drop') {
-            const dd = document.createElement('span');
-            dd.className = 'fd';
-            dd.textContent = c.v;
-            div.appendChild(dd);
+            const sel = document.createElement('select');
+            sel.className = 'fd';
+            // Build options from known items or just show the default
+            const opts = c.items || [c.v];
+            opts.forEach(o => {
+                const opt = document.createElement('option');
+                opt.value = o;
+                opt.textContent = o;
+                if (o === c.v) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            div.appendChild(sel);
         } else if (c.t === 'key') {
             const kb = document.createElement('span');
             kb.className = 'fk';

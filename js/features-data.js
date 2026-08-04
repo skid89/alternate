@@ -5,30 +5,41 @@ combat: {
   content: {
     'Aimbot': {
       left: [{ title:'Aimbot', controls:[
-        {t:'check',l:'Enabled',on:false},{t:'drop',l:'Lock Method',v:'Camera'},
-        {t:'drop',l:'Target Mode',v:'FOV'},{t:'drop',l:'Ground Part',v:'Head'},
-        {t:'check',l:'Advanced Parts'},{t:'drop',l:'Jump Part',v:'HumanoidRootPart'},
-        {t:'drop',l:'Fall Part',v:'LowerTorso'},{t:'check',l:'Ignore Fall State'},
-        {t:'drop',l:'Checks',v:'Enemy,Wall'},{t:'check',l:'Stay on Deadspot'},
-        {t:'slider',l:'Deadspot Time',v:300,m:3000},{t:'check',l:'Sticky Aim'},
+        {t:'check',l:'Enabled',on:false},
+        {t:'drop',l:'Lock Method',v:'Camera',items:['Camera','Mouse']},
+        {t:'drop',l:'Target Mode',v:'FOV',items:['FOV','Mouse','Distance','Center']},
+        {t:'drop',l:'Ground Part',v:'Head',items:['Head','Neck','UpperTorso','LowerTorso','Torso','Legs','Closest Part','HumanoidRootPart']},
+        {t:'check',l:'Advanced Parts'},
+        {t:'drop',l:'Jump Part',v:'HumanoidRootPart',items:['Head','Neck','UpperTorso','LowerTorso','HumanoidRootPart']},
+        {t:'drop',l:'Fall Part',v:'LowerTorso',items:['Head','Neck','UpperTorso','LowerTorso','HumanoidRootPart']},
+        {t:'check',l:'Ignore Fall State'},
+        {t:'drop',l:'Checks',v:'Enemy',items:['Enemy','Team','NPC','Wall','Dead','Knocked']},
+        {t:'check',l:'Stay on Deadspot'},
+        {t:'slider',l:'Deadspot Time',v:300,m:3000},
+        {t:'check',l:'Sticky Aim'},
         {t:'check',l:'Auto Stop on Death'},{t:'check',l:'Stay on Death Pos'},
-        {t:'slider',l:'Death Pos Smooth',v:10,m:100},{t:'check',l:'Lock Target'},
-        {t:'check',l:'Spectate Target'},{t:'check',l:'Use FOV'},
-        {t:'check',l:'Draw FOV'},{t:'slider',l:'FOV Size',v:60,m:500},
+        {t:'slider',l:'Death Pos Smooth',v:10,m:100},
+        {t:'check',l:'Lock Target'},{t:'check',l:'Spectate Target'},
+        {t:'check',l:'Use FOV'},{t:'check',l:'Draw FOV'},
+        {t:'slider',l:'FOV Size',v:60,m:500},
         {t:'check',l:'Macro'}
       ]}],
       right: [{ title:'Target / Main', controls:[
-        {t:'check',l:'Target HUD',on:false},{t:'check',l:'Avatar Display',on:true},
-        {t:'check',l:'Target Tracer'},{t:'slider',l:'Tracer Fill Alpha',v:100,m:100},
+        {t:'check',l:'Target HUD'},{t:'check',l:'Avatar Display',on:true},
+        {t:'check',l:'Target Tracer'},
+        {t:'slider',l:'Tracer Fill Alpha',v:100,m:100},
         {t:'slider',l:'Tracer Outline Alpha',v:100,m:100},
-        {t:'drop',l:'Tracer Start',v:'Bottom'},{t:'drop',l:'Tracer End',v:'Feet'}
+        {t:'drop',l:'Tracer Start',v:'Bottom',items:['Bottom','Top','Cursor']},
+        {t:'drop',l:'Tracer End',v:'Feet',items:['Feet','Head']}
       ]}]
     },
     'Silent': {
       left: [{ title:'Silent Aim', controls:[
-        {t:'check',l:'Enabled'},{t:'drop',l:'Hit Part',v:'Head'},
-        {t:'drop',l:'Checks',v:'Team,Dead'},{t:'check',l:'Target Lock'},
-        {t:'check',l:'Sync with Aimbot'},{t:'drop',l:'Aim Type',v:'Cursor'},
+        {t:'check',l:'Enabled'},
+        {t:'drop',l:'Hit Part',v:'Head',items:['Head','Torso','Legs','Closest Part','Neck','UpperTorso']},
+        {t:'drop',l:'Checks',v:'Team',items:['NPC','Team','Dead','Wall','Knocked']},
+        {t:'check',l:'Target Lock'},{t:'check',l:'Sync with Aimbot'},
+        {t:'drop',l:'Aim Type',v:'Cursor',items:['Cursor','Center','FOV','Closest']},
         {t:'check',l:'Hit Chance'},{t:'slider',l:'Hit Chance %',v:100,m:100},
         {t:'check',l:'Use FOV'},{t:'slider',l:'FOV Size',v:100,m:500},
         {t:'check',l:'Draw FOV'}
@@ -42,7 +53,8 @@ combat: {
         {t:'slider',l:'Right Smoothing',v:2,m:100},{t:'slider',l:'Left Smoothing',v:2,m:100},
         {t:'slider',l:'Air X Smoothing',v:2,m:100}
       ]},{ title:'Prediction', controls:[
-        {t:'check',l:'Prediction'},{t:'drop',l:'Pred Style',v:'Classic'},
+        {t:'check',l:'Prediction'},
+        {t:'drop',l:'Pred Style',v:'Classic',items:['Classic','Adaptive']},
         {t:'slider',l:'Ground X/Z Prediction',v:3,m:150},
         {t:'slider',l:'Air X/Z Prediction',v:2,m:150},
         {t:'check',l:'Advanced Prediction'},
@@ -63,7 +75,7 @@ combat: {
         {t:'slider',l:'Fall Delay (ms)',v:50,m:1000},{t:'check',l:'Unlock Delay'},
         {t:'slider',l:'Unlock Delay (ms)',v:100,m:1000},
         {t:'slider',l:'Miss Chance',v:0,m:100},{t:'check',l:'Use Easing'},
-        {t:'drop',l:'Easing Style',v:'Quad'}
+        {t:'drop',l:'Easing Style',v:'Quad',items:['Linear','Sine','Quad','Cubic','Quart','Quint','Exponential','Circular','Back','Bounce','Elastic']}
       ]}]
     }
   }
@@ -73,20 +85,26 @@ visuals: {
   content: {
     'ESP/Chams': {
       left: [{ title:'ESP', controls:[
-        {t:'check',l:'Enable ESP'},{t:'drop',l:'Show On',v:'Enemy,NPC'},
-        {t:'slider',l:'Max Distance',v:3000,m:10000},{t:'drop',l:'ESP Font',v:'ProggyClean'},
+        {t:'check',l:'Enable ESP'},
+        {t:'drop',l:'Show On',v:'Enemy',items:['NPC','Enemy','Team','Self']},
+        {t:'slider',l:'Max Distance',v:3000,m:10000},
+        {t:'drop',l:'ESP Font',v:'ProggyClean',items:['ProggyClean','SmallestPixel','Tahoma','TahomaBold','Arial','SourceSans']},
         {t:'slider',l:'Text Size',v:11,m:20},{t:'check',l:'Text Outline',on:true},
-        {t:'check',l:'Box ESP'},{t:'drop',l:'Box Shape',v:'Full'},
-        {t:'drop',l:'Text Position',v:'Top'},{t:'check',l:'Box Fill'},
+        {t:'check',l:'Box ESP'},
+        {t:'drop',l:'Box Shape',v:'Full',items:['Full','Cornered']},
+        {t:'drop',l:'Text Position',v:'Top',items:['Top','Bottom','Left','Right']},
+        {t:'check',l:'Box Fill'},
         {t:'slider',l:'Fill Transparency 1',v:100,m:100},
         {t:'slider',l:'Fill Transparency 2',v:65,m:100},
         {t:'check',l:'Box Glow'},{t:'slider',l:'Glow Amount',v:65,m:100},
-        {t:'check',l:'Name ESP'},{t:'drop',l:'Name Type',v:'Display Name'},
-        {t:'check',l:'Distance ESP'},{t:'drop',l:'Distance Type',v:'Studs'},
+        {t:'check',l:'Name ESP'},
+        {t:'drop',l:'Name Type',v:'Display Name',items:['Display Name','Username','Both']},
+        {t:'check',l:'Distance ESP'},
+        {t:'drop',l:'Distance Type',v:'Studs',items:['Studs','Meters']},
         {t:'check',l:'Health Bar'},{t:'check',l:'Health Bar Gradient'},
         {t:'check',l:'Health Text'},{t:'check',l:'Hide Health If Full'},
         {t:'check',l:'Armor Bar'},{t:'check',l:'Tracer ESP'},
-        {t:'drop',l:'Tracer Origin',v:'Bottom'},
+        {t:'drop',l:'Tracer Origin',v:'Bottom',items:['Bottom','Top','Cursor','Center']},
         {t:'slider',l:'Tracer Neon Amount',v:0,m:100},
         {t:'check',l:'Weapon ESP'},{t:'check',l:'State Flags'},
         {t:'check',l:'Tool Icon'},{t:'slider',l:'Tool Icon Size',v:16,m:64},
@@ -95,13 +113,15 @@ visuals: {
         {t:'slider',l:'Tool Icon Transparency',v:0,m:100}
       ]}],
       right: [{ title:'Chams', controls:[
-        {t:'check',l:'Player Chams'},{t:'drop',l:'Targets',v:'Player'},
+        {t:'check',l:'Player Chams'},
+        {t:'drop',l:'Targets',v:'Player',items:['Player','NPC','Self']},
         {t:'slider',l:'Fill Transparency',v:50,m:100},
         {t:'slider',l:'Outline Transparency',v:0,m:100},
         {t:'check',l:'RGB Mode'},{t:'slider',l:'RGB Speed',v:5,m:20},
-        {t:'drop',l:'Texture',v:'None'},
-        {t:'drop',l:'Checks',v:'Dead,Wall'},
-        {t:'check',l:'Tool Chams'},{t:'drop',l:'Tool Targets',v:'Player'},
+        {t:'drop',l:'Texture',v:'None',items:['None','Neon','Plastic','ForceField','Glow']},
+        {t:'drop',l:'Checks',v:'Dead',items:['Dead','Wall','NPC','Enemy','Team']},
+        {t:'check',l:'Tool Chams'},
+        {t:'drop',l:'Tool Targets',v:'Player',items:['Player','NPC','Self']},
         {t:'slider',l:'Tool Fill Transparency',v:0,m:100},
         {t:'slider',l:'Tool Outline Transparency',v:0,m:100},
         {t:'check',l:'Tool RGB Mode'},{t:'slider',l:'Tool RGB Speed',v:5,m:20}
@@ -115,22 +135,23 @@ visuals: {
         {t:'slider',l:'Ambient R',v:128,m:255},{t:'slider',l:'Ambient G',v:128,m:255},
         {t:'slider',l:'Ambient B',v:128,m:255}
       ]},{ title:'Weather', controls:[
-        {t:'check',l:'Custom Weather'},{t:'drop',l:'Weather Type',v:'None'},
-        {t:'check',l:'Remove Game Weather'},{t:'slider',l:'Rain Rate',v:300,m:500},
-        {t:'slider',l:'Rain Speed',v:120,m:200},{t:'slider',l:'Snow Rate',v:200,m:400},
-        {t:'slider',l:'Snow Speed',v:25,m:100}
+        {t:'check',l:'Custom Weather'},
+        {t:'drop',l:'Weather Type',v:'None',items:['None','Rain','Snow','Cherry']},
+        {t:'check',l:'Remove Game Weather'},
+        {t:'slider',l:'Rain Rate',v:300,m:500},{t:'slider',l:'Rain Speed',v:120,m:200},
+        {t:'slider',l:'Snow Rate',v:200,m:400},{t:'slider',l:'Snow Speed',v:25,m:100}
       ]}],
       right: [{ title:'Skybox', controls:[
         {t:'check',l:'Custom Skybox'},
-        {t:'drop',l:'Skybox',v:'Space'},
+        {t:'drop',l:'Skybox',v:'Space',items:['Space','Dark','Space V2','Pink','Forest','Night','Lava','Rainy','Green','Nebulous','Blue Clouds','Candy Floss','Green Skies','White Skies','Blood Red','Scary','Realistic Day','Realistic Space','Classic','Sunset','HD Space','Cold Winter','Shiverfrost','Blue Nebula','Red Space','Green Clouds','Purple Clouds','Nibiru','Nebulae','Moody','Piss']},
         {t:'check',l:'Remove Sun Rays'},{t:'check',l:'Remove Stars'}
       ]},{ title:'Materials', controls:[
         {t:'check',l:'Character Material'},
-        {t:'drop',l:'Char Material',v:'ForceField'},
+        {t:'drop',l:'Char Material',v:'ForceField',items:['ForceField','Neon','Plastic','SmoothPlastic','Wood','Marble','Slate','Concrete','Granite','Brick','DiamondPlate','Metal','CorrodedMetal','Glass','Ice','Fabric']},
         {t:'check',l:'Tool Material'},
-        {t:'drop',l:'Tool Material Type',v:'ForceField'},
+        {t:'drop',l:'Tool Material Type',v:'ForceField',items:['ForceField','Neon','Plastic','SmoothPlastic','Wood','Marble','Slate','Concrete','Granite','Brick','DiamondPlate','Metal','CorrodedMetal','Glass','Ice','Fabric']},
         {t:'check',l:'Self Material'},
-        {t:'drop',l:'Self Material Type',v:'Neon'}
+        {t:'drop',l:'Self Material Type',v:'Neon',items:['ForceField','Neon','Plastic','SmoothPlastic','Wood','Marble','Slate','Concrete','Granite','Brick','DiamondPlate','Metal','CorrodedMetal','Glass','Ice','Fabric']}
       ]}]
     }
   }
@@ -150,9 +171,9 @@ misc: {
       ]}],
       right: [{ title:'Triggerbot / Skins', controls:[
         {t:'check',l:'Triggerbot'},{t:'slider',l:'Delay (ms)',v:50,m:500},
-        {t:'drop',l:'Trig Mode',v:'Hold'},
+        {t:'drop',l:'Trig Mode',v:'Hold',items:['Hold','Toggle','Always']},
         {t:'check',l:'Custom Skins'},
-        {t:'drop',l:'Skin',v:'Purple'},
+        {t:'drop',l:'Skin',v:'Purple',items:['Purple','Red','Green','Blue','Grey','Ghost','Gold','Rainbow','Black','White','Camo','Galaxy']},
         {t:'check',l:'Skin Particles'},{t:'check',l:'Scroll Texture'},
         {t:'check',l:'Animated Skin'}
       ]},{ title:'Avatar', controls:[
@@ -180,7 +201,7 @@ settings: {
   content: {
     'Main': {
       left: [{ title:'Configs', controls:[
-        {t:'drop',l:'Config',v:'default'},
+        {t:'drop',l:'Config',v:'default',items:['default','config1','config2','config3']},
         {t:'check',l:'Auto-Load'},{t:'check',l:'Auto-Save'}
       ]},{ title:'Menu', controls:[
         {t:'key',l:'Toggle Menu',v:'Insert'},
@@ -190,11 +211,13 @@ settings: {
         {t:'slider',l:'UI Scale',v:100,m:150}
       ]}],
       right: [{ title:'Notifications', controls:[
-        {t:'check',l:'Enabled',on:true},{t:'drop',l:'Type',v:'Full'},
-        {t:'drop',l:'Animation',v:'Slide'},{t:'drop',l:'Position',v:'Top Right'},
+        {t:'check',l:'Enabled',on:true},
+        {t:'drop',l:'Type',v:'Full',items:['Full','Short','Minimal']},
+        {t:'drop',l:'Animation',v:'Slide',items:['Slide','Fade','Scale']},
+        {t:'drop',l:'Position',v:'Top Right',items:['Top Right','Top Left','Bottom Right','Bottom Left']},
         {t:'slider',l:'Duration',v:3,m:10}
       ]},{ title:'Themes', controls:[
-        {t:'drop',l:'Theme Preset',v:'Default'},
+        {t:'drop',l:'Theme Preset',v:'Default',items:['Default','Dark','Light','Purple','Red','Blue','Green','Pink','Custom']},
         {t:'check',l:'Custom Accent'},{t:'check',l:'Custom Background'},
         {t:'check',l:'Custom Text'},{t:'check',l:'Custom Elements'}
       ]}]
