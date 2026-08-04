@@ -1,4 +1,10 @@
 // Dashboard — full logic
+const API = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '';
+const TOKEN = localStorage.getItem('token');
+const USERNAME = localStorage.getItem('username');
+
+if (!TOKEN) { window.location.href = './'; }
+
 (function(){
     // Tab navigation
     const tabs = document.querySelectorAll('.sidebar-btn');
@@ -128,11 +134,46 @@
         document.documentElement.style.setProperty('--accent', e.target.value);
     });
 
-    // Save all
-    document.getElementById('saveAllBtn')?.addEventListener('click', () => {
+    // Save all - real API call
+    document.getElementById('saveAllBtn')?.addEventListener('click', async () => {
         const btn = document.getElementById('saveAllBtn');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        setTimeout(() => { btn.innerHTML = '<i class="fas fa-check"></i> Saved!'; setTimeout(() => { btn.innerHTML = '<i class="fas fa-save"></i> Save All'; }, 2000); }, 800);
+
+        // Gather all form data
+        const data = {};
+        const nameInput = document.getElementById('displayName');
+        const bioInput = document.getElementById('bio');
+        if (nameInput) data.display_name = nameInput.value;
+        if (bioInput) data.bio = bioInput.value;
+
+        // Gather all other inputs
+        const fields = {
+            pronouns: 'pronouns', location: 'location',
+            bgOpacity: 'card_opacity', bgBlur: 'card_blur',
+            cardBlur: 'card_blur', cardRadius: 'card_radius',
+            musicVol: 'music_volume', particleCount: 'particle_count',
+            songTitle: 'song_title', songArtist: 'song_artist'
+        };
+        for (const [id, field] of Object.entries(fields)) {
+            const el = document.getElementById(id);
+            if (el) data[field] = el.type === 'range' ? parseInt(el.value) : el.value;
+        }
+
+        try {
+            const res = await fetch(`${API}/api/me`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${TOKEN}` },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) {
+                btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            } else {
+                btn.innerHTML = '<i class="fas fa-times"></i> Error';
+            }
+        } catch(e) {
+            btn.innerHTML = '<i class="fas fa-times"></i> Error';
+        }
+        setTimeout(() => { btn.innerHTML = '<i class="fas fa-save"></i> Save All'; }, 2000);
     });
 
     // Preview toggle
@@ -140,5 +181,44 @@
     document.getElementById('closePreview')?.addEventListener('click', () => { document.getElementById('previewPanel')?.classList.add('hidden'); });
 
     // Logout
-    document.getElementById('logoutBtn')?.addEventListener('click', () => { window.location.href = './'; });
+    document.getElementById('logoutBtn')?.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = './';
+    });
+
+    // Load profile from API
+    async function loadProfile() {
+        try {
+            const res = await fetch(`${API}/api/me`, { headers: { Authorization: `Bearer ${TOKEN}` }});
+            if (!res.ok) { localStorage.removeItem('token'); window.location.href = './'; return; }
+            const profile = await res.json();
+            // Populate form fields
+            if (document.getElementById('displayName')) document.getElementById('displayName').value = profile.display_name || '';
+            if (document.getElementById('bio')) document.getElementById('bio').value = profile.bio || '';
+            if (document.getElementById('pronouns')) document.getElementById('pronouns').value = profile.pronouns || '';
+            if (document.getElementById('location')) document.getElementById('location').value = profile.location || '';
+            // Update preview
+            if (pvName) pvName.textContent = profile.display_name || profile.username;
+            if (pvBio) pvBio.textContent = profile.bio || '';
+        } catch(e) { console.error('Failed to load profile', e); }
+    }
+
+    // Load analytics
+    async function loadAnalytics() {
+        try {
+            const res = await fetch(`${API}/api/analytics`, { headers: { Authorization: `Bearer ${TOKEN}` }});
+            if (!res.ok) return;
+            const data = await res.json();
+            // Update stat numbers in the dashboard
+            const stats = document.querySelectorAll('.stat-num');
+            if (stats[0]) stats[0].textContent = data.views.total.toLocaleString();
+            if (stats[1]) stats[1].textContent = data.clicks.total.toLocaleString();
+            if (stats[2]) stats[2].textContent = data.views.today.toLocaleString();
+            if (stats[3]) stats[3].textContent = data.views.week.toLocaleString();
+        } catch(e) { console.error('Failed to load analytics', e); }
+    }
+
+    loadProfile();
+    loadAnalytics();
 })();

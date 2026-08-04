@@ -9,98 +9,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <!-- Background -->
-    <div class="bg-layer">
-        <video class="bg-video" autoplay muted loop playsinline>
-            <source src="../assets/bg.mp4" type="video/mp4">
-        </video>
-        <div class="bg-overlay"></div>
-    </div>
-
-    <!-- Custom Cursor -->
+    <div class="bg-layer"><div class="bg-checker"></div></div>
     <div class="cursor" id="cursor"></div>
 
-    <!-- Profile Card -->
-    <main class="profile">
-        <div class="profile-card" id="profileCard">
-            <!-- Avatar -->
-            <div class="avatar-wrap">
-                <img src="../assets/avatar.png" alt="" class="avatar" onerror="this.style.background='var(--accent)'">
-                <div class="avatar-ring"></div>
-            </div>
-
-            <!-- Name + Badges -->
-            <div class="name-row">
-                <h1 class="display-name">username</h1>
-                <div class="badges">
-                    <img src="../assets/badges/verified.gif" alt="" class="badge" onerror="this.remove()">
-                </div>
-            </div>
-
-            <!-- Bio -->
-            <p class="bio">alternate.lol/link user</p>
-
-            <!-- Socials -->
-            <div class="socials">
-                <a href="#" class="social-icon" title="Discord"><i class="fab fa-discord"></i></a>
-                <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="#" class="social-icon" title="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="#" class="social-icon" title="Roblox"><i class="fas fa-gamepad"></i></a>
-            </div>
-
-            <!-- Roblox Presence (optional) -->
-            <div class="presence" id="presence">
-                <div class="presence-dot"></div>
-                <span>Playing Da Hood</span>
-            </div>
-
-            <!-- Views counter -->
-            <div class="views">
-                <i class="fas fa-eye"></i>
-                <span>1,234</span>
-            </div>
-        </div>
-
-        <!-- Music Player -->
-        <div class="music-player" id="musicPlayer">
-            <button class="music-btn" id="musicBtn"><i class="fas fa-play"></i></button>
-            <div class="music-info">
-                <span class="music-title">Song Name</span>
-                <div class="music-bar">
-                    <div class="music-progress" id="musicProgress"></div>
-                </div>
-            </div>
-            <audio id="audio" src="../assets/music.mp3" loop></audio>
-        </div>
-    </main>
-
-    <!-- Landing page (no user) -->
-    <div class="landing" id="landing" style="display: none;">
-        <div class="landing-card">
+    <main class="landing">
+        <div class="landing-card" id="linkCard">
             <h1 class="landing-title">/alternate<span>.lol/link</span></h1>
             <p class="landing-sub">Custom profile cards for the community</p>
 
+            <!-- Alias checker -->
             <div class="alias-box">
                 <span class="alias-pre">alternate.lol/</span>
                 <input type="text" id="aliasInput" placeholder="yourname" maxlength="20">
                 <span class="alias-result" id="aliasResult"></span>
             </div>
 
-            <div class="pricing">
-                <div class="price-item">
-                    <span class="price-amount">$20</span>
-                    <span class="price-label">lifetime</span>
-                </div>
-                <div class="price-item">
-                    <span class="price-amount">$10</span>
-                    <span class="price-label">2 months</span>
+            <!-- Recent users -->
+            <div class="recent-section">
+                <p class="recent-label">alternate.lol users:</p>
+                <div class="recent-list" id="recentUsers">
+                    <div class="recent-user"><span>Loading...</span></div>
                 </div>
             </div>
 
+            <!-- Pricing -->
+            <div class="pricing">
+                <div class="price-item"><span class="price-amount">$20</span><span class="price-label">lifetime</span></div>
+                <div class="price-item"><span class="price-amount">$10</span><span class="price-label">2 months</span></div>
+            </div>
+
+            <!-- Actions -->
             <div class="landing-btns">
-                <a href="#" class="btn-accent" data-external="https://alternateshop.mysellauth.com/">Purchase</a>
+                <a href="#" class="btn-pink" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Purchase (Open Ticket)</a>
                 <button class="btn-ghost" id="loginBtn">Login</button>
             </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-card">
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="field"><label>Username</label><input type="text" id="loginUser" required></div>
+                <div class="field"><label>Password</label><input type="password" id="loginPass" required></div>
+                <p class="form-error" id="loginError"></p>
+                <button type="submit" class="btn-pink" style="width:100%">Login</button>
+                <button type="button" class="btn-ghost" id="closeLogin" style="width:100%;margin-top:8px">Cancel</button>
+            </form>
         </div>
     </div>
 
