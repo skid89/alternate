@@ -1,4 +1,4 @@
-const API = location.hostname==='localhost'?'http://localhost:3001':'';
+const API = location.hostname==='localhost'?'http://localhost:3001':'https://alternate-production.up.railway.app';
 const TOKEN = localStorage.getItem('token');
 if(!TOKEN) location.href='./';
 
@@ -154,3 +154,4 @@ document.getElementById('logoutBtn')?.addEventListener('click',()=>{
 
 loadProfile();
 loadAnalytics();
+

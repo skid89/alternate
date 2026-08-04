@@ -1,4 +1,4 @@
-const API = location.hostname === 'localhost' ? 'http://localhost:3001' : '';
+const API = location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://alternate-production.up.railway.app';
 
 // Alias check
 (function(){
@@ -73,3 +73,4 @@ document.addEventListener('click',e=>{
     const el=e.target.closest('[data-external]');
     if(el){e.preventDefault();window.open(el.dataset.external,'_blank');}
 });
+
