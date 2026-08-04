@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alternate.lol</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <!-- Notification -->
+    <div class="notif" id="notif">
+        <div class="notif-inner">
+            <span class="notif-text">Redirecting to <span id="notifUrl"></span></span>
+            <button class="notif-cancel" id="notifCancel">×</button>
+        </div>
+        <div class="notif-bar"><div class="notif-fill" id="notifFill"></div></div>
+    </div>
+
+    <!-- Snow -->
+    <canvas id="snowCanvas"></canvas>
+
+    <!-- Glow orbs -->
+    <div class="glow-orb orb1"></div>
+    <div class="glow-orb orb2"></div>
+    <div class="glow-orb orb3"></div>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-left">
+            <h1 class="hero-title" id="heroTitle">/alternate</h1>
+            <p class="hero-sub">The best vertical legit Roblox script for Da Hood and Hood Customs</p>
+            <p class="hero-info">For resellers / buy / media info:</p>
+            <div class="hero-links">
+                <a href="#" class="buy-btn" data-external="https://alternateshop.mysellauth.com/">Buy</a>
+                <a href="#reseller">Reseller</a>
+                <a href="#media">Media</a>
+                <button id="featuresBtn">Features</button>
+                <a href="#status">Status</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <img src="gui.png" alt="alternate gui" class="hero-img" id="heroImg">
+        </div>
+    </section>
+
+    <!-- Reseller -->
+    <section class="info-section" id="reseller">
+        <h2>Reseller</h2>
+        <div class="discord-preview" id="dcCard">
+            <div class="dc-icon"><i class="fab fa-discord"></i></div>
+            <div class="dc-info"><h4>alternate</h4><p>discord.gg/alternate</p></div>
+        </div>
+        <p class="info-text">Must buy in packages, lifetime costs $8.</p>
+        <a href="#" class="pink-btn" data-external="https://discord.com/channels/1499128437074300940/1522493351700729866">Open Ticket</a>
+    </section>
+
+    <!-- Media -->
+    <section class="info-section" id="media">
+        <h2>Media Requirements</h2>
+        <div class="info-grid">
+            <div class="info-card"><h3><i class="fab fa-tiktok"></i> TikTok</h3><p>• 150+ followers<br>• 50+ likes per video</p></div>
+            <div class="info-card"><h3><i class="fab fa-youtube"></i> YouTube</h3><p>• 50+ subscribers<br>• 25+ likes per video</p></div>
+        </div>
+    </section>
+
+    <!-- Status -->
+    <section class="info-section" id="status">
+        <h2>Status</h2>
+        <div class="status-grid">
+            <div class="status-left">
+                <div class="dc-avatar"><i class="fab fa-discord"></i></div>
+                <h4>alternate</h4>
+                <p class="dc-sub">discord.gg/alternate</p>
+                <a href="#" class="pink-btn" data-external="https://discord.gg/alternate">Join Server</a>
+            </div>
+            <div class="status-right">
+                <div class="status-row"><span>Bot Status</span><div class="status-dot green"></div></div>
+                <div class="status-row"><span>Script Status</span><div class="status-dot green"></div></div>
+                <div class="status-row"><span>Roblox Version</span><span class="mono-sm">Latest</span></div>
+                <div class="status-row"><span>Website Status</span><div class="status-dot green"></div></div>
+            </div>
+        </div>
+        <div class="logs-card">
+            <h3>Recent Update Logs</h3>
+            <div class="log-item"><span class="log-d">08/01</span><span>Performance fixes & bug patches</span></div>
+            <div class="log-item"><span class="log-d">07/28</span><span>New aimbot settings added</span></div>
+            <div class="log-item"><span class="log-d">07/25</span><span>ESP visuals overhaul</span></div>
+            <div class="log-item"><span class="log-d">07/20</span><span>Hood Customs full support</span></div>
+            <div class="log-item"><span class="log-d">07/15</span><span>Silent aim improvements</span></div>
+        </div>
+    </section>
+
+    <!-- Features Overlay (matches ui.lua exactly) -->
+    <div class="feat-overlay" id="featOverlay">
+        <div class="feat-window">
+            <div class="feat-titlebar">
+                <span>alternate.lol</span>
+                <div class="feat-titlebar-btns">
+                    <button class="feat-minimize">−</button>
+                    <button class="feat-close" id="featClose">×</button>
+                </div>
+            </div>
+            <div class="feat-tabs" id="featTabs">
+                <button class="ft active" data-t="combat"><i class="fas fa-crosshairs"></i> Combat</button>
+                <button class="ft" data-t="visuals"><i class="fas fa-eye"></i> Visuals</button>
+                <button class="ft" data-t="misc"><i class="fas fa-shield-halved"></i> Misc</button>
+                <button class="ft" data-t="settings"><i class="fas fa-gear"></i> Settings</button>
+            </div>
+            <div class="feat-subtabs" id="featSubtabs"></div>
+            <div class="feat-body" id="featBody">
+                <div class="feat-col" id="featLeft"></div>
+                <div class="feat-col" id="featRight"></div>
+            </div>
+            <div class="feat-footer">
+                <div class="feat-footer-left">
+                    <img src="gui.png" class="feat-footer-avatar" onerror="this.style.display='none'">
+                    <span>alternate.lol</span>
+                    <span class="feat-badge">Pro</span>
+                    <span class="feat-online">● Online</span>
+                </div>
+                <div class="feat-footer-right">
+                    <button class="feat-btn-ghost"><i class="fas fa-rotate-right"></i> Reset</button>
+                    <button class="feat-btn-pink"><i class="fas fa-floppy-disk"></i> Save Config</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

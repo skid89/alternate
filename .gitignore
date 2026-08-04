@@ -1,0 +1,23 @@
+# Roblox scripts - DO NOT push these
+script.lua
+ui.lua
+
+# System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Node
+node_modules/
+.env
+.env.local
+
+# Database
+server/data.db
+
+# Build
+dist/
