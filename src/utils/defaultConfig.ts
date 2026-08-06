@@ -85,7 +85,7 @@ export const DEFAULT_PROFILE_CONFIG: FullProfileConfig = {
     backgroundColor: "#09090be6",
     glassBlur: 12,
     fadeSpeed: 0.6,
-    enterSoundUrl: "",
+    enterSoundUrl: "/aud.mp3",
     pulseEffect: false,
   },
   mediaPlayer: {
@@ -119,7 +119,7 @@ export const DEFAULT_PROFILE_CONFIG: FullProfileConfig = {
     mockStatus: {
       username: "koni683",
       displayName: "koni",
-      avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=60",
+      avatarUrl: "/pfp.png",
       bannerUrl: "",
       accentColor: "#18181b",
       status: "dnd",

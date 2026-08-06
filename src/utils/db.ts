@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import os from "os";
 import { FullProfileConfig } from "@/types/profile";
 import { DEFAULT_PROFILE_CONFIG } from "./defaultConfig";
 
@@ -25,7 +26,7 @@ export interface DatabaseSchema {
   auditLogs: AuditLog[];
 }
 
-const DB_FILE = path.join(process.cwd(), "src", "data", "db.json");
+const DB_FILE = path.join(os.tmpdir(), "alternate_db.json");
 
 async function ensureDir(filePath: string) {
   const dir = path.dirname(filePath);

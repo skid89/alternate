@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { useProfile } from "@/context/ProfileContext";
 
 export default function LoginPage() {
@@ -53,6 +55,14 @@ export default function LoginPage() {
 
       {/* Glass Panel Box */}
       <div className="w-full max-w-sm glass-panel p-8 rounded-2xl border border-white/10 relative z-10 shadow-xl backdrop-blur-md">
+        
+        {/* Back Navigation Arrow */}
+        <div className="absolute top-4 left-4">
+          <Link href="/" className="text-zinc-500 hover:text-white transition-colors" title="Back to home">
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+        </div>
+
         <div className="flex flex-col items-center justify-center text-center mb-8">
           <h2 className="text-xl font-bold tracking-widest text-white uppercase">
             alternate.lol

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FullProfileConfig } from "@/types/profile";
 import ParticleCanvas from "./ParticleCanvas";
 import CursorEngine from "./CursorEngine";
@@ -15,6 +15,15 @@ interface ProfileViewProps {
 
 export default function ProfileView({ config, isPreview = false }: ProfileViewProps) {
   const [showProfile, setShowProfile] = useState(!config.splash.enabled || isPreview);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   // Background style compiler
   const getBackgroundStyle = () => {
@@ -125,6 +134,19 @@ export default function ProfileView({ config, isPreview = false }: ProfileViewPr
 
       {/* Grid Pattern overlay */}
       <div className="absolute inset-0 z-2 checkerboard-grid opacity-30 pointer-events-none" />
+
+      {/* Interactive mouse background glow */}
+      {!isPreview && (
+        <div
+          className="absolute w-[450px] h-[450px] rounded-full pointer-events-none z-1 blur-[110px] transition-transform duration-500 ease-out opacity-60"
+          style={{
+            background: "radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%)",
+            left: 0,
+            top: 0,
+            transform: `translate3d(${mousePos.x - 225}px, ${mousePos.y - 225}px, 0)`,
+          }}
+        />
+      )}
 
       {/* Splash click screen */}
       <SplashScreen config={config.splash} onEnter={() => setShowProfile(true)} />
