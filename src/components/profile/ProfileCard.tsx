@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { FullProfileConfig, SocialLink, BadgeConfig } from "@/types/profile";
+import { FullProfileConfig } from "@/types/profile";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import * as Icons from "lucide-react";
 import MediaPlayer from "./MediaPlayer";
@@ -60,8 +60,8 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
-  const rotateX = useSpring(useTransform(y, [-300, 300], [12, -12]), { damping: 25, stiffness: 200 });
-  const rotateY = useSpring(useTransform(x, [-300, 300], [-12, 12]), { damping: 25, stiffness: 200 });
+  const rotateX = useSpring(useTransform(y, [-300, 300], [8, -8]), { damping: 25, stiffness: 200 });
+  const rotateY = useSpring(useTransform(x, [-300, 300], [-8, 8]), { damping: 25, stiffness: 200 });
 
   const [tooltipText, setTooltipText] = useState<string | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
@@ -116,7 +116,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
     borderColor: config.card.borderEffect === "none" ? config.card.outlineColor : "transparent",
     borderStyle: config.card.borderStyle,
     boxShadow: config.card.dropShadow 
-      ? `0 20px 40px rgba(0, 0, 0, 0.4), 0 0 ${config.card.glowStrength}px ${config.card.glowColor}40`
+      ? `0 20px 40px rgba(0, 0, 0, 0.4), 0 0 ${config.card.glowStrength}px ${config.card.glowColor}1a`
       : "none",
   };
 
@@ -125,7 +125,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
       {/* Floating Badge Tooltip HUD */}
       {tooltipText && (
         <div
-          className="fixed z-[999] px-2.5 py-1 bg-black/80 border border-white/10 text-white text-[11px] rounded-lg pointer-events-none transform -translate-x-1/2 transition-opacity duration-200 shadow-lg backdrop-blur-sm"
+          className="fixed z-[999] px-2 py-1 bg-black border border-white/15 text-white text-[10px] tracking-wide rounded pointer-events-none transform -translate-x-1/2 transition-opacity duration-150 shadow-lg backdrop-blur-sm"
           style={{ left: tooltipPos.x, top: tooltipPos.y }}
         >
           {tooltipText}
@@ -153,7 +153,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
         <div
           className="absolute inset-0 z-0 pointer-events-none transition-all duration-300"
           style={{
-            backgroundColor: `rgba(255, 255, 255, ${config.card.backgroundOpacity})`,
+            backgroundColor: `rgba(0, 0, 0, ${config.card.backgroundOpacity})`,
             backdropFilter: `blur(${config.card.glassBlur}px)`,
             WebkitBackdropFilter: `blur(${config.card.glassBlur}px)`,
           }}
@@ -167,52 +167,9 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none z-0" />
 
         <div className="relative z-10 flex flex-col items-center text-center">
-          {/* Badge List Header */}
-          {config.badges.filter(b => b.visible).length > 0 && (
-            <div className="flex flex-wrap justify-center gap-2 mb-4">
-              {config.badges
-                .filter((b) => b.visible)
-                .map((b) => (
-                  <motion.div
-                    key={b.id}
-                    onMouseEnter={(e) => handleBadgeHover(e, b.tooltip)}
-                    onMouseLeave={() => setTooltipText(null)}
-                    whileHover={{ scale: 1.15 }}
-                    animate={
-                      b.animation === "float"
-                        ? { y: [0, -4, 0] }
-                        : b.animation === "pulse"
-                        ? { scale: [1, 1.08, 1] }
-                        : b.animation === "rotate"
-                        ? { rotate: 360 }
-                        : {}
-                    }
-                    transition={
-                      b.animation !== "none"
-                        ? { repeat: Infinity, duration: b.animation === "rotate" ? 6 : 2, ease: "easeInOut" }
-                        : {}
-                    }
-                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center cursor-help transition-all"
-                    style={{
-                      boxShadow: b.glow ? `0 0 10px ${b.glowColor}` : "none",
-                    }}
-                  >
-                    <DynamicIcon name={b.icon} className="w-4 h-4" style={{ color: b.color }} />
-                  </motion.div>
-                ))}
-            </div>
-          )}
-
           {/* Profile Picture */}
           <div className="relative mb-4 group">
-            {/* Glowing avatar ring */}
-            <div 
-              className="absolute -inset-1 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500 opacity-75 blur-sm transition duration-1000 group-hover:duration-200"
-              style={{
-                background: `linear-gradient(45deg, ${config.card.glowColor}, #7c3aed, #00f2fe)`
-              }}
-            />
-            <div className="relative w-24 h-24 rounded-full overflow-hidden border-2 border-white/20">
+            <div className="relative w-24 h-24 rounded-full overflow-hidden border border-white/10 group-hover:border-white/30 transition-colors">
               <img
                 src={config.discord.enabled && config.discord.mockStatus.avatarUrl ? config.discord.mockStatus.avatarUrl : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=60"}
                 alt={config.username}
@@ -222,7 +179,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
             {/* Discord online presence indicator badge */}
             {config.discord.enabled && (
               <span
-                className={`absolute bottom-0 right-1 w-5 h-5 rounded-full border-4 border-zinc-950 flex items-center justify-center`}
+                className={`absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-zinc-950 flex items-center justify-center`}
                 style={{
                   backgroundColor: 
                     config.discord.mockStatus.status === "online" ? "#22c55e" :
@@ -233,28 +190,47 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
             )}
           </div>
 
-          {/* Username */}
-          <h2
-            className={`text-2xl font-bold tracking-wide transition-all ${
-              config.typography.textShadow ? "text-glow-pink" : ""
-            }`}
-            style={{
-              color: config.typography.textEffect === "none" ? config.typography.usernameColor : "transparent",
-              backgroundImage: config.typography.textEffect === "gradient" 
-                ? `linear-gradient(to right, ${config.typography.textGradientColor1}, ${config.typography.textGradientColor2})`
-                : config.typography.textEffect === "rainbow"
-                ? `linear-gradient(to right, #ff007f, #7c3aed, #00f2fe, #ff007f)`
-                : "none",
-              WebkitBackgroundClip: config.typography.textEffect !== "none" ? "text" : "unset",
-              backgroundClip: config.typography.textEffect !== "none" ? "text" : "unset",
-            }}
-          >
-            {config.username}
-          </h2>
+          {/* Username & Badges Row (Badges next to username instead of top) */}
+          <div className="flex items-center justify-center gap-1.5 mb-1 flex-wrap">
+            <h2
+              className={`text-xl font-bold tracking-wide transition-all`}
+              style={{
+                color: config.typography.textEffect === "none" ? config.typography.usernameColor : "transparent",
+                backgroundImage: config.typography.textEffect === "gradient" 
+                  ? `linear-gradient(to right, ${config.typography.textGradientColor1}, ${config.typography.textGradientColor2})`
+                  : config.typography.textEffect === "rainbow"
+                  ? `linear-gradient(to right, #ffffff, #a1a1aa, #ffffff)`
+                  : "none",
+                WebkitBackgroundClip: config.typography.textEffect !== "none" ? "text" : "unset",
+                backgroundClip: config.typography.textEffect !== "none" ? "text" : "unset",
+              }}
+            >
+              {config.username}
+            </h2>
+
+            {/* Badges inline beside username */}
+            {config.badges && config.badges.filter(b => b.visible).length > 0 && (
+              <div className="flex items-center gap-1">
+                {config.badges
+                  .filter((b) => b.visible)
+                  .map((b) => (
+                    <motion.div
+                      key={b.id}
+                      onMouseEnter={(e) => handleBadgeHover(e, b.tooltip)}
+                      onMouseLeave={() => setTooltipText(null)}
+                      whileHover={{ scale: 1.1 }}
+                      className="cursor-help flex items-center justify-center p-0.5"
+                    >
+                      <DynamicIcon name={b.icon} className="w-3.5 h-3.5" style={{ color: "#ffffff" }} />
+                    </motion.div>
+                  ))}
+              </div>
+            )}
+          </div>
 
           {/* Subtitle / Pronouns */}
           <span 
-            className="text-xs tracking-widest text-zinc-400 mt-1 uppercase"
+            className="text-[10px] tracking-wider text-zinc-500 uppercase"
             style={{ color: config.typography.subtitleColor }}
           >
             {config.discord.enabled ? "@" + config.discord.mockStatus.username : "alternate.lol user"}
@@ -262,7 +238,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
 
           {/* Bio text */}
           <p
-            className="mt-3 text-sm max-w-sm"
+            className="mt-3 text-xs max-w-sm"
             style={{
               color: config.typography.bioColor,
               opacity: config.typography.descriptionOpacity,
@@ -273,30 +249,27 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
 
           {/* Discord Mock Presence Status Widgets */}
           {config.discord.enabled && (
-            <div className="w-full mt-4 p-3.5 bg-black/45 rounded-xl border border-white/5 text-left flex flex-col gap-2.5 backdrop-blur-md">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            <div className="w-full mt-4 p-3 bg-black/40 rounded-xl border border-white/5 text-left flex flex-col gap-2 backdrop-blur-md">
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
                 </span>
-                <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Discord Activity</span>
+                <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Discord Activity</span>
               </div>
               
               <div className="flex items-start gap-3">
                 <img
                   src={config.discord.mockStatus.spotifyAlbumUrl || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150&auto=format&fit=crop&q=60"}
                   alt="Activity Icon"
-                  className="w-10 h-10 rounded-lg object-cover border border-white/5 flex-shrink-0"
+                  className="w-8 h-8 rounded object-cover border border-white/5 flex-shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <div className="text-xs font-semibold truncate text-white">
+                  <div className="text-[11px] font-semibold truncate text-white">
                     Listening to {config.discord.mockStatus.spotifySong || "Sunset Chords"}
                   </div>
-                  <div className="text-[11px] text-zinc-400 truncate mt-0.5">
+                  <div className="text-[10px] text-zinc-500 truncate">
                     by {config.discord.mockStatus.spotifyArtist || "Lofi Beats"}
-                  </div>
-                  <div className="text-[10px] text-purple-400/90 truncate mt-1">
-                    Playing: {config.discord.mockStatus.activityName}
                   </div>
                 </div>
               </div>
@@ -305,7 +278,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
 
           {/* Social Links List */}
           {config.links.filter(l => l.visible).length > 0 && (
-            <div className="w-full mt-5 flex justify-center flex-wrap gap-4">
+            <div className="w-full mt-5 flex justify-center flex-wrap gap-3">
               {config.links
                 .filter((l) => l.visible)
                 .map((l) => (
@@ -314,30 +287,10 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
                     href={l.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.15 }}
-                    animate={
-                      l.animation === "bounce" ? { y: [0, -4, 0] } :
-                      l.animation === "pulse" ? { scale: [1, 1.08, 1] } :
-                      l.animation === "spin" ? { rotate: 360 } : {}
-                    }
-                    transition={
-                      l.animation !== "none" 
-                        ? { repeat: Infinity, duration: l.animation === "spin" ? 8 : 2, ease: "easeInOut" }
-                        : {}
-                    }
-                    className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors flex items-center justify-center relative group"
-                    style={{
-                      boxShadow: l.glow ? `0 0 12px ${l.glowColor}` : "none",
-                      borderColor: l.glow ? `${l.glowColor}50` : "rgba(255,255,255,0.1)"
-                    }}
+                    whileHover={{ scale: 1.1 }}
+                    className="p-2 border border-white/10 rounded-lg hover:bg-white/5 transition-all flex items-center justify-center"
                   >
-                    {/* Social Hover Tooltip */}
-                    <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-0.5 bg-zinc-950 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none tracking-wide">
-                      {l.platform}
-                    </span>
-                    
-                    {/* Render Icon */}
-                    <DynamicIcon name={l.platform} className="w-5 h-5" style={{ color: l.iconColor }} />
+                    <DynamicIcon name={l.platform} className="w-4 h-4 text-white" />
                   </motion.a>
                 ))}
             </div>

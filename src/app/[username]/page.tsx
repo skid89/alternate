@@ -25,7 +25,7 @@ export default function ProfilePage() {
     const foundUser = users.find((u) => u.username === username);
     
     if (foundUser) {
-      setProfileConfig(foundUser.config);
+      setProfileConfig(foundUser.config || null);
     } else if (username === "koni") {
       setProfileConfig(DEFAULT_PROFILE_CONFIG);
     } else {

@@ -28,10 +28,10 @@ export default function AdminPage() {
   // If user is not authorized, redirect them
   const isAuthorized = currentUser && (currentUser.role === "Owner" || currentUser.role === "Admin");
 
-  const handleCreateUser = (e: React.FormEvent) => {
+  const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUsername) return;
-    const success = createUser(newUsername, newUserRole);
+    const success = await createUser(newUsername, newUserRole);
     if (success) {
       setNewUsername("");
       alert(`User ${newUsername} created successfully with role ${newUserRole}!`);

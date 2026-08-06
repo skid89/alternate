@@ -14,7 +14,7 @@ interface AuditLog {
 interface UserAccount {
   username: string;
   role: "Owner" | "Admin" | "Moderator" | "Staff" | "Alpha" | "Beta" | "Premium" | "User";
-  config: FullProfileConfig;
+  config?: FullProfileConfig;
 }
 
 interface ProfileContextType {
@@ -28,7 +28,7 @@ interface ProfileContextType {
   // User Manager
   users: UserAccount[];
   setUsers: React.Dispatch<React.SetStateAction<UserAccount[]>>;
-  createUser: (username: string, role: UserAccount["role"]) => boolean;
+  createUser: (username: string, role: UserAccount["role"]) => Promise<boolean>;
   deleteUser: (username: string) => void;
   updateUserRole: (username: string, role: UserAccount["role"]) => void;
   
@@ -45,7 +45,7 @@ interface ProfileContextType {
   
   // Auth state
   currentUser: { username: string; role: UserAccount["role"] } | null;
-  login: (username: string, role: UserAccount["role"]) => void;
+  login: (username: string, role: UserAccount["role"]) => Promise<boolean>;
   logout: () => void;
   
   // Navigation utility
@@ -60,83 +60,59 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [history, setHistory] = useState<FullProfileConfig[]>([]);
   const [redoHistory, setRedoHistory] = useState<FullProfileConfig[]>([]);
   
-  // Session / Multi-user mockup state
   const [users, setUsers] = useState<UserAccount[]>([]);
-  const [currentUser, setCurrentUser] = useState<{ username: string; role: UserAccount["role"] } | null>({
-    username: "koni",
-    role: "Owner",
-  });
+  const [currentUser, setCurrentUser] = useState<{ username: string; role: UserAccount["role"] } | null>(null);
   
-  // Admin globals
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
-  const [announcement, setAnnouncement] = useState<string>("Welcome to alternate.lol private linker platform!");
-  const [reservedNames, setReservedNames] = useState<string[]>(["admin", "system", "alternate", "login", "dashboard", "owner"]);
-  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([
-    { id: "1", action: "System Init", details: "alternate.lol system started successfully.", timestamp: new Date().toLocaleTimeString() }
-  ]);
+  const [announcement, setAnnouncement] = useState<string>("");
+  const [reservedNames, setReservedNames] = useState<string[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [activeViewUsername, setActiveViewUsername] = useState<string>("koni");
 
-  // Load from localStorage on mount
+  // Load from API on mount
+  const loadData = async () => {
+    try {
+      // 1. Check current session
+      const authRes = await fetch("/api/auth");
+      const authData = await authRes.json();
+      if (authData.authenticated && authData.user) {
+        setCurrentUser({ username: authData.user.username, role: authData.user.role });
+        setConfig(authData.user.config);
+      }
+
+      // 2. Fetch admin / global settings
+      const adminRes = await fetch("/api/admin");
+      const adminData = await adminRes.json();
+      if (!adminRes.ok) return;
+
+      setMaintenanceMode(adminData.maintenanceMode);
+      setAnnouncement(adminData.announcement);
+      setReservedNames(adminData.reservedNames);
+      setAuditLogs(adminData.auditLogs);
+      setUsers(adminData.users);
+    } catch (e) {
+      console.error("Failed to load initial backend configurations", e);
+    }
+  };
+
   useEffect(() => {
-    const savedUsers = localStorage.getItem("alternate_users");
-    const savedConfig = localStorage.getItem("alternate_active_config");
-    const savedMaintenance = localStorage.getItem("alternate_maintenance");
-    const savedAnnouncement = localStorage.getItem("alternate_announcement");
-    const savedReserves = localStorage.getItem("alternate_reserved_names");
-    const savedLogs = localStorage.getItem("alternate_audit_logs");
-    
-    if (savedUsers) {
-      setUsers(JSON.parse(savedUsers));
-    } else {
-      const initialUsers: UserAccount[] = [
-        { username: "koni", role: "Owner", config: DEFAULT_PROFILE_CONFIG },
-        { username: "zuka", role: "Admin", config: { ...DEFAULT_PROFILE_CONFIG, username: "zuka", bio: "alternate.lol admin. link reserved." } }
-      ];
-      setUsers(initialUsers);
-      localStorage.setItem("alternate_users", JSON.stringify(initialUsers));
-    }
-    
-    if (savedConfig) {
-      setConfig(JSON.parse(savedConfig));
-    }
-    if (savedMaintenance) {
-      setMaintenanceMode(JSON.parse(savedMaintenance));
-    }
-    if (savedAnnouncement) {
-      setAnnouncement(savedAnnouncement);
-    }
-    if (savedReserves) {
-      setReservedNames(JSON.parse(savedReserves));
-    }
-    if (savedLogs) {
-      setAuditLogs(JSON.parse(savedLogs));
-    }
+    loadData();
   }, []);
 
-  // Sync state to local storage and active user's config
-  const updateConfig = (updater: (prev: FullProfileConfig) => FullProfileConfig) => {
+  // Sync state to backend
+  const updateConfig = async (updater: (prev: FullProfileConfig) => FullProfileConfig) => {
     setConfig((prev) => {
       const next = updater(prev);
-      
-      // Push previous to history
-      setHistory((h) => [...h, prev].slice(-20)); // Limit to last 20 states
-      setRedoHistory([]); // Clear redo
-      
-      // Save active config
-      localStorage.setItem("alternate_active_config", JSON.stringify(next));
-      
-      // Update in global users list
-      setUsers((uList) => {
-        const updated = uList.map((u) => {
-          if (u.username === next.username) {
-            return { ...u, config: next };
-          }
-          return u;
-        });
-        localStorage.setItem("alternate_users", JSON.stringify(updated));
-        return updated;
-      });
-      
+      setHistory((h) => [...h, prev].slice(-20));
+      setRedoHistory([]);
+
+      // Non-blocking save to backend
+      fetch(`/api/profile/${next.username}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ config: next }),
+      }).catch(err => console.error("Error saving config to API:", err));
+
       return next;
     });
   };
@@ -147,7 +123,12 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     setHistory((h) => h.slice(0, -1));
     setRedoHistory((r) => [...r, config]);
     setConfig(prev);
-    localStorage.setItem("alternate_active_config", JSON.stringify(prev));
+
+    fetch(`/api/profile/${prev.username}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ config: prev }),
+    }).catch(err => console.error("Error saving config to API:", err));
   };
 
   const redo = () => {
@@ -156,12 +137,17 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     setRedoHistory((r) => r.slice(0, -1));
     setHistory((h) => [...h, config]);
     setConfig(next);
-    localStorage.setItem("alternate_active_config", JSON.stringify(next));
+
+    fetch(`/api/profile/${next.username}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ config: next }),
+    }).catch(err => console.error("Error saving config to API:", err));
   };
 
   const resetConfig = () => {
     updateConfig(() => DEFAULT_PROFILE_CONFIG);
-    addAuditLog("Reset Configuration", `Reverted config for ${config.username} to system default.`);
+    addAuditLog("Reset Configuration", `Reverted config for ${config.username} to default.`);
   };
 
   const applyPreset = (name: string) => {
@@ -176,97 +162,115 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     addAuditLog("Apply Preset", `Applied theme preset ${name} to ${config.username}'s profile.`);
   };
 
-  const createUser = (username: string, role: UserAccount["role"]): boolean => {
-    const formattedName = username.trim().toLowerCase();
-    if (!formattedName) return false;
-    
-    // Check duplication & reservation
-    if (users.some((u) => u.username === formattedName) || reservedNames.includes(formattedName)) {
+  const createUser = async (username: string, role: UserAccount["role"]): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "register", username, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to register");
+        return false;
+      }
+      setCurrentUser({ username: data.user.username, role: data.user.role });
+      setConfig(data.user.config);
+      loadData();
+      return true;
+    } catch (e) {
+      console.error(e);
       return false;
     }
-
-    const newUserConfig: FullProfileConfig = {
-      ...DEFAULT_PROFILE_CONFIG,
-      username: formattedName,
-      bio: `Hello! I am a proud ${role} of alternate.lol`,
-    };
-
-    setUsers((prev) => {
-      const next = [...prev, { username: formattedName, role, config: newUserConfig }];
-      localStorage.setItem("alternate_users", JSON.stringify(next));
-      return next;
-    });
-    
-    addAuditLog("Create User", `Created user ${formattedName} with role ${role}.`);
-    return true;
   };
 
-  const deleteUser = (username: string) => {
-    setUsers((prev) => {
-      const next = prev.filter((u) => u.username !== username);
-      localStorage.setItem("alternate_users", JSON.stringify(next));
-      return next;
-    });
-    addAuditLog("Delete User", `Deleted user ${username}.`);
+  const deleteUser = async (username: string) => {
+    try {
+      await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "deleteUser", username }),
+      });
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const updateUserRole = (username: string, role: UserAccount["role"]) => {
-    setUsers((prev) => {
-      const next = prev.map((u) => (u.username === username ? { ...u, role } : u));
-      localStorage.setItem("alternate_users", JSON.stringify(next));
-      return next;
-    });
-    addAuditLog("Modify User Role", `Updated role for ${username} to ${role}.`);
+  const updateUserRole = async (username: string, role: UserAccount["role"]) => {
+    try {
+      await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "updateUserRole", username, role }),
+      });
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const addReservedName = (name: string) => {
-    const formatted = name.trim().toLowerCase();
-    if (!formatted || reservedNames.includes(formatted)) return;
-    setReservedNames((prev) => {
-      const next = [...prev, formatted];
-      localStorage.setItem("alternate_reserved_names", JSON.stringify(next));
-      return next;
-    });
-    addAuditLog("Reserve Username", `Added username '${formatted}' to reserved names.`);
+  const addReservedName = async (name: string) => {
+    try {
+      await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "addReservedName", value: name }),
+      });
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  const removeReservedName = (name: string) => {
-    setReservedNames((prev) => {
-      const next = prev.filter((n) => n !== name);
-      localStorage.setItem("alternate_reserved_names", JSON.stringify(next));
-      return next;
-    });
-    addAuditLog("Release Username", `Removed username '${name}' from reserved list.`);
+  const removeReservedName = async (name: string) => {
+    try {
+      await fetch("/api/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "removeReservedName", value: name }),
+      });
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const addAuditLog = (action: string, details: string) => {
-    const newLog: AuditLog = {
-      id: Math.random().toString(),
-      action,
-      details,
-      timestamp: new Date().toLocaleTimeString(),
-    };
-    setAuditLogs((prev) => {
-      const next = [newLog, ...prev].slice(0, 100);
-      localStorage.setItem("alternate_audit_logs", JSON.stringify(next));
-      return next;
-    });
+    // In a real application, audit logging is done on the server when mutation APIs are hit.
+    // The logs are fetched from the server.
   };
 
-  const login = (username: string, role: UserAccount["role"]) => {
-    setCurrentUser({ username, role });
-    // If the logging-in user exists, load their config
-    const targetUser = users.find((u) => u.username === username);
-    if (targetUser) {
-      setConfig(targetUser.config);
-      localStorage.setItem("alternate_active_config", JSON.stringify(targetUser.config));
+  const login = async (username: string, role: UserAccount["role"]): Promise<boolean> => {
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "login", username, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to login");
+        return false;
+      }
+      setCurrentUser({ username: data.user.username, role: data.user.role });
+      setConfig(data.user.config);
+      loadData();
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
     }
-    addAuditLog("User Login", `User ${username} logged in as ${role}.`);
   };
 
-  const logout = () => {
-    setCurrentUser(null);
-    addAuditLog("User Logout", "Current user logged out.");
+  const logout = async () => {
+    try {
+      await fetch("/api/auth", { method: "DELETE" });
+      setCurrentUser(null);
+      loadData();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
@@ -284,16 +288,30 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         deleteUser,
         updateUserRole,
         maintenanceMode,
-        setMaintenanceMode: (enabled) => {
-          setMaintenanceMode(enabled);
-          localStorage.setItem("alternate_maintenance", JSON.stringify(enabled));
-          addAuditLog("Toggle Maintenance Mode", `Maintenance mode set to ${enabled}.`);
+        setMaintenanceMode: async (enabled) => {
+          try {
+            await fetch("/api/admin", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action: "setMaintenanceMode", value: enabled }),
+            });
+            loadData();
+          } catch (e) {
+            console.error(e);
+          }
         },
         announcement,
-        setAnnouncement: (text) => {
-          setAnnouncement(text);
-          localStorage.setItem("alternate_announcement", text);
-          addAuditLog("Update Announcement", `Banner announcement updated: "${text}".`);
+        setAnnouncement: async (text) => {
+          try {
+            await fetch("/api/admin", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ action: "setAnnouncement", value: text }),
+            });
+            loadData();
+          } catch (e) {
+            console.error(e);
+          }
         },
         reservedNames,
         addReservedName,
