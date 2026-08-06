@@ -105,10 +105,10 @@ export const DEFAULT_PROFILE_CONFIG: FullProfileConfig = {
     trackList: [
       {
         id: "1",
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        title: "Sunset Chords",
-        artist: "Lofi Beats",
-        coverUrl: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150&auto=format&fit=crop&q=60",
+        url: "/aud.mp3",
+        title: "Local Track",
+        artist: "alternate.lol",
+        coverUrl: "/pfp.png",
         lyrics: "[00:00] (Instrumental Intro)",
       }
     ],

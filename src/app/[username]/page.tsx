@@ -21,19 +21,31 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!username) return;
 
-    // Check if user profile matches registered list
-    const foundUser = users.find((u) => u.username === username);
-    
-    if (foundUser) {
-      setProfileConfig(foundUser.config || null);
-    } else if (username === "koni") {
-      setProfileConfig(DEFAULT_PROFILE_CONFIG);
-    } else {
-      setProfileConfig(null);
-    }
-    
-    setLoading(false);
-  }, [username, users]);
+    setLoading(true);
+    fetch(`/api/profile/${username}`)
+      .then((res) => {
+        if (!res.ok) {
+          if (username === "koni") {
+            setProfileConfig(DEFAULT_PROFILE_CONFIG);
+          } else {
+            setProfileConfig(null);
+          }
+          return;
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data && data.config) {
+          setProfileConfig(data.config);
+        }
+      })
+      .catch(() => {
+        setProfileConfig(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [username]);
 
   // Handle maintenance mode bypass for Owners/Admins
   const isBypassed = currentUser && (currentUser.role === "Owner" || currentUser.role === "Admin");

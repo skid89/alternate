@@ -247,34 +247,7 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
             {config.bio}
           </p>
 
-          {/* Discord Mock Presence Status Widgets */}
-          {config.discord.enabled && (
-            <div className="w-full mt-4 p-3 bg-black/40 rounded-xl border border-white/5 text-left flex flex-col gap-2 backdrop-blur-md">
-              <div className="flex items-center gap-1.5">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
-                </span>
-                <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">Discord Activity</span>
-              </div>
-              
-              <div className="flex items-start gap-3">
-                <img
-                  src={config.discord.mockStatus.spotifyAlbumUrl || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150&auto=format&fit=crop&q=60"}
-                  alt="Activity Icon"
-                  className="w-8 h-8 rounded object-cover border border-white/5 flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-semibold truncate text-white">
-                    Listening to {config.discord.mockStatus.spotifySong || "Sunset Chords"}
-                  </div>
-                  <div className="text-[10px] text-zinc-500 truncate">
-                    by {config.discord.mockStatus.spotifyArtist || "Lofi Beats"}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
 
           {/* Social Links List */}
           {config.links.filter(l => l.visible).length > 0 && (
