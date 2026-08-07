@@ -106,10 +106,10 @@ export const DEFAULT_PROFILE_CONFIG: FullProfileConfig = {
       {
         id: "1",
         url: "/aud.mp3",
-        title: "Local Track",
+        title: "The Importance of Cocaine",
         artist: "alternate.lol",
         coverUrl: "/pfp.png",
-        lyrics: "[00:00] (Instrumental Intro)",
+        lyrics: "",
       }
     ],
   },
@@ -135,8 +135,7 @@ export const DEFAULT_PROFILE_CONFIG: FullProfileConfig = {
   links: [
     { id: "1", platform: "Discord", url: "https://discord.gg/zuka", glow: false, glowColor: "#ffffff", animation: "none", iconColor: "#ffffff", visible: true },
     { id: "2", platform: "YouTube", url: "https://www.youtube.com/@koni683", glow: false, glowColor: "#ffffff", animation: "none", iconColor: "#ffffff", visible: true },
-    { id: "3", platform: "TikTok", url: "https://www.tiktok.com/@67fovkoni", glow: false, glowColor: "#ffffff", animation: "none", iconColor: "#ffffff", visible: true },
-    { id: "4", platform: "GitHub", url: "https://github.com", glow: false, glowColor: "#ffffff", animation: "none", iconColor: "#ffffff", visible: true }
+    { id: "3", platform: "TikTok", url: "https://www.tiktok.com/@67fovkoni", glow: false, glowColor: "#ffffff", animation: "none", iconColor: "#ffffff", visible: true }
   ],
   badges: [
     { id: "owner", name: "Owner", icon: "Crown", tooltip: "Platform Owner", glow: false, glowColor: "#ffffff", animation: "none", color: "#ffffff", visible: true },

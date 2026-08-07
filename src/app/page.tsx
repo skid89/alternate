@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useProfile } from "@/context/ProfileContext";
-import ProfileCard from "@/components/profile/ProfileCard";
+import HomePreviewCard from "@/components/profile/HomePreviewCard";
 import { Send, ArrowRight, Video, Sparkles, Link as LinkIcon } from "lucide-react";
 
 export default function LandingPage() {
@@ -14,19 +14,13 @@ export default function LandingPage() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-white/5 blur-[120px] pointer-events-none z-0" />
       <div className="absolute top-0 left-0 w-full h-full checkerboard-grid opacity-10 pointer-events-none z-0" />
 
-      {/* Login / Dashboard floating action tags */}
+      {/* Login floating action tags */}
       <div className="absolute top-6 right-6 flex items-center gap-3 z-30">
         <Link
           href="/login"
           className="px-4 py-2 text-xs font-semibold tracking-wider text-zinc-400 hover:text-white transition-colors bg-white/5 border border-white/10 rounded-lg"
         >
           Login
-        </Link>
-        <Link
-          href="/dashboard"
-          className="px-4 py-2 text-xs font-semibold tracking-wider bg-white text-black rounded-lg flex items-center gap-1 hover:bg-zinc-200 transition-colors"
-        >
-          Editor <ArrowRight className="w-3 h-3" />
         </Link>
       </div>
 
@@ -134,7 +128,7 @@ export default function LandingPage() {
           <div className="relative group">
             {/* Clean subtle white border hover effect */}
             <div className="absolute -inset-0.5 rounded-2xl bg-white/5 opacity-50 group-hover:opacity-100 transition duration-500 blur-md" />
-            <ProfileCard config={config} isPreview={false} />
+            <HomePreviewCard config={config} />
           </div>
         </div>
 

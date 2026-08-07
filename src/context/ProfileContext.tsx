@@ -28,7 +28,7 @@ interface ProfileContextType {
   // User Manager
   users: UserAccount[];
   setUsers: React.Dispatch<React.SetStateAction<UserAccount[]>>;
-  createUser: (username: string, role: UserAccount["role"]) => Promise<boolean>;
+  createUser: (username: string, role: UserAccount["role"], password?: string) => Promise<boolean>;
   deleteUser: (username: string) => void;
   updateUserRole: (username: string, role: UserAccount["role"]) => void;
   
@@ -162,12 +162,12 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     addAuditLog("Apply Preset", `Applied theme preset ${name} to ${config.username}'s profile.`);
   };
 
-  const createUser = async (username: string, role: UserAccount["role"]): Promise<boolean> => {
+  const createUser = async (username: string, role: UserAccount["role"], password?: string): Promise<boolean> => {
     try {
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "register", username, role }),
+        body: JSON.stringify({ action: "register", username, role, password }),
       });
       const data = await res.json();
       if (!res.ok) {

@@ -11,9 +11,10 @@ import ProfileCard from "./ProfileCard";
 interface ProfileViewProps {
   config: FullProfileConfig;
   isPreview?: boolean;
+  showDiscordActivity?: boolean;
 }
 
-export default function ProfileView({ config, isPreview = false }: ProfileViewProps) {
+export default function ProfileView({ config, isPreview = false, showDiscordActivity = false }: ProfileViewProps) {
   const [showProfile, setShowProfile] = useState(!config.splash.enabled || isPreview);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
@@ -60,7 +61,7 @@ export default function ProfileView({ config, isPreview = false }: ProfileViewPr
       return (
         <div className="w-full min-h-screen flex flex-col md:flex-row items-center justify-between p-6 md:p-12 z-20 gap-8 relative">
           <div className="flex-1 max-w-md">
-            <ProfileCard config={config} isPreview={isPreview} />
+            <ProfileCard config={config} isPreview={isPreview} showDiscordActivity={showDiscordActivity} />
           </div>
           <div className="flex-1 flex flex-col items-center justify-center">
             {config.mediaPlayer.enabled && config.mediaPlayer.position !== "inside-card" && (
@@ -78,7 +79,7 @@ export default function ProfileView({ config, isPreview = false }: ProfileViewPr
         <div className="w-full min-h-screen flex items-center justify-center p-4 z-20 relative">
           <div className="w-full max-w-4xl glass-panel p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row items-center gap-8 shadow-2xl backdrop-blur-2xl">
             <div className="flex-1 flex justify-center">
-              <ProfileCard config={config} isPreview={isPreview} />
+              <ProfileCard config={config} isPreview={isPreview} showDiscordActivity={showDiscordActivity} />
             </div>
             <div className="flex-1 flex flex-col gap-4">
               <h3 className="text-xl font-bold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
@@ -96,7 +97,7 @@ export default function ProfileView({ config, isPreview = false }: ProfileViewPr
     // Default centered & floating cards
     return (
       <div className="w-full min-h-screen flex flex-col items-center justify-center p-4 z-20 relative gap-6">
-        <ProfileCard config={config} isPreview={isPreview} />
+        <ProfileCard config={config} isPreview={isPreview} showDiscordActivity={showDiscordActivity} />
         
         {/* Floating MediaPlayer layout triggers */}
         {config.mediaPlayer.enabled && config.mediaPlayer.position !== "inside-card" && (

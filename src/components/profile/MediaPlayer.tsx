@@ -245,14 +245,7 @@ export default function MediaPlayer({ config, onVolumeChange, onTrackChange }: M
         </div>
       </div>
 
-      {/* Synchronized Lyrics HUD (rendered inside the player config if lyrics are loaded) */}
-      {lyrics.length > 0 && (
-        <div className="mt-3 py-1.5 px-2 bg-black/20 rounded-lg overflow-hidden h-10 flex flex-col justify-center text-center">
-          <div className="text-xs font-medium text-pink-500/95 transition-all duration-300 animate-pulse truncate">
-            {activeLyricIndex >= 0 ? lyrics[activeLyricIndex].text : "🎵 Music is playing..."}
-          </div>
-        </div>
-      )}
+
 
       {/* Progress Timeline Seeking and Timestamps */}
       <div className="mt-3 flex flex-col gap-1">

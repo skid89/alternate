@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { FullProfileConfig } from "@/types/profile";
+import { LiveDiscordPresence } from "@/lib/discord";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import * as Icons from "lucide-react";
 import MediaPlayer from "./MediaPlayer";
@@ -9,6 +10,8 @@ import MediaPlayer from "./MediaPlayer";
 interface ProfileCardProps {
   config: FullProfileConfig;
   isPreview?: boolean;
+  showDiscordActivity?: boolean;
+  livePresence?: LiveDiscordPresence | null;
 }
 
 // Helper to resolve Lucide React icons dynamically by name, incorporating custom brand SVG paths
@@ -53,7 +56,51 @@ const DynamicIcon = ({ name, className, style }: { name: string; className?: str
   return <IconComponent className={className} style={style} />;
 };
 
-export default function ProfileCard({ config, isPreview = false }: ProfileCardProps) {
+function activityLabel(activity: NonNullable<LiveDiscordPresence["activity"]>): { title: string; subtitle: string } {
+  switch (activity.type) {
+    case "spotify":
+      return { title: `Listening to ${activity.name}`, subtitle: `by ${activity.details || activity.state || "Unknown"}` };
+    case "watching":
+      return { title: `Watching ${activity.name}`, subtitle: activity.details || activity.state || "" };
+    case "streaming":
+      return { title: `Streaming ${activity.name}`, subtitle: activity.details || activity.state || "" };
+    case "custom":
+      return { title: activity.name, subtitle: activity.state || activity.details || "" };
+    default:
+      return { title: `Playing ${activity.name}`, subtitle: activity.details || activity.state || "" };
+  }
+}
+
+export default function ProfileCard({ config, isPreview = false, showDiscordActivity = false, livePresence = null }: ProfileCardProps) {
+  const discord = config.discord;
+  const presence = livePresence && discord.enabled
+    ? {
+        username: livePresence.username,
+        avatarUrl: livePresence.avatarUrl,
+        status: livePresence.status,
+        activity: livePresence.activity,
+        customStatus: livePresence.customStatus,
+      }
+    : {
+        username: discord.mockStatus.username,
+        avatarUrl: discord.mockStatus.avatarUrl,
+        status: discord.mockStatus.status,
+        activity: discord.mockStatus.spotifySong
+          ? {
+              type: "spotify" as const,
+              name: discord.mockStatus.spotifySong,
+              details: discord.mockStatus.spotifyArtist,
+              imageUrl: discord.mockStatus.spotifyAlbumUrl,
+            }
+          : discord.mockStatus.activityName
+            ? {
+                type: "game" as const,
+                name: discord.mockStatus.activityName,
+                details: discord.mockStatus.activityDetails,
+              }
+            : undefined,
+        customStatus: discord.mockStatus.customStatus,
+      };
   const cardRef = useRef<HTMLDivElement>(null);
   
   // Parallax calculations using framer-motion useMotionValue & springs
@@ -171,20 +218,20 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
           <div className="relative mb-4 group">
             <div className="relative w-24 h-24 rounded-full overflow-hidden border border-white/10 group-hover:border-white/30 transition-colors">
               <img
-                src={config.discord.enabled && config.discord.mockStatus.avatarUrl ? config.discord.mockStatus.avatarUrl : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=60"}
+                src={discord.enabled && presence.avatarUrl ? presence.avatarUrl : "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=60"}
                 alt={config.username}
                 className="w-full h-full object-cover"
               />
             </div>
             {/* Discord online presence indicator badge */}
-            {config.discord.enabled && (
+            {discord.enabled && (
               <span
                 className={`absolute bottom-0.5 right-0.5 w-4 h-4 rounded-full border-2 border-zinc-950 flex items-center justify-center`}
                 style={{
                   backgroundColor: 
-                    config.discord.mockStatus.status === "online" ? "#22c55e" :
-                    config.discord.mockStatus.status === "idle" ? "#eab308" :
-                    config.discord.mockStatus.status === "dnd" ? "#ef4444" : "#71717a"
+                    presence.status === "online" ? "#22c55e" :
+                    presence.status === "idle" ? "#eab308" :
+                    presence.status === "dnd" ? "#ef4444" : "#71717a"
                 }}
               />
             )}
@@ -233,8 +280,14 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
             className="text-[10px] tracking-wider text-zinc-500 uppercase"
             style={{ color: config.typography.subtitleColor }}
           >
-            {config.discord.enabled ? "@" + config.discord.mockStatus.username : "alternate.lol user"}
+            {discord.enabled ? `@${presence.username}` : "alternate.lol user"}
           </span>
+
+          {discord.enabled && presence.customStatus && (
+            <p className="mt-1 text-[10px] text-zinc-400 italic truncate max-w-xs">
+              {presence.customStatus}
+            </p>
+          )}
 
           {/* Bio text */}
           <p
@@ -246,8 +299,44 @@ export default function ProfileCard({ config, isPreview = false }: ProfileCardPr
           >
             {config.bio}
           </p>
+          {/* Discord Presence Activity Widget */}
+          {showDiscordActivity && discord.enabled && presence.activity && (
+            <div className="w-full mt-4 p-3 bg-black/40 rounded-xl border border-white/5 text-left flex flex-col gap-2 backdrop-blur-md">
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+                </span>
+                <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest">
+                  {livePresence ? "Live Discord" : "Discord Activity"}
+                </span>
+              </div>
 
-
+              <div className="flex items-start gap-3">
+                {presence.activity.imageUrl ? (
+                  <img
+                    src={presence.activity.imageUrl}
+                    alt="Activity"
+                    className="w-8 h-8 rounded object-cover border border-white/5 flex-shrink-0"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded bg-white/5 border border-white/5 flex items-center justify-center flex-shrink-0">
+                    <DynamicIcon name="discord" className="w-4 h-4 text-white/70" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] font-semibold truncate text-white">
+                    {activityLabel(presence.activity).title}
+                  </div>
+                  {activityLabel(presence.activity).subtitle && (
+                    <div className="text-[10px] text-zinc-500 truncate">
+                      {activityLabel(presence.activity).subtitle}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Social Links List */}
           {config.links.filter(l => l.visible).length > 0 && (

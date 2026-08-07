@@ -119,12 +119,12 @@ export default function DashboardPage() {
   );
 
   return (
-    <main className="w-full min-h-screen bg-[#07050e] text-white flex flex-col select-none relative">
+    <main className="w-full min-h-screen bg-black text-white flex flex-col select-none relative">
       
       {/* Top Header Panel */}
-      <header className="h-16 border-b border-white/5 bg-zinc-950/40 backdrop-blur-md px-6 flex items-center justify-between z-30">
+      <header className="h-16 border-b border-zinc-800 bg-zinc-950/40 backdrop-blur-md px-6 flex items-center justify-between z-30">
         <div className="flex items-center gap-3">
-          <Link href="/" className="text-xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+          <Link href="/" className="text-xl font-bold tracking-widest text-white">
             alternate.lol
           </Link>
           <span className="h-4 w-[1px] bg-zinc-800" />
@@ -155,14 +155,14 @@ export default function DashboardPage() {
           {/* User authentication status & quick admin jumps */}
           {currentUser && (
             <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-pink-500/10 text-pink-500 border border-pink-500/20">
+              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800">
                 {currentUser.role}
               </span>
               
               {(currentUser.role === "Owner" || currentUser.role === "Admin") && (
                 <Link
                   href="/admin"
-                  className="px-3 py-1.5 bg-purple-500/15 border border-purple-500/20 hover:bg-purple-500/20 text-purple-300 text-xs rounded-xl flex items-center gap-1 transition-colors"
+                  className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 text-xs rounded-xl flex items-center gap-1 transition-colors"
                 >
                   <ShieldAlert className="w-3.5 h-3.5" /> Admin Panel
                 </Link>
@@ -192,7 +192,7 @@ export default function DashboardPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search category settings..."
-              className="w-full px-3 py-2 text-xs text-white bg-black/40 border border-white/5 rounded-xl outline-none focus:border-pink-500/40"
+              className="w-full px-3 py-2 text-xs text-white bg-black/40 border border-zinc-800 rounded-xl outline-none focus:border-zinc-500"
             />
           </div>
 
@@ -206,7 +206,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab(t.id)}
                   className={`w-full flex items-center gap-3 px-3 py-3 text-xs font-semibold rounded-xl text-left transition-all ${
                     activeTab === t.id
-                      ? "bg-gradient-to-r from-pink-500/10 to-purple-500/10 border border-pink-500/20 text-pink-500"
+                      ? "bg-zinc-800 border border-zinc-700 text-white"
                       : "hover:bg-white/5 text-zinc-400 hover:text-white border border-transparent"
                   }`}
                 >
@@ -286,7 +286,7 @@ export default function DashboardPage() {
                     step="10"
                     value={config.card.width}
                     onChange={(e) => updateCardProp("width", parseInt(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
 
@@ -300,7 +300,7 @@ export default function DashboardPage() {
                     max="40"
                     value={config.card.glassBlur}
                     onChange={(e) => updateCardProp("glassBlur", parseInt(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
 
@@ -315,7 +315,7 @@ export default function DashboardPage() {
                     step="0.05"
                     value={config.card.backgroundOpacity}
                     onChange={(e) => updateCardProp("backgroundOpacity", parseFloat(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
 
@@ -338,7 +338,7 @@ export default function DashboardPage() {
                     type="checkbox"
                     checked={config.card.floatingEffect}
                     onChange={(e) => updateCardProp("floatingEffect", e.target.checked)}
-                    className="rounded border-white/10 text-pink-500 cursor-pointer"
+                    className="rounded border-white/10 accent-white cursor-pointer"
                   />
                 </div>
               </div>
@@ -393,7 +393,7 @@ export default function DashboardPage() {
                     step="0.05"
                     value={config.background.overlayOpacity}
                     onChange={(e) => updateBgProp("overlayOpacity", parseFloat(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
               </div>
@@ -434,7 +434,7 @@ export default function DashboardPage() {
                     step="10"
                     value={config.particles.density}
                     onChange={(e) => updateParticleProp("density", parseInt(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
 
@@ -449,7 +449,7 @@ export default function DashboardPage() {
                     step="0.1"
                     value={config.particles.speed}
                     onChange={(e) => updateParticleProp("speed", parseFloat(e.target.value))}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-pink-500"
+                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-white"
                   />
                 </div>
               </div>
@@ -531,7 +531,7 @@ export default function DashboardPage() {
                     type="checkbox"
                     checked={config.mediaPlayer.enabled}
                     onChange={(e) => updateMusicProp("enabled", e.target.checked)}
-                    className="rounded border-white/10 text-pink-500 cursor-pointer"
+                    className="rounded border-white/10 accent-white cursor-pointer"
                   />
                 </div>
 
@@ -543,7 +543,7 @@ export default function DashboardPage() {
                         type="checkbox"
                         checked={config.mediaPlayer.autoplay}
                         onChange={(e) => updateMusicProp("autoplay", e.target.checked)}
-                        className="rounded border-white/10 text-pink-500 cursor-pointer"
+                        className="rounded border-white/10 accent-white cursor-pointer"
                       />
                     </div>
 
@@ -582,7 +582,7 @@ export default function DashboardPage() {
                             links: prev.links.map((l) => l.id === link.id ? { ...l, visible: e.target.checked } : l)
                           }));
                         }}
-                        className="rounded border-white/10 text-pink-500 cursor-pointer"
+                        className="rounded border-white/10 accent-white cursor-pointer"
                       />
                     </div>
                     <input
@@ -620,7 +620,7 @@ export default function DashboardPage() {
                           badges: prev.badges.map((bd) => bd.id === b.id ? { ...bd, visible: e.target.checked } : bd)
                         }));
                       }}
-                      className="rounded border-white/10 text-pink-500 cursor-pointer"
+                      className="rounded border-white/10 accent-white cursor-pointer"
                     />
                   </div>
                 ))}
@@ -633,10 +633,10 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-1 gap-2.5">
                   <button
                     onClick={() => applyPreset("neon-pink")}
-                    className="p-3 bg-pink-500/10 border border-pink-500/20 hover:bg-pink-500/20 text-pink-300 text-xs font-semibold rounded-xl text-left transition-colors flex items-center justify-between"
+                    className="p-3 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 text-xs font-semibold rounded-xl text-left transition-colors flex items-center justify-between"
                   >
                     <span>Neon Pink Glow</span>
-                    <Sparkles className="w-4 h-4 text-pink-400" />
+                    <Sparkles className="w-4 h-4 text-white" />
                   </button>
                   <button
                     onClick={() => applyPreset("cyberpunk")}
@@ -663,7 +663,7 @@ export default function DashboardPage() {
         <section className={`flex-1 relative bg-black/25 flex items-center justify-center p-6 ${showFullPreview ? "h-full w-full" : ""}`}>
           <div className="absolute inset-0 z-0 select-none">
             {/* Minimal simulation view of the profile background styles */}
-            <ProfileView config={config} isPreview={true} />
+            <ProfileView config={config} isPreview={true} showDiscordActivity={true} />
           </div>
           
           {/* Subtle floating overlay tag */}
