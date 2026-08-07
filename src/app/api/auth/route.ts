@@ -77,14 +77,37 @@ export async function POST(req: NextRequest) {
       });
     } else {
       // Login
-      const user = db.users.find((u) => u.username === formattedUsername);
+      const envAdminUser = (process.env.ADMIN_USERNAME || "koni").trim().toLowerCase();
+      const envAdminPass = process.env.ADMIN_PASSWORD || "password123";
+
+      let user = db.users.find((u) => u.username === formattedUsername);
+
+      // Dynamically inject/sync owner credentials from active env vars
+      if (formattedUsername === envAdminUser && password === envAdminPass) {
+        if (!user) {
+          user = {
+            username: envAdminUser,
+            password: envAdminPass,
+            role: "Owner",
+            config: {
+              ...DEFAULT_PROFILE_CONFIG,
+              username: envAdminUser,
+              bio: "alternate.lol owner profile",
+            },
+          };
+          db.users.push(user);
+          await writeDb(db);
+        } else if (user.password !== envAdminPass || user.role !== "Owner") {
+          user.password = envAdminPass;
+          user.role = "Owner";
+          await writeDb(db);
+        }
+      }
+
       if (!user) {
-        // If user doesn't exist, we can register them automatically on demand
-        // or return error. Let's return error to follow standard flow.
         return NextResponse.json({ error: "User not found. Claim your slot!" }, { status: 404 });
       }
 
-      // In mock login, if password is provided, we check it (or just let it pass if empty for ease)
       if (password && user.password && user.password !== password) {
         return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
       }
