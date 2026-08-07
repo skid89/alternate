@@ -361,7 +361,7 @@ export default function ProfileCard({ config, isPreview = false, showDiscordActi
           {/* Embedded Media Player inside profile card */}
           {config.mediaPlayer.enabled && config.mediaPlayer.position === "inside-card" && (
             <div className="w-full mt-5">
-              <MediaPlayer config={config.mediaPlayer} />
+              <MediaPlayer config={config.mediaPlayer} isPreview={isPreview} />
             </div>
           )}
         </div>

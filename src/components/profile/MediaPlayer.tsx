@@ -9,6 +9,7 @@ interface MediaPlayerProps {
   onVolumeChange?: (vol: number) => void;
   // If embedded in a preview profile, standard configurations will update live
   onTrackChange?: (index: number) => void;
+  isPreview?: boolean;
 }
 
 interface ParsedLyric {
@@ -16,7 +17,7 @@ interface ParsedLyric {
   text: string;
 }
 
-export default function MediaPlayer({ config, onVolumeChange, onTrackChange }: MediaPlayerProps) {
+export default function MediaPlayer({ config, onVolumeChange, onTrackChange, isPreview = false }: MediaPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -77,10 +78,10 @@ export default function MediaPlayer({ config, onVolumeChange, onTrackChange }: M
 
   // Autoplay setting change
   useEffect(() => {
-    if (config.autoplay && audioRef.current) {
+    if (config.autoplay && !isPreview && audioRef.current) {
       audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
     }
-  }, [config.autoplay, currentTrackIndex]);
+  }, [config.autoplay, currentTrackIndex, isPreview]);
 
   // Sync internal track index with config
   useEffect(() => {
@@ -91,11 +92,13 @@ export default function MediaPlayer({ config, onVolumeChange, onTrackChange }: M
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.src = currentTrack?.url || "";
-      if (isPlaying) {
+      if (isPlaying && !isPreview) {
         audioRef.current.play().catch(() => setIsPlaying(false));
+      } else {
+        setIsPlaying(false);
       }
     }
-  }, [currentTrackIndex]);
+  }, [currentTrackIndex, isPreview]);
 
   const togglePlay = () => {
     const audio = audioRef.current;

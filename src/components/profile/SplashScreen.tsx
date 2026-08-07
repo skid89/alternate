@@ -52,7 +52,7 @@ export default function SplashScreen({ config, onEnter }: SplashScreenProps) {
           onClick={handleEnterClick}
         >
           {/* Subtle Ambient Glow behind */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-pink-500/10 blur-[100px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-white/[0.02] blur-[100px] pointer-events-none" />
 
           {/* Sound Preview Indicator Toggles */}
           {config.enterSoundUrl && (
@@ -71,15 +71,15 @@ export default function SplashScreen({ config, onEnter }: SplashScreenProps) {
           <div className="flex flex-col items-center justify-center text-center px-4 relative z-10">
             {/* Logo Text */}
             <motion.h1
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-3xl md:text-5xl font-bold tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-500"
+              className="text-base md:text-lg font-bold tracking-[0.25em] text-white uppercase"
               style={{
-                textShadow: config.pulseEffect ? "0 0 30px rgba(255, 0, 127, 0.2)" : "none"
+                textShadow: config.pulseEffect ? "0 0 20px rgba(255, 255, 255, 0.1)" : "none"
               }}
             >
-              {config.text || "alternate.lol"}
+              {config.text || "alternate"}
             </motion.h1>
 
             {/* Click to enter subtitle */}
@@ -91,14 +91,14 @@ export default function SplashScreen({ config, onEnter }: SplashScreenProps) {
               transition={{ 
                 opacity: {
                   repeat: Infinity,
-                  duration: 2,
+                  duration: 2.2,
                   ease: "easeInOut"
                 },
                 default: { duration: 0.6, delay: 0.3 }
               }}
-              className="mt-6 text-sm font-medium tracking-widest text-zinc-400 uppercase"
+              className="mt-4 text-[9px] font-semibold tracking-[0.2em] text-zinc-500 uppercase"
             >
-              {config.subtitle || "[ click to enter ]"}
+              {config.subtitle || "click to enter"}
             </motion.p>
           </div>
         </motion.div>

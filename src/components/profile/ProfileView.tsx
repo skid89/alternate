@@ -66,7 +66,7 @@ export default function ProfileView({ config, isPreview = false, showDiscordActi
           <div className="flex-1 flex flex-col items-center justify-center">
             {config.mediaPlayer.enabled && config.mediaPlayer.position !== "inside-card" && (
               <div className="w-full max-w-sm">
-                <MediaPlayer config={config.mediaPlayer} />
+                <MediaPlayer config={config.mediaPlayer} isPreview={isPreview} />
               </div>
             )}
           </div>
@@ -86,7 +86,7 @@ export default function ProfileView({ config, isPreview = false, showDiscordActi
                 Listening & Interactions
               </h3>
               {config.mediaPlayer.enabled && (
-                <MediaPlayer config={config.mediaPlayer} />
+                <MediaPlayer config={config.mediaPlayer} isPreview={isPreview} />
               )}
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function ProfileView({ config, isPreview = false, showDiscordActi
               "fixed bottom-6 right-6" // floating-right
             }`}
           >
-            <MediaPlayer config={config.mediaPlayer} />
+            <MediaPlayer config={config.mediaPlayer} isPreview={isPreview} />
           </div>
         )}
       </div>
