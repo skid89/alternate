@@ -10,7 +10,8 @@ import { FullProfileConfig, BackgroundType, ParticleType, SongTrack, SocialLink,
 import {
   Undo, Redo, RefreshCw, Download, Upload, Palette, User, Maximize2,
   Sliders, Image, Sparkles, Type, Music, Link2, Shield, Settings, Eye,
-  LogOut, Plus, Trash2, ShieldAlert, ArrowLeftRight, Monitor, Play, EyeOff, MousePointer, AppWindow, Loader2, Info
+  LogOut, Plus, Trash2, ShieldAlert, ArrowLeftRight, Monitor, Play, EyeOff, MousePointer, AppWindow, Loader2, Info,
+  Ghost, MessageSquare, Pin, Gamepad, Cloud, Compass, Send, Mail, Globe, Coins
 } from "lucide-react";
 
 // --- CUSTOM TOGGLE SWITCH ---
@@ -190,26 +191,44 @@ export default function DashboardPage() {
     }));
   };
 
-  // Prebuilt Link Options
-  const prebuiltPresets = [
-    { platform: "Discord", url: "https://discord.gg/", glowColor: "#ffffff" },
-    { platform: "YouTube", url: "https://youtube.com/@", glowColor: "#ffffff" },
-    { platform: "TikTok", url: "https://tiktok.com/@", glowColor: "#ffffff" },
-    { platform: "Reddit", url: "https://reddit.com/u/", glowColor: "#ffffff" },
-    { platform: "Spotify", url: "https://open.spotify.com/", glowColor: "#ffffff" },
-    { platform: "SoundCloud", url: "https://soundcloud.com/", glowColor: "#ffffff" },
-    { platform: "Roblox", url: "https://roblox.com/users/", glowColor: "#ffffff" },
-    { platform: "ETH Wallet", url: "0x", glowColor: "#ffffff" },
-    { platform: "LTC Wallet", url: "L", glowColor: "#ffffff" },
-    { platform: "BTC Wallet", url: "bc1", glowColor: "#ffffff" },
-    { platform: "Custom Website", url: "https://", glowColor: "#ffffff" },
+  // Prebuilt Link Options with icons and placeholders
+  const [selectedPlatform, setSelectedPlatform] = useState("X");
+  const [socialMode, setSocialMode] = useState<"text" | "link">("link");
+  const [linkSourceValue, setLinkSourceValue] = useState("");
+
+  const platforms = [
+    { id: "X", name: "X", placeholder: "x.com/username", icon: Globe, glowColor: "#ffffff" },
+    { id: "Snapchat", name: "Snapchat", placeholder: "snapchat.com/add/username", icon: Ghost, glowColor: "#FFFC00" },
+    { id: "Instagram", name: "Instagram", placeholder: "instagram.com/username", icon: User, glowColor: "#E1306C" },
+    { id: "YouTube", name: "YouTube", placeholder: "youtube.com/@username", icon: Play, glowColor: "#FF0000" },
+    { id: "Reddit", name: "Reddit", placeholder: "reddit.com/u/username", icon: Globe, glowColor: "#FF4500" },
+    { id: "TikTok", name: "TikTok", placeholder: "tiktok.com/@username", icon: Music, glowColor: "#00f2fe" },
+    { id: "Facebook", name: "Facebook", placeholder: "facebook.com/username", icon: Globe, glowColor: "#1877F2" },
+    { id: "Spotify", name: "Spotify", placeholder: "open.spotify.com/artist/...", icon: Music, glowColor: "#1DB954" },
+    { id: "Steam", name: "Steam", placeholder: "steamcommunity.com/id/...", icon: Gamepad, glowColor: "#00adee" },
+    { id: "Discord", name: "Discord", placeholder: "discord.gg/invite", icon: MessageSquare, glowColor: "#5865F2" },
+    { id: "Riot", name: "Riot Games", placeholder: "riotgames.com/...", icon: Shield, glowColor: "#D11F36" },
+    { id: "Pinterest", name: "Pinterest", placeholder: "pinterest.com/username", icon: Pin, glowColor: "#BD081C" },
+    { id: "Roblox", name: "Roblox", placeholder: "roblox.com/users/...", icon: Gamepad, glowColor: "#ffffff" },
+    { id: "PayPal", name: "PayPal", placeholder: "paypal.me/username", icon: Coins, glowColor: "#003087" },
+    { id: "GitHub", name: "GitHub", placeholder: "github.com/username", icon: Settings, glowColor: "#ffffff" },
+    { id: "SoundCloud", name: "SoundCloud", placeholder: "soundcloud.com/username", icon: Cloud, glowColor: "#FF5500" },
+    { id: "Ethereum", name: "Ethereum", placeholder: "0x...", icon: Compass, glowColor: "#3c3c3d" },
+    { id: "Bitcoin", name: "Bitcoin", placeholder: "bc1...", icon: Coins, glowColor: "#f7931a" },
+    { id: "Litecoin", name: "Litecoin", placeholder: "L...", icon: Coins, glowColor: "#bfbbbb" },
+    { id: "Telegram", name: "Telegram", placeholder: "t.me/username", icon: Send, glowColor: "#0088cc" },
+    { id: "Email", name: "Email", placeholder: "example@mail.com", icon: Mail, glowColor: "#ffffff" },
+    { id: "Website", name: "Website", placeholder: "https://example.com", icon: Globe, glowColor: "#ffffff" },
   ];
 
-  const handleAddPresetLink = (preset: typeof prebuiltPresets[0]) => {
+  const handleAddPresetLink = () => {
+    const preset = platforms.find(p => p.id === selectedPlatform);
+    if (!preset) return;
+
     const newLink: SocialLink = {
       id: Math.random().toString(),
-      platform: preset.platform,
-      url: preset.url,
+      platform: preset.name,
+      url: linkSourceValue || preset.placeholder,
       glow: false,
       glowColor: preset.glowColor,
       animation: "none",
@@ -220,6 +239,7 @@ export default function DashboardPage() {
       ...prev,
       links: [...prev.links, newLink]
     }));
+    setLinkSourceValue("");
     setShowLinkModal(false);
   };
 
@@ -1498,25 +1518,107 @@ export default function DashboardPage() {
 
       {/* --- PREBUILT LINKS GUI SELECTION MODAL --- */}
       {showLinkModal && (
-        <div className="fixed inset-0 bg-black/75 z-[999] flex items-center justify-center p-6 backdrop-blur-sm">
-          <div className="w-full max-w-md bg-zinc-950 border border-zinc-900 p-6 rounded-2xl flex flex-col gap-4 shadow-2xl animate-fade-in">
+        <div className="fixed inset-0 bg-black/85 z-[999] flex items-center justify-center p-6 backdrop-blur-md">
+          <div className="w-full max-w-sm bg-zinc-950 border border-zinc-900 p-6 rounded-2xl flex flex-col gap-5 shadow-2xl animate-fade-in">
+            {/* Header */}
             <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Select Prebuilt Link Preset</span>
-              <button onClick={() => setShowLinkModal(false)} className="text-zinc-500 hover:text-white text-xs">Close</button>
+              <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">Add Social</span>
+              <button 
+                onClick={() => {
+                  setShowLinkModal(false);
+                  setLinkSourceValue("");
+                }} 
+                className="text-zinc-500 hover:text-white text-xs font-semibold uppercase tracking-wider transition-colors"
+              >
+                Close
+              </button>
             </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 overflow-y-auto max-h-96 pt-2">
-              {prebuiltPresets.map((preset) => (
+
+            {/* Platform Selection */}
+            <div>
+              <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1">
+                <span>🔗</span> Select link type
+              </div>
+              <label className="block text-[9px] text-zinc-550 font-bold uppercase mb-2">Link Type</label>
+              
+              {/* Grid of round brand icons */}
+              <div className="grid grid-cols-6 gap-2.5 max-h-56 overflow-y-auto pr-1">
+                {platforms.map((platform) => {
+                  const IconComponent = platform.icon;
+                  const isSelected = selectedPlatform === platform.id;
+                  return (
+                    <button
+                      key={platform.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedPlatform(platform.id);
+                        setLinkSourceValue("");
+                      }}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${
+                        isSelected
+                          ? "bg-blue-600 text-white shadow-lg scale-105"
+                          : "bg-zinc-900/60 border border-zinc-900 text-zinc-400 hover:text-white hover:border-zinc-700"
+                      }`}
+                      title={platform.name}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Social Mode Pills */}
+            <div>
+              <label className="block text-[9px] text-zinc-550 font-bold uppercase mb-2">Social Mode</label>
+              <div className="bg-zinc-900/70 p-1 rounded-xl flex gap-1 border border-zinc-900/40">
                 <button
-                  key={preset.platform}
                   type="button"
-                  onClick={() => handleAddPresetLink(preset)}
-                  className="p-4 bg-zinc-900/50 border border-zinc-900 hover:bg-zinc-900 hover:border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-center flex flex-col items-center gap-1.5 transition-all text-xs font-bold uppercase tracking-wider"
+                  onClick={() => setSocialMode("text")}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all uppercase tracking-wider ${
+                    socialMode === "text"
+                      ? "bg-zinc-800 text-white shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-300"
+                  }`}
                 >
-                  <span>{preset.platform}</span>
+                  Text
                 </button>
-              ))}
+                <button
+                  type="button"
+                  onClick={() => setSocialMode("link")}
+                  className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all uppercase tracking-wider ${
+                    socialMode === "link"
+                      ? "bg-zinc-800 text-white shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-300"
+                  }`}
+                >
+                  Link
+                </button>
+              </div>
             </div>
+
+            {/* Source Input */}
+            <div>
+              <label className="block text-[9px] text-zinc-550 font-bold uppercase mb-2">Source</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={linkSourceValue}
+                  onChange={(e) => setLinkSourceValue(e.target.value)}
+                  placeholder={platforms.find((p) => p.id === selectedPlatform)?.placeholder || ""}
+                  className="w-full px-3.5 py-2.5 text-xs text-white bg-black/40 border border-zinc-900 rounded-xl outline-none focus:border-zinc-700 transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="button"
+              onClick={handleAddPresetLink}
+              className="w-full py-3 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 hover:border-zinc-700 text-white text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all shadow-md"
+            >
+              Submit
+            </button>
           </div>
         </div>
       )}

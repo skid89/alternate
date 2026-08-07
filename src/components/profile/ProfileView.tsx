@@ -150,7 +150,9 @@ export default function ProfileView({ config, isPreview = false, showDiscordActi
       )}
 
       {/* Splash click screen */}
-      <SplashScreen config={config.splash} onEnter={() => setShowProfile(true)} />
+      {!isPreview && (
+        <SplashScreen config={config.splash} onEnter={() => setShowProfile(true)} />
+      )}
 
       {showProfile && (
         <>
