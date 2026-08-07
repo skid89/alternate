@@ -27,7 +27,11 @@ export interface DatabaseSchema {
   auditLogs: AuditLog[];
 }
 
-const DB_FILE = path.join(process.cwd(), "data", "alternate_db.json");
+// Persistent locally, but falls back to temporary directory on Serverless hosts (e.g. Vercel) where filesystem is read-only
+const isServerless = process.env.VERCEL || process.env.LAMBDA_TASK_ROOT || process.env.AWS_EXECUTION_ENV;
+const DB_FILE = isServerless 
+  ? path.join(os.tmpdir(), "alternate_db.json")
+  : path.join(process.cwd(), "data", "alternate_db.json");
 
 // PostgreSQL connection pool (instantiated only if URL is provided)
 const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
