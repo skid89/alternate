@@ -45,6 +45,7 @@ interface ProfileContextType {
   
   // Auth state
   currentUser: { username: string; role: UserAccount["role"] } | null;
+  loadingSession: boolean;
   login: (username: string, role: UserAccount["role"]) => Promise<boolean>;
   logout: () => void;
   
@@ -62,6 +63,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   
   const [users, setUsers] = useState<UserAccount[]>([]);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: UserAccount["role"] } | null>(null);
+  const [loadingSession, setLoadingSession] = useState(true);
   
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(false);
   const [announcement, setAnnouncement] = useState<string>("");
@@ -72,6 +74,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
   // Load from API on mount
   const loadData = async () => {
     try {
+      setLoadingSession(true);
       // 1. Check current session
       const authRes = await fetch("/api/auth");
       const authData = await authRes.json();
@@ -92,6 +95,8 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
       setUsers(adminData.users);
     } catch (e) {
       console.error("Failed to load initial backend configurations", e);
+    } finally {
+      setLoadingSession(false);
     }
   };
 
@@ -319,6 +324,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         auditLogs,
         addAuditLog,
         currentUser,
+        loadingSession,
         login,
         logout,
         activeViewUsername,

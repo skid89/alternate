@@ -46,11 +46,14 @@ if (connectionString) {
   });
 }
 
+const adminUser = process.env.ADMIN_USERNAME || "koni";
+const adminPass = process.env.ADMIN_PASSWORD || "password123";
+
 const initialData: DatabaseSchema = {
   users: [
     {
-      username: "koni",
-      password: "password123",
+      username: adminUser.toLowerCase(),
+      password: adminPass,
       role: "Owner",
       config: DEFAULT_PROFILE_CONFIG,
     },

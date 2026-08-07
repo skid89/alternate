@@ -1,27 +1,107 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useProfile } from "@/context/ProfileContext";
 import ProfileView from "@/components/profile/ProfileView";
+import CloudinaryUploadButton from "@/components/profile/CloudinaryUploadButton";
 import { FullProfileConfig, BackgroundType, ParticleType, SongTrack, SocialLink, BadgeConfig, WidgetConfig } from "@/types/profile";
 import {
   Undo, Redo, RefreshCw, Download, Upload, Palette, User, Maximize2,
   Sliders, Image, Sparkles, Type, Music, Link2, Shield, Settings, Eye,
-  LogOut, Plus, Trash2, ShieldAlert, ArrowLeftRight, Monitor, Play, EyeOff, MousePointer, AppWindow
+  LogOut, Plus, Trash2, ShieldAlert, ArrowLeftRight, Monitor, Play, EyeOff, MousePointer, AppWindow, Loader2, Info
 } from "lucide-react";
+
+// --- CUSTOM TOGGLE SWITCH ---
+function CustomToggle({ checked, onChange }: { checked: boolean; onChange: (val: boolean) => void }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors border outline-none ${
+        checked ? "bg-white border-white" : "bg-black border-zinc-800"
+      }`}
+    >
+      <span
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-current transition-transform ${
+          checked ? "translate-x-4 text-black" : "translate-x-0.5 text-zinc-500"
+        }`}
+      />
+    </button>
+  );
+}
+
+// --- CUSTOM DROPDOWN ---
+function CustomDropdown<T extends string>({
+  value,
+  options,
+  onChange
+}: {
+  value: T;
+  options: { value: T; label: string }[];
+  onChange: (val: T) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedLabel = options.find((o) => o.value === value)?.label || value;
+
+  return (
+    <div className="relative w-full">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full px-3 py-2 text-xs text-left text-white bg-zinc-950 border border-zinc-800 rounded-xl flex items-center justify-between outline-none hover:border-zinc-700 transition-colors"
+      >
+        <span>{selectedLabel}</span>
+        <span className="text-[9px] text-zinc-500 transition-transform duration-200" style={{ transform: open ? "rotate(180deg)" : "none" }}>▼</span>
+      </button>
+
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute left-0 right-0 mt-1 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl z-40 max-h-48 overflow-y-auto p-1 flex flex-col gap-0.5">
+            {options.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+                className={`w-full px-3 py-1.5 text-xs text-left rounded-lg transition-colors ${
+                  value === opt.value
+                    ? "bg-white text-black font-semibold"
+                    : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function DashboardPage() {
   const router = useRouter();
   const {
     config, updateConfig, undo, redo, resetConfig, applyPreset,
-    currentUser, logout
+    currentUser, loadingSession, logout
   } = useProfile();
 
   const [activeTab, setActiveTab] = useState("profile");
   const [showFullPreview, setShowFullPreview] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLinkModal, setShowLinkModal] = useState(false);
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!loadingSession && !currentUser) {
+      router.push("/login");
+    }
+  }, [currentUser, loadingSession]);
 
   const handleLogout = () => {
     logout();
@@ -60,7 +140,7 @@ export default function DashboardPage() {
     }
   };
 
-  // Helper updater functions for card properties
+  // Helper updaters
   const updateCardProp = (prop: keyof FullProfileConfig["card"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -68,7 +148,6 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for background properties
   const updateBgProp = (prop: keyof FullProfileConfig["background"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -76,7 +155,6 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for particle properties
   const updateParticleProp = (prop: keyof FullProfileConfig["particles"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -84,7 +162,6 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for typography properties
   const updateTypographyProp = (prop: keyof FullProfileConfig["typography"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -92,7 +169,6 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for music properties
   const updateMusicProp = (prop: keyof FullProfileConfig["mediaPlayer"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -100,7 +176,6 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for cursor properties
   const updateCursorProp = (prop: keyof FullProfileConfig["cursor"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
@@ -108,12 +183,44 @@ export default function DashboardPage() {
     }));
   };
 
-  // Helper updater for splash properties
   const updateSplashProp = (prop: keyof FullProfileConfig["splash"], value: any) => {
     updateConfig((prev) => ({
       ...prev,
       splash: { ...prev.splash, [prop]: value }
     }));
+  };
+
+  // Prebuilt Link Options
+  const prebuiltPresets = [
+    { platform: "Discord", url: "https://discord.gg/", glowColor: "#5865F2" },
+    { platform: "YouTube", url: "https://youtube.com/@", glowColor: "#FF0000" },
+    { platform: "TikTok", url: "https://tiktok.com/@", glowColor: "#00f2fe" },
+    { platform: "Reddit", url: "https://reddit.com/u/", glowColor: "#FF4500" },
+    { platform: "Spotify", url: "https://open.spotify.com/", glowColor: "#1DB954" },
+    { platform: "SoundCloud", url: "https://soundcloud.com/", glowColor: "#FF5500" },
+    { platform: "Roblox", url: "https://roblox.com/users/", glowColor: "#ffffff" },
+    { platform: "ETH Wallet", url: "0x", glowColor: "#3c3c3d" },
+    { platform: "LTC Wallet", url: "L", glowColor: "#bfbbbb" },
+    { platform: "BTC Wallet", url: "bc1", glowColor: "#f7931a" },
+    { platform: "Custom Website", url: "https://", glowColor: "#ffffff" },
+  ];
+
+  const handleAddPresetLink = (preset: typeof prebuiltPresets[0]) => {
+    const newLink: SocialLink = {
+      id: Math.random().toString(),
+      platform: preset.platform,
+      url: preset.url,
+      glow: true,
+      glowColor: preset.glowColor,
+      animation: "none",
+      iconColor: "#ffffff",
+      visible: true
+    };
+    updateConfig((prev) => ({
+      ...prev,
+      links: [...prev.links, newLink]
+    }));
+    setShowLinkModal(false);
   };
 
   // Sidebar Category Tabs definition
@@ -135,6 +242,19 @@ export default function DashboardPage() {
   const filteredTabs = tabs.filter((t) =>
     t.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (loadingSession) {
+    return (
+      <main className="w-full min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-zinc-400" />
+          <span className="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Verifying Session...</span>
+        </div>
+      </main>
+    );
+  }
+
+  if (!currentUser) return null;
 
   return (
     <main className="w-full min-h-screen bg-black text-white flex flex-col select-none relative">
@@ -171,30 +291,28 @@ export default function DashboardPage() {
           <span className="h-4 w-[1px] bg-zinc-800" />
 
           {/* User authentication status & quick admin jumps */}
-          {currentUser && (
-            <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800">
-                {currentUser.role}
-              </span>
-              
-              {(currentUser.role === "Owner" || currentUser.role === "Admin") && (
-                <Link
-                  href="/admin"
-                  className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 text-xs rounded-xl flex items-center gap-1 transition-colors"
-                >
-                  <ShieldAlert className="w-3.5 h-3.5" /> Admin Panel
-                </Link>
-              )}
-
-              <button
-                onClick={handleLogout}
-                className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-white rounded-lg transition-colors"
-                title="Sign out"
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-lg bg-zinc-900 text-zinc-300 border border-zinc-800">
+              {currentUser.role}
+            </span>
+            
+            {(currentUser.role === "Owner" || currentUser.role === "Admin") && (
+              <Link
+                href="/admin"
+                className="px-3 py-1.5 bg-zinc-900 border border-zinc-800 hover:bg-zinc-850 text-zinc-300 text-xs rounded-xl flex items-center gap-1 transition-colors"
               >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+                <ShieldAlert className="w-3.5 h-3.5" /> Admin Panel
+              </Link>
+            )}
+
+            <button
+              onClick={handleLogout}
+              className="p-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-white rounded-lg transition-colors"
+              title="Sign out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -279,11 +397,9 @@ export default function DashboardPage() {
 
                   <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl">
                     <span className="text-xs font-semibold text-zinc-300">Enable Splash screen</span>
-                    <input
-                      type="checkbox"
+                    <CustomToggle
                       checked={config.splash.enabled}
-                      onChange={(e) => updateSplashProp("enabled", e.target.checked)}
-                      className="rounded border-zinc-800 accent-white cursor-pointer"
+                      onChange={(val) => updateSplashProp("enabled", val)}
                     />
                   </div>
 
@@ -320,7 +436,14 @@ export default function DashboardPage() {
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Sound URL (Played on Click)</label>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Sound Track (MP3/WAV)</label>
+                          <CloudinaryUploadButton
+                            onUploadSuccess={(url) => updateSplashProp("enterSoundUrl", url)}
+                            accept="audio/*"
+                            label="Upload Audio"
+                          />
+                        </div>
                         <input
                           type="text"
                           value={config.splash.enterSoundUrl}
@@ -366,16 +489,16 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Card Layout Type</label>
-                  <select
+                  <CustomDropdown
                     value={config.card.layout}
-                    onChange={(e) => updateCardProp("layout", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="floating-card">Floating Card (Centered)</option>
-                    <option value="centered">Centered Stack</option>
-                    <option value="sidebar-layout">Sidebar split-screen</option>
-                    <option value="fullscreen-layout">Double Panel Wide Grid</option>
-                  </select>
+                    options={[
+                      { value: "floating-card", label: "Floating Card (Centered)" },
+                      { value: "centered", label: "Centered Stack" },
+                      { value: "sidebar-layout", label: "Sidebar split-screen" },
+                      { value: "fullscreen-layout", label: "Double Panel Wide Grid" }
+                    ]}
+                    onChange={(val) => updateCardProp("layout", val)}
+                  />
                 </div>
 
                 <div>
@@ -424,15 +547,15 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Border Accent Effect</label>
-                  <select
+                  <CustomDropdown
                     value={config.card.borderEffect}
-                    onChange={(e) => updateCardProp("borderEffect", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="none">Static Outline Border</option>
-                    <option value="animated-gradient">Neon Rainbow Border</option>
-                    <option value="breathing">Pulsing Glow Border</option>
-                  </select>
+                    options={[
+                      { value: "none", label: "Static Outline Border" },
+                      { value: "animated-gradient", label: "Neon Rainbow Border" },
+                      { value: "breathing", label: "Pulsing Glow Border" }
+                    ]}
+                    onChange={(val) => updateCardProp("borderEffect", val)}
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 border-t border-zinc-850 pt-3">
@@ -487,11 +610,9 @@ export default function DashboardPage() {
 
                 <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl mt-2">
                   <span className="text-xs font-semibold text-zinc-300">Apply floating hover drift</span>
-                  <input
-                    type="checkbox"
+                  <CustomToggle
                     checked={config.card.floatingEffect}
-                    onChange={(e) => updateCardProp("floatingEffect", e.target.checked)}
-                    className="rounded border-zinc-800 accent-white cursor-pointer"
+                    onChange={(val) => updateCardProp("floatingEffect", val)}
                   />
                 </div>
               </div>
@@ -504,17 +625,17 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Wallpaper Type</label>
-                  <select
+                  <CustomDropdown
                     value={config.background.type}
-                    onChange={(e) => updateBgProp("type", e.target.value as BackgroundType)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="solid">Solid Color Background</option>
-                    <option value="linear-gradient">Dual Linear Gradient</option>
-                    <option value="animated-gradient">Animated Wave Gradient</option>
-                    <option value="gif">GIF Wallpaper</option>
-                    <option value="video">MP4 Video Wallpaper</option>
-                  </select>
+                    options={[
+                      { value: "solid", label: "Solid Color Background" },
+                      { value: "linear-gradient", label: "Dual Linear Gradient" },
+                      { value: "animated-gradient", label: "Animated Wave Gradient" },
+                      { value: "gif", label: "GIF / Image Wallpaper" },
+                      { value: "video", label: "MP4 Video Wallpaper" }
+                    ]}
+                    onChange={(val) => updateBgProp("type", val)}
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -540,7 +661,14 @@ export default function DashboardPage() {
 
                 {(config.background.type === "gif" || config.background.type === "solid") && (
                   <div>
-                    <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Image / GIF URL</label>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Wallpaper Image / GIF</label>
+                      <CloudinaryUploadButton
+                        onUploadSuccess={(url) => updateBgProp("imageUrl", url)}
+                        accept="image/*"
+                        label="Upload Image"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={config.background.imageUrl || ""}
@@ -553,7 +681,14 @@ export default function DashboardPage() {
 
                 {config.background.type === "video" && (
                   <div>
-                    <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">MP4 Video URL</label>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider">MP4 Video</label>
+                      <CloudinaryUploadButton
+                        onUploadSuccess={(url) => updateBgProp("videoUrl", url)}
+                        accept="video/mp4"
+                        label="Upload Video"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={config.background.videoUrl || ""}
@@ -595,7 +730,7 @@ export default function DashboardPage() {
                   
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <div className="flex justify-between text-[10px] text-zinc-500 font-semibold mb-1">
+                      <div className="flex justify-between text-[10px] text-zinc-505 font-semibold mb-1">
                         <span>Blur ({config.background.blur || 0}px)</span>
                       </div>
                       <input
@@ -609,7 +744,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <div className="flex justify-between text-[10px] text-zinc-500 font-semibold mb-1">
+                      <div className="flex justify-between text-[10px] text-zinc-505 font-semibold mb-1">
                         <span>Brightness ({config.background.brightness || 100}%)</span>
                       </div>
                       <input
@@ -633,22 +768,22 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Particle System Style</label>
-                  <select
+                  <CustomDropdown
                     value={config.particles.type}
-                    onChange={(e) => updateParticleProp("type", e.target.value as ParticleType)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="none">Disable particles</option>
-                    <option value="stars">Stars dust</option>
-                    <option value="snow">Winter Snowfall</option>
-                    <option value="rain">Digital Rain storm</option>
-                    <option value="sakura">Cherry Blossom Sakura</option>
-                    <option value="matrix">Green Matrix Code Rain</option>
-                    <option value="hearts">Floating Hearts</option>
-                    <option value="bubbles">Ambient Glass Bubbles</option>
-                    <option value="sparkles">Four-Point Sparkles</option>
-                    <option value="hexagons">Wireframe Hexagons</option>
-                  </select>
+                    options={[
+                      { value: "none", label: "Disable particles" },
+                      { value: "stars", label: "Stars dust" },
+                      { value: "snow", label: "Winter Snowfall" },
+                      { value: "rain", label: "Digital Rain storm" },
+                      { value: "sakura", label: "Cherry Blossom Sakura" },
+                      { value: "matrix", label: "Green Matrix Code Rain" },
+                      { value: "hearts", label: "Floating Hearts" },
+                      { value: "bubbles", label: "Ambient Glass Bubbles" },
+                      { value: "sparkles", label: "Four-Point Sparkles" },
+                      { value: "hexagons", label: "Wireframe Hexagons" }
+                    ]}
+                    onChange={(val) => updateParticleProp("type", val)}
+                  />
                 </div>
 
                 <div>
@@ -715,29 +850,29 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Font Style family</label>
-                  <select
+                  <CustomDropdown
                     value={config.typography.fontFamily}
-                    onChange={(e) => updateTypographyProp("fontFamily", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="Geist Sans">Geist Sans (Clean)</option>
-                    <option value="Outfit">Outfit (Round premium)</option>
-                    <option value="Arial">Arial (System default)</option>
-                    <option value="Courier New">Courier New (Monospace)</option>
-                  </select>
+                    options={[
+                      { value: "Geist Sans", label: "Geist Sans (Clean)" },
+                      { value: "Outfit", label: "Outfit (Round premium)" },
+                      { value: "Arial", label: "Arial (System default)" },
+                      { value: "Courier New", label: "Courier New (Monospace)" }
+                    ]}
+                    onChange={(val) => updateTypographyProp("fontFamily", val)}
+                  />
                 </div>
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Username Color Mode</label>
-                  <select
+                  <CustomDropdown
                     value={config.typography.textEffect}
-                    onChange={(e) => updateTypographyProp("textEffect", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="none">Solid Color</option>
-                    <option value="gradient">Custom Gradient</option>
-                    <option value="rainbow">Animated Rainbow</option>
-                  </select>
+                    options={[
+                      { value: "none", label: "Solid Color" },
+                      { value: "gradient", label: "Custom Gradient" },
+                      { value: "rainbow", label: "Animated Rainbow" }
+                    ]}
+                    onChange={(val) => updateTypographyProp("textEffect", val)}
+                  />
                 </div>
 
                 {config.typography.textEffect === "none" ? (
@@ -803,11 +938,9 @@ export default function DashboardPage() {
 
                 <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl">
                   <span className="text-xs font-semibold text-zinc-300">Enable media player module</span>
-                  <input
-                    type="checkbox"
+                  <CustomToggle
                     checked={config.mediaPlayer.enabled}
-                    onChange={(e) => updateMusicProp("enabled", e.target.checked)}
-                    className="rounded border-zinc-800 accent-white cursor-pointer"
+                    onChange={(val) => updateMusicProp("enabled", val)}
                   />
                 </div>
 
@@ -816,37 +949,33 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-2 gap-2">
                       <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl">
                         <span className="text-xs font-semibold text-zinc-300">Autoplay</span>
-                        <input
-                          type="checkbox"
+                        <CustomToggle
                           checked={config.mediaPlayer.autoplay}
-                          onChange={(e) => updateMusicProp("autoplay", e.target.checked)}
-                          className="rounded border-zinc-800 accent-white cursor-pointer"
+                          onChange={(val) => updateMusicProp("autoplay", val)}
                         />
                       </div>
                       <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl">
                         <span className="text-xs font-semibold text-zinc-300">Loop tracks</span>
-                        <input
-                          type="checkbox"
+                        <CustomToggle
                           checked={config.mediaPlayer.loop}
-                          onChange={(e) => updateMusicProp("loop", e.target.checked)}
-                          className="rounded border-zinc-800 accent-white cursor-pointer"
+                          onChange={(val) => updateMusicProp("loop", val)}
                         />
                       </div>
                     </div>
 
                     <div>
                       <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Player Position</label>
-                      <select
+                      <CustomDropdown
                         value={config.mediaPlayer.position}
-                        onChange={(e) => updateMusicProp("position", e.target.value)}
-                        className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                      >
-                        <option value="inside-card">Inside Card container</option>
-                        <option value="top">Top float header</option>
-                        <option value="bottom">Bottom footer float</option>
-                        <option value="floating-left">Floating Left corner</option>
-                        <option value="floating-right">Floating Right corner</option>
-                      </select>
+                        options={[
+                          { value: "inside-card", label: "Inside Card container" },
+                          { value: "top", label: "Top float header" },
+                          { value: "bottom", label: "Bottom footer float" },
+                          { value: "floating-left", label: "Floating Left corner" },
+                          { value: "floating-right", label: "Floating Right corner" }
+                        ]}
+                        onChange={(val) => updateMusicProp("position", val)}
+                      />
                     </div>
 
                     {/* Tracks Manager */}
@@ -867,7 +996,7 @@ export default function DashboardPage() {
                           }}
                           className="px-2 py-1 bg-white text-black text-[10px] font-bold rounded-lg hover:bg-zinc-200 transition-colors flex items-center gap-1"
                         >
-                          <Plus className="w-3 h-3" /> Add Track
+                          <Plus className="w-3.5 h-3.5" /> Add Track
                         </button>
                       </div>
 
@@ -919,7 +1048,18 @@ export default function DashboardPage() {
                             </div>
 
                             <div>
-                              <label className="block text-[9px] text-zinc-455 uppercase mb-0.5">Audio File Stream URL</label>
+                              <div className="flex justify-between items-center mb-1.5">
+                                <label className="block text-[9px] text-zinc-455 uppercase">Audio File Stream</label>
+                                <CloudinaryUploadButton
+                                  onUploadSuccess={(url) => {
+                                    const updatedList = [...config.mediaPlayer.trackList];
+                                    updatedList[index].url = url;
+                                    updateMusicProp("trackList", updatedList);
+                                  }}
+                                  accept="audio/*"
+                                  label="Upload Audio"
+                                />
+                              </div>
                               <input
                                 type="text"
                                 value={track.url}
@@ -947,14 +1087,12 @@ export default function DashboardPage() {
                 
                 <div className="flex items-center justify-between p-2.5 bg-black/30 border border-zinc-850 rounded-xl">
                   <span className="text-xs font-semibold text-zinc-300">Enable Live Lanyard Presence</span>
-                  <input
-                    type="checkbox"
+                  <CustomToggle
                     checked={config.discord.enabled}
-                    onChange={(e) => updateConfig((prev) => ({
+                    onChange={(val) => updateConfig((prev) => ({
                       ...prev,
-                      discord: { ...prev.discord, enabled: e.target.checked }
+                      discord: { ...prev.discord, enabled: val }
                     }))}
-                    className="rounded border-zinc-800 accent-white cursor-pointer"
                   />
                 </div>
 
@@ -983,25 +1121,10 @@ export default function DashboardPage() {
                 <h3 className="text-sm font-bold text-zinc-300 uppercase tracking-wider">Social Links List</h3>
                 <div className="flex justify-end">
                   <button
-                    onClick={() => {
-                      const newLink: SocialLink = {
-                        id: Math.random().toString(),
-                        platform: "Website",
-                        url: "https://",
-                        glow: false,
-                        glowColor: "#ffffff",
-                        animation: "none",
-                        iconColor: "#ffffff",
-                        visible: true
-                      };
-                      updateConfig((prev) => ({
-                        ...prev,
-                        links: [...prev.links, newLink]
-                      }));
-                    }}
+                    onClick={() => setShowLinkModal(true)}
                     className="px-2 py-1 bg-white text-black text-[10px] font-bold rounded-lg hover:bg-zinc-200 transition-colors flex items-center gap-1"
                   >
-                    <Plus className="w-3 h-3" /> Add Link
+                    <Plus className="w-3.5 h-3.5" /> Add Preset Link
                   </button>
                 </div>
 
@@ -1022,7 +1145,7 @@ export default function DashboardPage() {
 
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="block text-[9px] text-zinc-500 uppercase mb-0.5">Platform name</label>
+                          <label className="block text-[9px] text-zinc-505 uppercase mb-0.5">Platform name</label>
                           <input
                             type="text"
                             value={link.platform}
@@ -1036,21 +1159,19 @@ export default function DashboardPage() {
                         </div>
                         <div className="flex items-center justify-end pt-4">
                           <label className="text-[10px] font-semibold text-zinc-400 mr-2">Visible</label>
-                          <input
-                            type="checkbox"
+                          <CustomToggle
                             checked={link.visible}
-                            onChange={(e) => {
+                            onChange={(val) => {
                               const updated = [...config.links];
-                              updated[idx].visible = e.target.checked;
+                              updated[idx].visible = val;
                               updateConfig((prev) => ({ ...prev, links: updated }));
                             }}
-                            className="rounded border-zinc-800 accent-white cursor-pointer"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-[9px] text-zinc-500 uppercase mb-0.5">Redirect URL</label>
+                        <label className="block text-[9px] text-zinc-505 uppercase mb-0.5">Redirect URL</label>
                         <input
                           type="text"
                           value={link.url}
@@ -1066,15 +1187,13 @@ export default function DashboardPage() {
                       <div className="grid grid-cols-2 gap-2 pt-2 border-t border-zinc-900">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] text-zinc-400 font-semibold">Glow effect</span>
-                          <input
-                            type="checkbox"
+                          <CustomToggle
                             checked={link.glow}
-                            onChange={(e) => {
+                            onChange={(val) => {
                               const updated = [...config.links];
-                              updated[idx].glow = e.target.checked;
+                              updated[idx].glow = val;
                               updateConfig((prev) => ({ ...prev, links: updated }));
                             }}
-                            className="rounded border-zinc-800 accent-white cursor-pointer"
                           />
                         </div>
                         {link.glow && (
@@ -1111,15 +1230,13 @@ export default function DashboardPage() {
                           <div className="text-xs font-bold text-white">{b.name}</div>
                           <div className="text-[9px] text-zinc-500">{b.tooltip}</div>
                         </div>
-                        <input
-                          type="checkbox"
+                        <CustomToggle
                           checked={b.visible}
-                          onChange={(e) => {
+                          onChange={(val) => {
                             const updated = [...config.badges];
-                            updated[idx].visible = e.target.checked;
+                            updated[idx].visible = val;
                             updateConfig((prev) => ({ ...prev, badges: updated }));
                           }}
-                          className="rounded border-zinc-800 accent-white cursor-pointer"
                         />
                       </div>
 
@@ -1140,20 +1257,20 @@ export default function DashboardPage() {
                           </div>
                           <div>
                             <label className="block text-[9px] text-zinc-500 uppercase mb-0.5">Badge Animation</label>
-                            <select
+                            <CustomDropdown
                               value={b.animation}
-                              onChange={(e) => {
+                              options={[
+                                { value: "none", label: "No Anim" },
+                                { value: "rotate", label: "Infinite Spin" },
+                                { value: "pulse", label: "Pulse scale" },
+                                { value: "float", label: "Floating hover" }
+                              ]}
+                              onChange={(val) => {
                                 const updated = [...config.badges];
-                                updated[idx].animation = e.target.value as any;
+                                updated[idx].animation = val as any;
                                 updateConfig((prev) => ({ ...prev, badges: updated }));
                               }}
-                              className="w-full px-2 py-1 text-xs text-white bg-zinc-900 border border-zinc-800 rounded-lg outline-none"
-                            >
-                              <option value="none">No Anim</option>
-                              <option value="rotate">Infinite Spin</option>
-                              <option value="pulse">Pulse scale</option>
-                              <option value="float">Floating hover</option>
-                            </select>
+                            />
                           </div>
                         </div>
                       )}
@@ -1170,19 +1287,26 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Cursor Type</label>
-                  <select
+                  <CustomDropdown
                     value={config.cursor.type}
-                    onChange={(e) => updateCursorProp("type", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="default">Standard Cursor</option>
-                    <option value="custom">Custom Image / Link</option>
-                  </select>
+                    options={[
+                      { value: "default", label: "Standard Cursor" },
+                      { value: "custom", label: "Custom Image / Link" }
+                    ]}
+                    onChange={(val) => updateCursorProp("type", val)}
+                  />
                 </div>
 
                 {config.cursor.type === "custom" && (
                   <div>
-                    <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Cursor Image URL (PNG/CUR)</label>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Custom Cursor (PNG/CUR)</label>
+                      <CloudinaryUploadButton
+                        onUploadSuccess={(url) => updateCursorProp("customUrl", url)}
+                        accept="image/*"
+                        label="Upload Cursor"
+                      />
+                    </div>
                     <input
                       type="text"
                       value={config.cursor.customUrl || ""}
@@ -1195,18 +1319,18 @@ export default function DashboardPage() {
 
                 <div>
                   <label className="block text-[10px] text-zinc-400 font-bold uppercase tracking-wider mb-1.5">Cursor Trail Particle Style</label>
-                  <select
+                  <CustomDropdown
                     value={config.cursor.trail}
-                    onChange={(e) => updateCursorProp("trail", e.target.value)}
-                    className="w-full px-3 py-2 text-xs text-white bg-zinc-950 border border-zinc-800 rounded-xl outline-none"
-                  >
-                    <option value="none">No trail</option>
-                    <option value="sparkles">Magic Sparkles</option>
-                    <option value="hearts">Ambient Hearts</option>
-                    <option value="stars">Twinkling Stars</option>
-                    <option value="rainbow">Colorful Rainbow</option>
-                    <option value="bubbles">Glass Bubbles</option>
-                  </select>
+                    options={[
+                      { value: "none", label: "No trail" },
+                      { value: "sparkles", label: "Magic Sparkles" },
+                      { value: "hearts", label: "Ambient Hearts" },
+                      { value: "stars", label: "Twinkling Stars" },
+                      { value: "rainbow", label: "Colorful Rainbow" },
+                      { value: "bubbles", label: "Glass Bubbles" }
+                    ]}
+                    onChange={(val) => updateCursorProp("trail", val)}
+                  />
                 </div>
               </div>
             )}
@@ -1235,7 +1359,7 @@ export default function DashboardPage() {
                     }}
                     className="px-2 py-1 bg-white text-black text-[10px] font-bold rounded-lg hover:bg-zinc-200 transition-colors flex items-center gap-1"
                   >
-                    <Plus className="w-3 h-3" /> Add Widget
+                    <Plus className="w-3.5 h-3.5" /> Add Widget
                   </button>
                 </div>
 
@@ -1323,7 +1447,7 @@ export default function DashboardPage() {
 
         {/* Right Side: Real-time Live Preview Render Panel */}
         <section className={`flex-1 relative bg-black/25 flex items-center justify-center p-6 ${showFullPreview ? "h-full w-full" : ""}`}>
-          <div className="absolute inset-0 z-0 select-none animate-fade-in">
+          <div className="absolute inset-0 z-0 select-none">
             {/* Simulation view of the profile background styles */}
             <ProfileView config={config} isPreview={true} showDiscordActivity={true} />
           </div>
@@ -1335,6 +1459,31 @@ export default function DashboardPage() {
         </section>
 
       </div>
+
+      {/* --- PREBUILT LINKS GUI SELECTION MODAL --- */}
+      {showLinkModal && (
+        <div className="fixed inset-0 bg-black/75 z-[999] flex items-center justify-center p-6 backdrop-blur-sm">
+          <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 p-6 rounded-2xl flex flex-col gap-4 shadow-2xl">
+            <div className="flex justify-between items-center border-b border-zinc-850 pb-2">
+              <span className="text-xs font-bold text-zinc-300 uppercase tracking-widest">Select Prebuilt Link Preset</span>
+              <button onClick={() => setShowLinkModal(false)} className="text-zinc-500 hover:text-white text-xs">Close</button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 overflow-y-auto max-h-96 pt-2">
+              {prebuiltPresets.map((preset) => (
+                <button
+                  key={preset.platform}
+                  type="button"
+                  onClick={() => handleAddPresetLink(preset)}
+                  className="p-3 bg-zinc-900 border border-zinc-850 hover:bg-zinc-850 hover:border-zinc-700 text-zinc-300 hover:text-white rounded-xl text-center flex flex-col items-center gap-1.5 transition-all"
+                >
+                  <span className="text-xs font-bold">{preset.platform}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

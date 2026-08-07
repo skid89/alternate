@@ -129,12 +129,54 @@ export function transformLanyardResponse(payload: LanyardResponse): LiveDiscordP
 }
 
 export async function fetchDiscordPresence(userId: string): Promise<LiveDiscordPresence | null> {
-  const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`, {
-    next: { revalidate: 15 },
-  });
+  let presence: LiveDiscordPresence | null = null;
+  
+  // 1. Try Lanyard for live activity & online status
+  try {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${userId}`, {
+      next: { revalidate: 15 },
+    });
+    if (res.ok) {
+      const payload = (await res.json()) as LanyardResponse;
+      presence = transformLanyardResponse(payload);
+    }
+  } catch (err) {
+    console.error("Lanyard API connection failed", err);
+  }
 
-  if (!res.ok) return null;
+  // 2. Enrich or fall back with official Discord Bot API if token is set
+  const botToken = process.env.DISCORD_BOT_TOKEN;
+  if (botToken && userId) {
+    try {
+      const res = await fetch(`https://discord.com/api/v10/users/${userId}`, {
+        headers: {
+          Authorization: `Bot ${botToken}`,
+        },
+        next: { revalidate: 60 },
+      });
+      if (res.ok) {
+        const discordUser = await res.json();
+        const avatarUrl = discordUser.avatar
+          ? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png?size=128`
+          : `https://cdn.discordapp.com/embed/avatars/${Number(discordUser.id) % 5}.png`;
 
-  const payload = (await res.json()) as LanyardResponse;
-  return transformLanyardResponse(payload);
+        if (presence) {
+          presence.username = discordUser.username;
+          presence.displayName = discordUser.global_name || discordUser.display_name || discordUser.username;
+          presence.avatarUrl = avatarUrl;
+        } else {
+          presence = {
+            username: discordUser.username,
+            displayName: discordUser.global_name || discordUser.display_name || discordUser.username,
+            avatarUrl,
+            status: "offline",
+          };
+        }
+      }
+    } catch (err) {
+      console.error("Discord Bot API fetching failed", err);
+    }
+  }
+
+  return presence;
 }
