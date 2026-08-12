@@ -16,6 +16,77 @@ import {
 } from 'lucide-react';
 import '@/styles/customizer.css';
 
+function FileUploader({
+  label,
+  accept,
+  onUploadSuccess,
+  currentValue
+}: {
+  label: string;
+  accept: string;
+  onUploadSuccess: (url: string) => void;
+  currentValue: string | null;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      onUploadSuccess(data.url);
+    } catch (err: any) {
+      setError(err.message || 'Error uploading file.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <div className="custom-file-uploader" style={{ marginBottom: '12px' }}>
+      <div className="flex align-center justify-between">
+        <label className="input-label" style={{ marginBottom: 0 }}>{label}</label>
+        {uploading && <span className="upload-loading-text">Uploading...</span>}
+      </div>
+      <div className="uploader-box" style={{ marginTop: '4px' }}>
+        <input 
+          type="file" 
+          accept={accept} 
+          onChange={handleFileChange} 
+          disabled={uploading} 
+          className="uploader-input-element"
+          id={`uploader-${label.replace(/\s+/g, '-').toLowerCase()}`}
+        />
+        <div className="uploader-dropzone">
+          {currentValue ? (
+            <span className="file-name-preview">File loaded: {currentValue.split('/').pop()}</span>
+          ) : (
+            <span className="upload-placeholder">Click to select or drag file</span>
+          )}
+        </div>
+      </div>
+      {error && <span className="upload-error-text" style={{ marginTop: '4px' }}>{error}</span>}
+    </div>
+  );
+}
+
 interface ProfileData {
   id: string;
   slug: string;
@@ -267,9 +338,17 @@ export default function Customizer({ initialProfile }: { initialProfile: Profile
               </div>
 
               {profile.backgroundType === 'image' && (
-                <div className="input-group">
-                  <label className="input-label">Image URL</label>
-                  <input type="text" name="backgroundUrl" value={profile.backgroundUrl || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/wallpaper.jpg" />
+                <div className="flex flex-col gap-2">
+                  <FileUploader 
+                    label="Upload Wallpaper Image" 
+                    accept="image/*" 
+                    onUploadSuccess={(url) => setProfile(prev => ({ ...prev, backgroundUrl: url }))}
+                    currentValue={profile.backgroundUrl}
+                  />
+                  <div className="input-group">
+                    <label className="input-label">Or wallpaper Image URL</label>
+                    <input type="text" name="backgroundUrl" value={profile.backgroundUrl || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/wallpaper.jpg" />
+                  </div>
                 </div>
               )}
 
@@ -291,8 +370,14 @@ export default function Customizer({ initialProfile }: { initialProfile: Profile
               <h3>Audio Playlist & Player</h3>
               <p className="text-muted" style={{ fontSize: '13px' }}>Upload or link an audio track that visitors can play when entering your bio page.</p>
               
+              <FileUploader 
+                label="Upload Audio File (.mp3)" 
+                accept="audio/*" 
+                onUploadSuccess={(url) => setProfile(prev => ({ ...prev, musicUrl: url }))}
+                currentValue={profile.musicUrl}
+              />
               <div className="input-group">
-                <label className="input-label">Audio URL (Direct file link .mp3, .ogg)</label>
+                <label className="input-label">Or Audio URL (Direct file link .mp3, .ogg)</label>
                 <input type="text" name="musicUrl" value={profile.musicUrl || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/audio.mp3" />
               </div>
               <div className="input-group">
@@ -330,9 +415,17 @@ export default function Customizer({ initialProfile }: { initialProfile: Profile
               </div>
 
               {profile.cursorStyle === 'custom' && (
-                <div className="input-group">
-                  <label className="input-label">Cursor Image URL (Direct PNG, SVG, max 32x32)</label>
-                  <input type="text" name="customCursor" value={profile.customCursor || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/cursor.png" />
+                <div className="flex flex-col gap-2">
+                  <FileUploader 
+                    label="Upload Custom Cursor Image" 
+                    accept="image/*" 
+                    onUploadSuccess={(url) => setProfile(prev => ({ ...prev, customCursor: url }))}
+                    currentValue={profile.customCursor}
+                  />
+                  <div className="input-group">
+                    <label className="input-label">Or Cursor Image URL (Direct PNG, SVG, max 32x32)</label>
+                    <input type="text" name="customCursor" value={profile.customCursor || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/cursor.png" />
+                  </div>
                 </div>
               )}
             </div>
@@ -342,8 +435,14 @@ export default function Customizer({ initialProfile }: { initialProfile: Profile
           {activeTab === 'metadata' && (
             <div className="tab-pane flex flex-col gap-3">
               <h3>Profile Info & Metadata</h3>
+              <FileUploader 
+                label="Upload Avatar image" 
+                accept="image/*" 
+                onUploadSuccess={(url) => setProfile(prev => ({ ...prev, avatarUrl: url }))}
+                currentValue={profile.avatarUrl}
+              />
               <div className="input-group">
-                <label className="input-label">Avatar image URL</label>
+                <label className="input-label">Or Avatar image URL</label>
                 <input type="text" name="avatarUrl" value={profile.avatarUrl || ''} onChange={handleChange} className="input-field" placeholder="https://domain.com/pfp.jpg" />
               </div>
               <div className="input-group">

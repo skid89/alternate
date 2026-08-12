@@ -8,13 +8,12 @@ import {
   ShieldCheck, 
   Ban, 
   CheckCircle2, 
-  Trash2, 
   Award,
-  KeyRound,
   ArrowLeft,
   Activity
 } from 'lucide-react';
 import Link from 'next/link';
+import '@/styles/admin.css';
 
 export const revalidate = 0; // Live admin updates
 
@@ -82,19 +81,21 @@ export default async function AdminPanel({
   if (setupMode) {
     // Render first-time setup panel
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#000000', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif', padding: '20px' }}>
-        <form action={handleSetupAction} className="glass-card" style={{ width: '100%', maxWidth: '420px', backgroundColor: '#09090b', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 800 }}>First-time Owner Setup</h2>
-          <p className="text-muted" style={{ fontSize: '13px' }}>No system administrator accounts exist. Initialize the first Owner account using the system setup secret.</p>
+      <div className="admin-center-viewport">
+        <form action={handleSetupAction} className="admin-setup-card animate-fade">
+          <h2 className="admin-setup-title">First-time Owner Setup</h2>
+          <p className="text-muted" style={{ fontSize: '13px', lineHeight: 1.5 }}>
+            No system administrator accounts exist. Initialize the first Owner account using the system setup secret.
+          </p>
           
           {searchParams.error && (
-            <div style={{ color: '#ef4444', fontSize: '12px', padding: '8px', border: '1px solid #ef4444', borderRadius: '4px', backgroundColor: 'rgba(239, 68, 68, 0.05)' }}>
+            <div className="admin-toast-error" style={{ color: '#ef4444', fontSize: '12px', padding: '10px', border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '8px', backgroundColor: 'rgba(239, 68, 68, 0.03)', textAlign: 'center' }}>
               ⚠ Error: {searchParams.error === 'invalid_setup_secret' ? 'Invalid ADMIN_SETUP_SECRET.' : 'Fill out all input fields.'}
             </div>
           )}
 
           <div className="input-group">
-            <label className="input-label">Setup Secret (ADMIN_SETUP_SECRET)</label>
+            <label className="input-label">Setup Secret</label>
             <input type="password" name="setupSecret" className="input-field" required />
           </div>
           <div className="input-group">
@@ -110,7 +111,7 @@ export default async function AdminPanel({
             <input type="password" name="password" className="input-field" placeholder="••••••••" required />
           </div>
 
-          <button type="submit" className="btn btn-primary" style={{ marginTop: '8px' }}>
+          <button type="submit" className="btn btn-primary" style={{ marginTop: '8px', width: '100%' }}>
             Initialize Owner Account
           </button>
         </form>
@@ -122,11 +123,15 @@ export default async function AdminPanel({
   const session = await verifyAndGetSession();
   if (!session || !['OWNER', 'ADMIN', 'MODERATOR'].includes(session.user.role)) {
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: '#000000', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}>
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 800 }}>403 Forbidden</h2>
-          <p className="text-muted" style={{ fontSize: '14px', marginTop: '6px' }}>You do not have administrative clearance to access this control panel.</p>
-          <Link href="/dashboard" className="btn btn-secondary" style={{ marginTop: '16px' }}>Go to Dashboard</Link>
+      <div className="admin-center-viewport">
+        <div className="admin-forbidden-box animate-scale">
+          <h2 className="admin-forbidden-title">403 Forbidden</h2>
+          <p className="text-muted" style={{ fontSize: '14px' }}>
+            You do not have administrative clearance to access this control panel.
+          </p>
+          <Link href="/dashboard" className="btn btn-secondary" style={{ marginTop: '8px' }}>
+            Go to Dashboard
+          </Link>
         </div>
       </div>
     );
@@ -238,38 +243,38 @@ export default async function AdminPanel({
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#000000', color: '#ffffff', display: 'flex', flexDirection: 'column', fontFamily: 'sans-serif' }}>
-      <div className="container" style={{ padding: '40px 24px' }}>
+    <div className="admin-viewport animate-fade">
+      <div className="admin-container">
         
         {/* Navigation header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '20px', marginBottom: '32px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Link href="/dashboard" className="btn btn-secondary" style={{ padding: '8px' }}>
+        <div className="admin-header-row">
+          <div className="admin-header-left">
+            <Link href="/dashboard" className="admin-btn-back">
               <ArrowLeft size={16} />
             </Link>
-            <h1 style={{ fontSize: '24px', fontWeight: 800 }}>System Administration</h1>
+            <h1 className="admin-title">System Administration</h1>
           </div>
-          <span className="premium-tag" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>Admin Clearance</span>
+          <span className="admin-clearance-badge">Admin Clearance</span>
         </div>
 
         {searchParams.success && (
-          <div style={{ padding: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', color: '#10b981', borderRadius: '8px', fontSize: '14px', marginBottom: '24px' }}>
+          <div className="admin-notification">
             ✓ Admin operation processed successfully.
           </div>
         )}
 
         {/* Tab Controls */}
-        <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.04)', paddingBottom: '12px', marginBottom: '24px' }}>
-          <Link href="/admin?tab=overview" className={`btn btn-secondary ${activeTab === 'overview' ? 'active' : ''}`} style={{ fontSize: '13px' }}>
+        <div className="admin-tab-controls">
+          <Link href="/admin?tab=overview" className={`admin-tab-btn ${activeTab === 'overview' ? 'active' : ''}`}>
             <Activity size={14} /> Overview
           </Link>
-          <Link href="/admin?tab=users" className={`btn btn-secondary ${activeTab === 'users' ? 'active' : ''}`} style={{ fontSize: '13px' }}>
+          <Link href="/admin?tab=users" className={`admin-tab-btn ${activeTab === 'users' ? 'active' : ''}`}>
             <Users size={14} /> Users
           </Link>
-          <Link href="/admin?tab=reports" className={`btn btn-secondary ${activeTab === 'reports' ? 'active' : ''}`} style={{ fontSize: '13px' }}>
+          <Link href="/admin?tab=reports" className={`admin-tab-btn ${activeTab === 'reports' ? 'active' : ''}`}>
             <Flag size={14} /> Reports ({reportsCount})
           </Link>
-          <Link href="/admin?tab=logs" className={`btn btn-secondary ${activeTab === 'logs' ? 'active' : ''}`} style={{ fontSize: '13px' }}>
+          <Link href="/admin?tab=logs" className={`admin-tab-btn ${activeTab === 'logs' ? 'active' : ''}`}>
             <History size={14} /> Audit Trail
           </Link>
         </div>
@@ -277,23 +282,25 @@ export default async function AdminPanel({
         {/* TAB 1: Overview */}
         {activeTab === 'overview' && (
           <div className="flex flex-col gap-3">
-            <div className="stats-grid">
-              <div className="stat-card">
-                <span className="stat-title">Total Users</span>
-                <span className="stat-value">{usersCount}</span>
+            <div className="admin-stats-grid">
+              <div className="admin-stat-card">
+                <span className="admin-stat-label">Total Users</span>
+                <span className="admin-stat-value">{usersCount}</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-title">Pending Reports</span>
-                <span className="stat-value" style={{ color: '#ef4444' }}>{reportsCount}</span>
+              <div className="admin-stat-card" style={{ borderLeft: '2px solid rgba(239, 68, 68, 0.4)' }}>
+                <span className="admin-stat-label">Pending Reports</span>
+                <span className="admin-stat-value" style={{ color: '#ef4444' }}>{reportsCount}</span>
               </div>
-              <div className="stat-card">
-                <span className="stat-title">Premium Subscriptions</span>
-                <span className="stat-value" style={{ color: '#f59e0b' }}>{premiumCount}</span>
+              <div className="admin-stat-card" style={{ borderLeft: '2px solid rgba(245, 158, 11, 0.4)' }}>
+                <span className="admin-stat-label">Premium accounts</span>
+                <span className="admin-stat-value" style={{ color: '#f59e0b' }}>{premiumCount}</span>
               </div>
             </div>
             <div className="glass-card" style={{ marginTop: '12px' }}>
-              <h3>System Health status</h3>
-              <p className="text-muted" style={{ fontSize: '13px' }}>Alternate core infrastructure and server actions are fully operational. SQLite/Postgres configurations loaded.</p>
+              <h3>System Infrastructure Status</h3>
+              <p className="text-muted" style={{ fontSize: '13px', marginTop: '6px', lineHeight: 1.5 }}>
+                Alternate core server functions are fully operational. Local storage file upload boundaries and Neon PostgreSQL instances are connected.
+              </p>
             </div>
           </div>
         )}
@@ -302,45 +309,47 @@ export default async function AdminPanel({
         {activeTab === 'users' && (
           <div className="glass-card flex flex-col gap-3">
             <h3>Registered Accounts</h3>
-            <div style={{ overflowX: 'auto', marginTop: '12px' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+            <div className="admin-table-wrapper">
+              <table className="admin-table">
                 <thead>
-                  <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'var(--text-muted)' }}>
-                    <th style={{ padding: '12px' }}>Username</th>
-                    <th style={{ padding: '12px' }}>Email</th>
-                    <th style={{ padding: '12px' }}>Role</th>
-                    <th style={{ padding: '12px' }}>Premium</th>
-                    <th style={{ padding: '12px' }}>Status</th>
-                    <th style={{ padding: '12px', textAlign: 'right' }}>Actions</th>
+                  <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Premium status</th>
+                    <th>Status</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {users.map(u => (
-                    <tr key={u.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
-                      <td style={{ padding: '12px', fontWeight: 600 }}>@{u.username}</td>
-                      <td style={{ padding: '12px' }}>{u.email}</td>
-                      <td style={{ padding: '12px' }}>{u.role}</td>
-                      <td style={{ padding: '12px' }}>{u.premiumStatus}</td>
-                      <td style={{ padding: '12px' }}>
+                    <tr key={u.id}>
+                      <td className="admin-user-slug">@{u.username}</td>
+                      <td>{u.email}</td>
+                      <td>{u.role}</td>
+                      <td>{u.premiumStatus}</td>
+                      <td>
                         {u.profile?.isSuspended ? (
-                          <span style={{ color: '#ef4444', fontWeight: 600 }}>Suspended</span>
+                          <span className="admin-badge-suspended">Suspended</span>
                         ) : (
-                          <span style={{ color: '#10b981' }}>Active</span>
+                          <span className="admin-badge-active">Active</span>
                         )}
                       </td>
-                      <td style={{ padding: '12px', textAlign: 'right', display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
-                        <form action={toggleBanAction}>
-                          <input type="hidden" name="userId" value={u.id} />
-                          <button type="submit" className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px', color: '#ef4444' }}>
-                            <Ban size={10} /> {u.profile?.isSuspended ? 'Unban' : 'Ban'}
-                          </button>
-                        </form>
-                        <form action={assignVerifiedBadgeAction}>
-                          <input type="hidden" name="userId" value={u.id} />
-                          <button type="submit" className="btn btn-secondary" style={{ padding: '4px 8px', fontSize: '11px', color: 'var(--accent-light)' }}>
-                            <Award size={10} /> Verify
-                          </button>
-                        </form>
+                      <td style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'inline-flex', gap: '6px' }}>
+                          <form action={toggleBanAction}>
+                            <input type="hidden" name="userId" value={u.id} />
+                            <button type="submit" className="admin-btn-action ban">
+                              <Ban size={10} /> {u.profile?.isSuspended ? 'Unban' : 'Ban'}
+                            </button>
+                          </form>
+                          <form action={assignVerifiedBadgeAction}>
+                            <input type="hidden" name="userId" value={u.id} />
+                            <button type="submit" className="admin-btn-action verify">
+                              <Award size={10} /> Verify
+                            </button>
+                          </form>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -354,20 +363,24 @@ export default async function AdminPanel({
         {activeTab === 'reports' && (
           <div className="glass-card flex flex-col gap-3">
             <h3>Pending Moderation Queue</h3>
-            <div className="flex flex-col gap-2" style={{ marginTop: '12px' }}>
+            <div className="admin-reports-stack" style={{ marginTop: '12px' }}>
               {reports.length === 0 ? (
-                <span className="text-muted" style={{ fontSize: '13px', textAlign: 'center', padding: '24px 0' }}>No pending abuse reports.</span>
+                <span className="text-muted" style={{ fontSize: '13px', textAlign: 'center', padding: '32px 0', display: 'block' }}>
+                  No pending abuse reports.
+                </span>
               ) : (
                 reports.map(r => (
-                  <div key={r.id} className="flex justify-between align-center" style={{ padding: '16px', background: 'rgba(239, 68, 68, 0.02)', border: '1px solid rgba(239, 68, 68, 0.1)', borderRadius: '12px' }}>
-                    <div className="flex flex-col gap-1" style={{ fontSize: '13px' }}>
-                      <span style={{ fontWeight: 700 }}>Report on Profile: @{r.profile.slug}</span>
-                      <span className="text-muted" style={{ fontSize: '11px' }}>Category: {r.category} | Reporter: {r.reporterEmail}</span>
-                      <p style={{ marginTop: '6px' }}>{r.description}</p>
+                  <div key={r.id} className="admin-report-card">
+                    <div className="admin-report-info">
+                      <span className="admin-report-title">Report on Profile: @{r.profile.slug}</span>
+                      <span className="admin-report-meta">
+                        Category: {r.category} | Reporter: {r.reporterEmail}
+                      </span>
+                      <p className="admin-report-desc">{r.description}</p>
                     </div>
                     <form action={resolveReportAction}>
                       <input type="hidden" name="reportId" value={r.id} />
-                      <button type="submit" className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '12px', color: '#10b981' }}>
+                      <button type="submit" className="admin-btn-action admin-btn-resolve">
                         <CheckCircle2 size={12} /> Resolve
                       </button>
                     </form>
@@ -382,14 +395,14 @@ export default async function AdminPanel({
         {activeTab === 'logs' && (
           <div className="glass-card flex flex-col gap-3">
             <h3>System Audit Trail</h3>
-            <div className="flex flex-col gap-2" style={{ marginTop: '12px' }}>
+            <div className="admin-audit-stack" style={{ marginTop: '12px' }}>
               {auditLogs.map(log => (
-                <div key={log.id} style={{ padding: '12px', borderBottom: '1px solid rgba(255,255,255,0.02)', fontSize: '13px' }}>
-                  <div className="flex justify-between align-center" style={{ marginBottom: '4px' }}>
-                    <span style={{ fontWeight: 600 }}>Action: {log.action}</span>
-                    <span className="text-muted" style={{ fontSize: '11px' }}>{new Date(log.timestamp).toLocaleString()}</span>
+                <div key={log.id} className="admin-audit-item">
+                  <div className="admin-audit-header">
+                    <span className="admin-audit-action">Action: {log.action}</span>
+                    <span className="admin-audit-time">{new Date(log.timestamp).toLocaleString()}</span>
                   </div>
-                  <p className="text-muted" style={{ fontSize: '12px' }}>
+                  <p className="admin-audit-details">
                     Actor: {log.actor?.username || 'System'} | Details: {log.details}
                   </p>
                 </div>

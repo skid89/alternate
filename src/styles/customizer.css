@@ -291,3 +291,77 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* Custom File Uploader Styles */
+.custom-file-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.upload-loading-text {
+  font-size: 11px;
+  color: var(--accent-light);
+  font-weight: 600;
+}
+
+.uploader-box {
+  position: relative;
+  width: 100%;
+  height: 64px;
+  background-color: var(--card-bg-elevated);
+  border: 1px dashed var(--card-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.uploader-box:hover {
+  border-color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.uploader-input-element {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+  width: 100%;
+}
+
+.uploader-dropzone {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.upload-placeholder {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.file-name-preview {
+  font-size: 13px;
+  color: var(--accent-light);
+  font-weight: 600;
+  word-break: break-all;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90%;
+}
+
+.upload-error-text {
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 500;
+}
+

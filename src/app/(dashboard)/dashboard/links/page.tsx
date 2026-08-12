@@ -2,6 +2,7 @@ import { verifyAndGetSession } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { Trash2, ArrowUp, ArrowDown, ExternalLink, PlusCircle, AlertCircle } from 'lucide-react';
+import CreateLinkClient from '@/components/dashboard/CreateLinkClient';
 
 export default async function LinksPage({
   searchParams
@@ -215,23 +216,7 @@ export default async function LinksPage({
           <p className="text-muted" style={{ fontSize: '13px' }}>Create and manage redirect buttons on your profile. Drag-and-drop or use ordering toggles.</p>
           
           {/* New Link Form */}
-          <form action={addLinkAction} className="flex flex-col gap-2" style={{ borderBottom: '1px solid var(--card-border)', paddingBottom: '20px', marginBottom: '10px' }}>
-            <div className="input-group">
-              <label className="input-label">Link Title</label>
-              <input type="text" name="title" className="input-field" placeholder="e.g. My GitHub" required />
-            </div>
-            <div className="input-group">
-              <label className="input-label">Redirect URL</label>
-              <input type="text" name="url" className="input-field" placeholder="e.g. https://github.com/myuser" required />
-            </div>
-            <div className="flex align-center gap-1" style={{ fontSize: '13px', marginTop: '4px' }}>
-              <input type="checkbox" name="isLarge" id="isLarge" />
-              <label htmlFor="isLarge">Highlight Link (Large Banner Style)</label>
-            </div>
-            <button type="submit" className="btn btn-primary" style={{ marginTop: '12px', alignSelf: 'flex-start' }}>
-              <PlusCircle size={16} /> Add Link
-            </button>
-          </form>
+          <CreateLinkClient addLinkAction={addLinkAction} />
 
           {/* Links List */}
           <div className="flex flex-col gap-2">
