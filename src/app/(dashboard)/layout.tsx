@@ -118,12 +118,6 @@ export default async function DashboardLayout({
 
       {/* Main Content Area */}
       <main className="dashboard-content">
-        <header className="dashboard-content-header">
-          <div className="welcome-banner">
-            <h2>Welcome back, {user.username}</h2>
-            <p className="text-muted">Manage your profile, check live integrations and view analytics.</p>
-          </div>
-        </header>
         <div className="dashboard-main-body">
           {children}
         </div>

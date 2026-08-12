@@ -228,9 +228,9 @@ async function main() {
       },
       socials: {
         create: [
-          { platform: 'youtube', value: '@alternate', order: 0 },
-          { platform: 'instagram', value: 'alternate', order: 1 },
-          { platform: 'twitter', value: 'alternate', order: 2 }
+          { platform: 'discord', value: 'scarlistic', order: 0 },
+          { platform: 'tiktok', value: '67fovkoni', order: 1 },
+          { platform: 'github', value: 'misanthropistic', order: 2 }
         ]
       }
     }

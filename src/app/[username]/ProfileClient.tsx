@@ -86,6 +86,47 @@ interface ProfileProps {
   robloxPresence: RobloxPresence | null;
 }
 
+const getBadgeIcon = (name: string, color: string) => {
+  switch (name.toLowerCase()) {
+    case 'staff':
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip="Staff">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+      );
+    case 'developer':
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip="Developer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </span>
+      );
+    case 'verified':
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip="Verified">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </span>
+      );
+    case 'premium':
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip="Premium">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"/></svg>
+        </span>
+      );
+    case 'supporter':
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip="Supporter">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill={color} stroke={color} strokeWidth="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </span>
+      );
+    default:
+      return (
+        <span className="badge-icon-tooltip-wrapper" data-tooltip={name}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5"><circle cx="12" cy="12" r="10"/></svg>
+        </span>
+      );
+  }
+};
+
 export default function ProfileClient({
   profile,
   badges,
@@ -95,6 +136,9 @@ export default function ProfileClient({
   discordPresence,
   robloxPresence
 }: ProfileProps) {
+  const avatarSrc = profile.avatarUrl || "/pfp.png";
+  const musicSrc = profile.musicUrl || "/mp3.mp3";
+
   const [entered, setEntered] = useState(!profile.entryText);
   const [isPlaying, setIsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -127,8 +171,8 @@ export default function ProfileClient({
 
   // Audio Playback Hooks
   useEffect(() => {
-    if (profile.musicUrl) {
-      const audio = new Audio(profile.musicUrl);
+    if (musicSrc) {
+      const audio = new Audio(musicSrc);
       audio.loop = true;
       audio.volume = profile.musicVolume;
       audioRef.current = audio;
@@ -304,12 +348,8 @@ export default function ProfileClient({
             {/* Avatar & Badges */}
             <div className="profile-header">
               <div className={`avatar-container ${profile.avatarStyle}`}>
-                {profile.avatarUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={profile.avatarUrl} alt="PFP" className="profile-pfp" />
-                ) : (
-                  <div className="profile-pfp-placeholder">PFP</div>
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={avatarSrc} alt="PFP" className="profile-pfp" />
                 {profile.avatarDecoration && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={profile.avatarDecoration} alt="Decoration" className="avatar-decoration" />
@@ -329,9 +369,8 @@ export default function ProfileClient({
                       key={idx} 
                       className="badge-icon-item" 
                       style={{ color: b.color }} 
-                      title={b.name}
                     >
-                      <Disc size={14} style={{ fill: b.color }} />
+                      {getBadgeIcon(b.name, b.color)}
                     </span>
                   ))}
                 </div>
