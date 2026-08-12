@@ -223,6 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isDown=false, startX=0, scrollLeft=0, moved=false;
     tabTrack.addEventListener("pointerdown", e=>{
       if(e.button !== 0) return;
+      if(e.target.closest && e.target.closest('.tab-btn')) return;
       isDown = true;
       startX = e.clientX;
       scrollLeft = tabTrack.scrollLeft;
