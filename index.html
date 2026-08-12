@@ -3,196 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alternate | Premium Roblox Script</title>
-  <meta name="description" content="Alternate — the most premium Roblox script. Silent Aim, Skin Changer, ESP, Skyboxes, Avatar Mods and more. Lifetime access for $8.">
-  <meta name="keywords" content="Alternate Roblox, Alternate Script, Da Track skin changer, Hood Customs, silent aim roblox, roblox cheat">
-  <meta property="og:title" content="Alternate | Premium Roblox Script">
-  <meta property="og:description" content="Lifetime access for $8. Silent Aim, Skin Changer, ESP & more.">
-  <meta property="og:image" content="gui.png">
-  <!-- Favicon: gun.png -->
+  <title>Alternate</title>
+  <meta name="description" content="Alternate — premium Roblox script. Lifetime access $8.">
   <link rel="icon" type="image/png" href="gun.png">
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
 
-  <!-- Custom Cursor -->
+  <!-- Cursor -->
   <div id="cursor-ring"></div>
   <div id="cursor-dot"></div>
 
-  <!-- Background Canvas -->
+  <!-- Grid canvas -->
   <canvas id="grid-canvas"></canvas>
 
-  <!-- ══════════════════════════════════════════
-       INTRO / STARTUP SCREEN
-       gun.png spins in → slides to left side →
-       /alternate text fades in on right →
-       whole screen fades out to main site
-  ══════════════════════════════════════════ -->
+  <!-- ── INTRO ───────────────────────────────── -->
   <div id="startup-screen">
     <div id="intro-gun-wrap">
       <img id="intro-gun" src="gun.png" alt="Alternate" draggable="false">
     </div>
     <div id="intro-text-wrap">
-      <div id="intro-slash">/</div>
-      <div id="intro-word">alternate</div>
+      <span id="intro-slash">/</span><span id="intro-word">alternate</span>
     </div>
-    <div id="intro-sub">click anywhere to enter</div>
+    <div id="intro-hint">click to enter</div>
   </div>
 
-  <!-- ══════════════════════════════════════════
-       MAIN CONTENT
-  ══════════════════════════════════════════ -->
+  <!-- ── MAIN ───────────────────────────────── -->
   <main id="main-content" class="hidden-main">
 
-    <!-- Hero Section -->
-    <section id="hero">
-      <div id="hero-badge">
-        <span class="badge-dot"></span>
-        Undetected &nbsp;·&nbsp; v2.0
-      </div>
-      <h1 id="hero-title">
-        <span class="hero-slash">/</span>alternate
-      </h1>
-      <p id="hero-sub">
-        The most premium Roblox utility. Silent aim, skin changers,<br>
-        full ESP suite — lifetime access, one price.
-      </p>
-      <div id="hero-actions">
-        <button id="hero-buy-btn" class="cta-primary">
-          Get Lifetime — $8
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-        <button id="hero-discord-btn" class="cta-secondary">
-          <svg viewBox="0 0 127.14 96.36" class="btn-discord-icon"><path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/></svg>
-          Join Discord
-        </button>
-      </div>
-    </section>
-
-    <!-- GUI Preview Card -->
-    <section id="gui-section">
-      <div id="gui-card-wrapper">
-        <div id="gui-card">
-          <div class="window-topbar">
-            <div class="window-dots">
-              <span class="dot dot-red"></span>
-              <span class="dot dot-yellow"></span>
-              <span class="dot dot-green"></span>
-            </div>
-            <div class="window-title-bar">alternate v2.0</div>
-            <div class="window-status-pill">
-              <span class="status-pulse"></span>
-              active
-            </div>
+    <!-- GUI card (centered, fixed size) -->
+    <div id="gui-scene">
+      <div id="gui-card">
+        <div class="win-bar">
+          <div class="win-dots">
+            <span class="wd red"></span>
+            <span class="wd yellow"></span>
+            <span class="wd green"></span>
           </div>
-          <div class="window-body">
-            <img src="gui.png" alt="Alternate Script GUI" draggable="false" id="gui-img">
-          </div>
+          <div class="win-title">alternate v2.0</div>
+          <div class="win-status"><span class="pulse-dot"></span> active</div>
         </div>
+        <img src="gui.png" alt="Alternate GUI" id="gui-img" draggable="false">
       </div>
-    </section>
+    </div>
 
-    <!-- Bottom Nav Tabs -->
+    <!-- Bottom tabs -->
     <nav id="bottom-nav">
-      <button class="nav-tab" id="tab-features" data-modal="modal-features">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Features
-      </button>
-      <button class="nav-tab" id="tab-info" data-modal="modal-info">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Info
-      </button>
-      <button class="nav-tab" id="tab-pricing" data-modal="modal-pricing">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Pricing
-      </button>
-      <button class="nav-tab" id="tab-discord" data-modal="modal-discord">
-        <svg viewBox="0 0 127.14 96.36" class="nav-discord-svg"><path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/></svg>
-        Discord
-      </button>
+      <button class="tab-btn" data-modal="modal-features">Features</button>
+      <button class="tab-btn" data-modal="modal-info">Info</button>
+      <button class="tab-btn" data-modal="modal-pricing">Pricing</button>
+      <button class="tab-btn" data-modal="modal-discord">Discord</button>
     </nav>
 
   </main>
 
-  <!-- ══════════════════════════════════════════ MODALS ══════════════════════════════════════════ -->
+  <!-- ── MODALS ─────────────────────────────── -->
 
-  <!-- FEATURES MODAL -->
-  <div id="modal-features" class="modal" role="dialog" aria-modal="true" aria-label="Features">
-    <div class="modal-backdrop"></div>
-    <div class="modal-panel">
-      <div class="modal-header">
-        <h2>Feature List</h2>
-        <button class="modal-close-btn" aria-label="Close">&times;</button>
+  <!-- FEATURES -->
+  <div id="modal-features" class="modal">
+    <div class="modal-bg"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>Features</span>
+        <button class="close-btn">&times;</button>
       </div>
-      <!-- Subtab Nav -->
-      <div id="features-tabs-nav" class="features-nav custom-scrollbar"></div>
-      <!-- Content -->
-      <div class="modal-body custom-scrollbar">
-        <div id="features-loader" class="loader-wrap">
-          <div class="spin-ring"></div>
-          <span>Parsing features…</span>
-        </div>
-        <div id="features-content"></div>
+      <div id="feat-tabs" class="feat-tabs"></div>
+      <div id="feat-body" class="modal-scroll">
+        <div id="feat-loader" class="loader-row"><div class="spin"></div><span>Loading…</span></div>
+        <div id="feat-grid" class="feat-grid"></div>
       </div>
     </div>
   </div>
 
-  <!-- INFO MODAL -->
-  <div id="modal-info" class="modal" role="dialog" aria-modal="true" aria-label="Info">
-    <div class="modal-backdrop"></div>
-    <div class="modal-panel info-panel">
-      <div class="modal-header">
-        <h2>Product Info</h2>
-        <button class="modal-close-btn" aria-label="Close">&times;</button>
+  <!-- INFO -->
+  <div id="modal-info" class="modal">
+    <div class="modal-bg"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>Info</span>
+        <button class="close-btn">&times;</button>
       </div>
-      <div class="modal-body custom-scrollbar">
+      <div class="modal-scroll">
 
-        <!-- GAMES -->
-        <div class="accordion">
-          <button class="acc-trigger active" data-target="acc-games">
-            <span>🎮 Supported Games</span>
-            <span class="acc-arrow">▾</span>
-          </button>
-          <div class="acc-body open" id="acc-games">
+        <!-- Games -->
+        <div class="acc">
+          <button class="acc-h active" data-t="acc-games">🎮 Supported Games <span class="arr">▾</span></button>
+          <div class="acc-b open" id="acc-games">
             <div id="games-list" class="games-grid"></div>
           </div>
         </div>
 
-        <!-- EXECUTORS -->
-        <div class="accordion">
-          <button class="acc-trigger" data-target="acc-exec">
-            <span>⚡ Supported Executors</span>
-            <span class="acc-arrow">▾</span>
-          </button>
-          <div class="acc-body" id="acc-exec">
-            <div id="executors-list" class="executors-wrap"></div>
+        <!-- Executors -->
+        <div class="acc">
+          <button class="acc-h" data-t="acc-exec">⚡ Executors <span class="arr">▾</span></button>
+          <div class="acc-b" id="acc-exec">
+            <div id="exec-list" class="badge-row"></div>
           </div>
         </div>
 
-        <!-- OWNER / DEVELOPER -->
-        <div class="accordion">
-          <button class="acc-trigger" data-target="acc-owner">
-            <span>👤 Developer</span>
-            <span class="acc-arrow">▾</span>
-          </button>
-          <div class="acc-body" id="acc-owner">
-            <div class="dev-card">
-              <div class="dev-avatar-wrap">
-                <img id="owner-avatar" src="" alt="koni avatar" class="dev-avatar">
-                <div class="dev-avatar-ring"></div>
-              </div>
+        <!-- Developer -->
+        <div class="acc">
+          <button class="acc-h" data-t="acc-dev">👤 Developer <span class="arr">▾</span></button>
+          <div class="acc-b" id="acc-dev">
+            <div class="dev-row">
+              <img id="owner-avatar" class="dev-avatar" src="" alt="koni">
               <div class="dev-info">
                 <div class="dev-name" id="owner-display-name">koni</div>
-                <div class="dev-username" id="owner-username">@loading…</div>
-                <div class="dev-role">Founder &amp; Lead Developer</div>
-                <div class="dev-badges">
-                  <span class="dbadge">ID: <b id="owner-id">8393274455</b></span>
-                  <span class="dbadge">Joined: <b id="owner-created">—</b></span>
-                  <span class="dbadge active-badge">● Active</span>
+                <div class="dev-un" id="owner-username">@5fovtraceboss</div>
+                <div class="dev-meta">
+                  <span class="meta-pill">ID: <b id="owner-id">8393274455</b></span>
+                  <span class="meta-pill">Joined: <b id="owner-created">—</b></span>
+                  <span class="meta-pill green-pill">● Active</span>
                 </div>
                 <div id="owner-links" class="dev-links"></div>
               </div>
@@ -200,40 +124,17 @@
           </div>
         </div>
 
-        <!-- ROBLOX OFFSETS -->
-        <div class="accordion">
-          <button class="acc-trigger" data-target="acc-offsets">
-            <span>🔧 Roblox Offset Info</span>
-            <span class="acc-arrow">▾</span>
-          </button>
-          <div class="acc-body" id="acc-offsets">
-            <div class="offsets-card">
-              <div class="offsets-source">
-                Live from
-                <a id="offsets-link" href="https://offsets.imtheo.lol/" target="_blank" class="offsets-source-link">offsets.imtheo.lol ↗</a>
-              </div>
-              <div class="offsets-grid">
-                <div class="offset-stat">
-                  <div class="offset-label">Client Version</div>
-                  <div class="offset-value" id="rbx-client-version">Loading…</div>
-                </div>
-                <div class="offset-stat">
-                  <div class="offset-label">Dumper Version</div>
-                  <div class="offset-value" id="rbx-dumper-version">Loading…</div>
-                </div>
-                <div class="offset-stat">
-                  <div class="offset-label">Dumped At</div>
-                  <div class="offset-value" id="rbx-dump-date">Loading…</div>
-                </div>
-                <div class="offset-stat">
-                  <div class="offset-label">Active Offsets</div>
-                  <div class="offset-value pink-glow" id="rbx-offset-count">Loading…</div>
-                </div>
-              </div>
-              <a id="offsets-open-btn" href="https://offsets.imtheo.lol/" target="_blank" class="offsets-open-btn">
-                Open Full Offsets Viewer ↗
-              </a>
+        <!-- Offsets -->
+        <div class="acc">
+          <button class="acc-h" data-t="acc-offsets">🔧 Roblox Offsets <span class="arr">▾</span></button>
+          <div class="acc-b" id="acc-offsets">
+            <div class="offsets-grid">
+              <div class="ostat"><div class="olabel">Client Version</div><div class="oval" id="rbx-ver">Loading…</div></div>
+              <div class="ostat"><div class="olabel">Dumper</div><div class="oval" id="rbx-dump">Loading…</div></div>
+              <div class="ostat"><div class="olabel">Dumped At</div><div class="oval" id="rbx-date">Loading…</div></div>
+              <div class="ostat"><div class="olabel">Total Offsets</div><div class="oval pink" id="rbx-count">Loading…</div></div>
             </div>
+            <a href="https://offsets.imtheo.lol/" target="_blank" id="offsets-btn" class="offsets-open-btn">Open Offsets Viewer ↗</a>
           </div>
         </div>
 
@@ -241,62 +142,71 @@
     </div>
   </div>
 
-  <!-- PRICING MODAL -->
-  <div id="modal-pricing" class="modal" role="dialog" aria-modal="true" aria-label="Pricing">
-    <div class="modal-backdrop"></div>
-    <div class="modal-panel pricing-panel">
-      <div class="modal-header">
-        <h2>Get Access</h2>
-        <button class="modal-close-btn" aria-label="Close">&times;</button>
+  <!-- PRICING -->
+  <div id="modal-pricing" class="modal">
+    <div class="modal-bg"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>Pricing</span>
+        <button class="close-btn">&times;</button>
       </div>
-      <div class="modal-body custom-scrollbar">
-        <div id="pricing-card-container"></div>
+      <div class="modal-scroll">
+        <div class="price-card">
+          <div class="price-badge">Best Value</div>
+          <h3>Lifetime Access</h3>
+          <div class="price-amount">$8 <span>one-time</span></div>
+          <div class="price-divider"></div>
+          <ul class="price-list">
+            <li>Undetected Silent Aim &amp; Aimbot</li>
+            <li>Full Skin &amp; Skybox Changer</li>
+            <li>All Executor Support</li>
+            <li>Discord Support &amp; Role</li>
+            <li>All Future Updates Free</li>
+          </ul>
+          <button id="buy-btn" class="buy-btn">Get Access — $8</button>
+          <p class="price-note">via aeri.mysellauth.com</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- DISCORD MODAL -->
-  <div id="modal-discord" class="modal" role="dialog" aria-modal="true" aria-label="Discord">
-    <div class="modal-backdrop"></div>
-    <div class="modal-panel discord-panel">
-      <div class="modal-header">
-        <h2>Discord</h2>
-        <button class="modal-close-btn" aria-label="Close">&times;</button>
+  <!-- DISCORD -->
+  <div id="modal-discord" class="modal">
+    <div class="modal-bg"></div>
+    <div class="modal-box">
+      <div class="modal-head">
+        <span>Discord</span>
+        <button class="close-btn">&times;</button>
       </div>
-      <div class="modal-body discord-body">
-        <div class="discord-server-card">
+      <div class="modal-scroll">
+        <div class="dsc-card">
           <div class="dsc-banner">
-            <div class="dsc-banner-overlay"></div>
-            <img src="gui.png" class="dsc-banner-bg" alt="" aria-hidden="true">
+            <img src="gui.png" class="dsc-banner-img" alt="" aria-hidden="true">
+            <div class="dsc-banner-fade"></div>
           </div>
-          <div class="dsc-icon-row">
-            <div class="dsc-icon">
-              <svg viewBox="0 0 127.14 96.36"><path fill="white" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/></svg>
+          <div class="dsc-body">
+            <div class="dsc-icon-wrap">
+              <div class="dsc-icon">
+                <svg viewBox="0 0 127.14 96.36" width="30"><path fill="#fff" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/></svg>
+              </div>
+              <div class="dsc-presence">
+                <span class="dsc-dot"></span>
+                <span id="dsc-online">—</span> online &nbsp;·&nbsp; <span id="dsc-members">—</span> members
+              </div>
             </div>
-            <div class="dsc-presence">
-              <span class="dsc-online-dot"></span>
-              <span id="dsc-online-count">—</span> online
-              &nbsp;·&nbsp;
-              <span id="dsc-total-count">—</span> members
-            </div>
-          </div>
-          <div class="dsc-info">
             <h3>Alternate</h3>
-            <p id="dsc-description">Official support &amp; community for the Alternate Roblox script.</p>
-            <div class="dsc-invite-row">
-              <code>discord.gg/alternate</code>
+            <p class="dsc-desc">Official support &amp; community server.</p>
+            <code class="dsc-invite">discord.gg/alternate</code>
+            <div class="dsc-btns">
+              <button id="dsc-join" class="dsc-join">Join Server</button>
+              <button id="dsc-copy" class="dsc-copy">Copy Link</button>
             </div>
-          </div>
-          <div class="dsc-actions">
-            <button id="discord-join-btn" class="dsc-join-btn">Join Server</button>
-            <button id="discord-copy-btn" class="dsc-copy-btn">Copy Link</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="src/config.js"></script>
   <script src="src/app.js"></script>
 </body>

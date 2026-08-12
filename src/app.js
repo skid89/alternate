@@ -1,266 +1,211 @@
-/* ═══════════════════════════════════════════════════════════
-   ALTERNATE — app.js  (full redo)
-═══════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   ALTERNATE — app.js (stripped back)
+══════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
   const C = window.CONFIG;
 
-  /* ─── ELEMENT REFS ──────────────────────────────────── */
-  const cursorRing   = document.getElementById("cursor-ring");
-  const cursorDot    = document.getElementById("cursor-dot");
-  const canvas       = document.getElementById("grid-canvas");
-  const ctx          = canvas.getContext("2d");
+  /* ── ELEMENTS ──────────────────────────── */
+  const ring      = document.getElementById("cursor-ring");
+  const dot       = document.getElementById("cursor-dot");
+  const canvasEl  = document.getElementById("grid-canvas");
+  const ctx       = canvasEl.getContext("2d");
+  const startup   = document.getElementById("startup-screen");
+  const gun       = document.getElementById("intro-gun");
+  const textWrap  = document.getElementById("intro-text-wrap");
+  const main      = document.getElementById("main-content");
+  const guiCard   = document.getElementById("gui-card");
 
-  const startupScr   = document.getElementById("startup-screen");
-  const introGun     = document.getElementById("intro-gun");
-  const introTextWrap= document.getElementById("intro-text-wrap");
-  const introSub     = document.getElementById("intro-sub");
-  const mainContent  = document.getElementById("main-content");
-  const guiCard      = document.getElementById("gui-card");
-
-  const heroBuyBtn   = document.getElementById("hero-buy-btn");
-  const heroDiscBtn  = document.getElementById("hero-discord-btn");
-
-  /* ═══════════════════════════════════════════════════════
-     CURSOR  (damped ring + instant dot)
-  ═══════════════════════════════════════════════════════ */
-  let mouse  = { x: innerWidth / 2, y: innerHeight / 2 };
-  let damped = { x: innerWidth / 2, y: innerHeight / 2 };
-  let tRX = 0, tRY = 0, cRX = 0, cRY = 0;
+  /* ══════════════════════════════════════
+     CURSOR (damped ring, instant dot)
+  ══════════════════════════════════════ */
+  let mx = innerWidth / 2, my = innerHeight / 2;
+  let dx = mx, dy = my;
+  let tRX = 0, tRY = 0, rX = 0, rY = 0;
 
   window.addEventListener("mousemove", e => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
+    mx = e.clientX; my = e.clientY;
     if (guiCard) {
       const r = guiCard.getBoundingClientRect();
-      tRX = -((e.clientY - r.top  - r.height / 2) / r.height) * 12;
-      tRY =  ((e.clientX - r.left - r.width  / 2) / r.width)  * 12;
+      tRX = -((e.clientY - r.top  - r.height / 2) / r.height) * 10;
+      tRY =  ((e.clientX - r.left - r.width  / 2) / r.width)  * 10;
     }
   });
 
+  function addHover(el) {
+    el.addEventListener("mouseenter", () => document.body.classList.add("hovered"));
+    el.addEventListener("mouseleave", () => document.body.classList.remove("hovered"));
+  }
   function refreshHovers() {
-    document.querySelectorAll("a, button, .acc-trigger, .feat-tab-btn").forEach(el => {
-      el.onmouseenter = () => document.body.classList.add("hovered");
-      el.onmouseleave = () => document.body.classList.remove("hovered");
-    });
+    document.querySelectorAll("button, a").forEach(addHover);
   }
 
-  function animateCursor() {
-    damped.x += (mouse.x - damped.x) * 0.14;
-    damped.y += (mouse.y - damped.y) * 0.14;
-    cRX += (tRX - cRX) * 0.09;
-    cRY += (tRY - cRY) * 0.09;
-
-    cursorRing.style.left = `${damped.x}px`;
-    cursorRing.style.top  = `${damped.y}px`;
-    cursorDot.style.left  = `${mouse.x}px`;
-    cursorDot.style.top   = `${mouse.y}px`;
-
-    if (guiCard) {
-      guiCard.style.transform = `rotateX(${cRX}deg) rotateY(${cRY}deg)`;
-    }
-    requestAnimationFrame(animateCursor);
+  function tick() {
+    dx += (mx - dx) * 0.13;
+    dy += (my - dy) * 0.13;
+    rX += (tRX - rX) * 0.09;
+    rY += (tRY - rY) * 0.09;
+    ring.style.left = dx + "px"; ring.style.top = dy + "px";
+    dot.style.left  = mx + "px"; dot.style.top  = my + "px";
+    if (guiCard) guiCard.style.transform = `rotateX(${rX}deg) rotateY(${rY}deg)`;
+    requestAnimationFrame(tick);
   }
-  requestAnimationFrame(animateCursor);
+  requestAnimationFrame(tick);
 
-  /* ═══════════════════════════════════════════════════════
-     GRID CANVAS  (interactive pink tile glow)
-  ═══════════════════════════════════════════════════════ */
-  const CELL = 48;
+  /* ══════════════════════════════════════
+     CANVAS  (pink tile glow + grid)
+  ══════════════════════════════════════ */
+  const CELL = 50;
   let cols, rows, cells = [];
 
-  function resizeCanvas() {
-    canvas.width  = innerWidth;
-    canvas.height = innerHeight;
-    cols = Math.ceil(canvas.width  / CELL) + 1;
-    rows = Math.ceil(canvas.height / CELL) + 1;
+  function resize() {
+    canvasEl.width  = innerWidth;
+    canvasEl.height = innerHeight;
+    cols = Math.ceil(canvasEl.width  / CELL) + 1;
+    rows = Math.ceil(canvasEl.height / CELL) + 1;
     cells = Array.from({ length: cols }, () => new Float32Array(rows));
   }
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
+  window.addEventListener("resize", resize);
+  resize();
 
   function drawCanvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
 
-    // Grid lines
-    ctx.strokeStyle = "rgba(255,255,255,0.018)";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for (let c = 0; c <= cols; c++) { ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, canvas.height); }
-    for (let r = 0; r <= rows; r++) { ctx.moveTo(0, r * CELL); ctx.lineTo(canvas.width, r * CELL); }
+    /* grid lines */
+    ctx.strokeStyle = "rgba(255,255,255,0.016)";
+    ctx.lineWidth = 1; ctx.beginPath();
+    for (let c = 0; c <= cols; c++) { ctx.moveTo(c*CELL,0); ctx.lineTo(c*CELL,canvasEl.height); }
+    for (let r = 0; r <= rows; r++) { ctx.moveTo(0,r*CELL); ctx.lineTo(canvasEl.width,r*CELL); }
     ctx.stroke();
 
-    // Hover glow tiles
-    const mc = Math.floor(mouse.x / CELL);
-    const mr = Math.floor(mouse.y / CELL);
-    const spread = [[0,0,1],[1,0,.35],[-1,0,.35],[0,1,.35],[0,-1,.35],[1,1,.15],[-1,1,.15],[1,-1,.15],[-1,-1,.15]];
-    spread.forEach(([dc, dr, v]) => {
-      const nc = mc + dc, nr = mr + dr;
-      if (nc >= 0 && nc < cols && nr >= 0 && nr < rows)
-        cells[nc][nr] = Math.max(cells[nc][nr], v);
+    /* hover glow */
+    const mc = Math.floor(mx / CELL), mr = Math.floor(my / CELL);
+    [[0,0,1],[1,0,.3],[-1,0,.3],[0,1,.3],[0,-1,.3],[1,1,.12],[-1,1,.12],[1,-1,.12],[-1,-1,.12]].forEach(([dc,dr,v]) => {
+      const nc = mc+dc, nr = mr+dr;
+      if (nc>=0&&nc<cols&&nr>=0&&nr<rows) cells[nc][nr] = Math.max(cells[nc][nr], v);
     });
-
-    for (let c = 0; c < cols; c++) {
-      for (let r = 0; r < rows; r++) {
-        const v = cells[c][r];
-        if (v > 0.005) {
-          ctx.fillStyle = `rgba(255,79,163,${v * 0.12})`;
-          ctx.fillRect(c * CELL, r * CELL, CELL, CELL);
-          cells[c][r] *= 0.92;
-        }
+    for (let c = 0; c < cols; c++) for (let r = 0; r < rows; r++) {
+      const v = cells[c][r];
+      if (v > 0.005) {
+        ctx.fillStyle = `rgba(255,79,163,${v*0.12})`;
+        ctx.fillRect(c*CELL, r*CELL, CELL, CELL);
+        cells[c][r] *= 0.91;
       }
     }
 
-    // Mouse spotlight
-    const grd = ctx.createRadialGradient(damped.x, damped.y, 0, damped.x, damped.y, 240);
-    grd.addColorStop(0, "rgba(255,79,163,0.055)");
-    grd.addColorStop(1, "transparent");
-    ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    /* spotlight */
+    const g = ctx.createRadialGradient(dx, dy, 0, dx, dy, 220);
+    g.addColorStop(0, "rgba(255,79,163,0.05)"); g.addColorStop(1,"transparent");
+    ctx.fillStyle = g; ctx.fillRect(0,0,canvasEl.width,canvasEl.height);
 
     requestAnimationFrame(drawCanvas);
   }
   requestAnimationFrame(drawCanvas);
 
-  /* ═══════════════════════════════════════════════════════
+  /* ══════════════════════════════════════
      INTRO ANIMATION
-     Phase 1: gun.png spins in from right → center (0.8s)
-     Phase 2: gun holds for 0.5s (sub hint fades in)
-     Phase 3: gun slides off to left (0.6s)
-     Phase 4: /alternate text fades in (0.5s)
-     Phase 5: waits 1.2s then startup fades out, main fades in
-
-     Click anywhere skips straight to phase 4 fast
-  ═══════════════════════════════════════════════════════ */
+     1) gun spins in from right  (0.9s)
+     2) gun slides off to left   (0.55s)
+     3) /alternate fades in      (0.5s)
+     4) whole screen fades out   (0.65s)
+     Click anywhere to skip
+  ══════════════════════════════════════ */
   let introDone = false;
 
-  function runIntroPhase1() {
-    // Spin in from right
-    introGun.style.transition = "transform 0.9s cubic-bezier(0.34,1.46,0.64,1), opacity 0.5s ease";
-    introGun.style.transform  = "translateX(0) rotate(360deg)";
-    introGun.style.opacity    = "1";
-  }
+  textWrap.style.opacity   = "0";
+  textWrap.style.transform = "scale(0.97)";
 
-  function runIntroPhase2() {
-    // Slide to left
-    introSub.style.display = "none";
-    introGun.style.transition = "transform 0.55s cubic-bezier(0.6,0,0.4,1), opacity 0.4s ease";
-    introGun.style.transform  = "translateX(-130vw) rotate(720deg)";
-    introGun.style.opacity    = "0";
-  }
+  setTimeout(() => {
+    gun.style.transition = "transform 0.9s cubic-bezier(0.34,1.46,0.64,1), opacity 0.5s ease";
+    gun.style.transform  = "translateX(0) rotate(360deg)";
+    gun.style.opacity    = "1";
+  }, 100);
 
-  function runIntroPhase3() {
-    // Reveal text
-    introTextWrap.style.transition = "opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.46,0.64,1)";
-    introTextWrap.style.opacity    = "1";
-    introTextWrap.style.transform  = "scale(1)";
-  }
+  setTimeout(() => {
+    gun.style.transition = "transform 0.55s cubic-bezier(0.6,0,0.4,1), opacity 0.35s ease";
+    gun.style.transform  = "translateX(-120vw) rotate(700deg)";
+    gun.style.opacity    = "0";
+  }, 1350);
 
-  function completeIntro() {
+  setTimeout(() => {
+    textWrap.style.transition = "opacity 0.55s ease, transform 0.55s cubic-bezier(0.34,1.56,0.64,1)";
+    textWrap.style.opacity    = "1";
+    textWrap.style.transform  = "scale(1)";
+  }, 2050);
+
+  setTimeout(finishIntro, 3600);
+
+  startup.addEventListener("click", () => {
     if (introDone) return;
-    introDone = true;
-    startupScr.classList.add("fade-out");
-    setTimeout(() => {
-      startupScr.style.display = "none";
-      mainContent.classList.remove("hidden-main");
-      mainContent.classList.add("visible");
-      refreshHovers();
-    }, 700);
-  }
-
-  // Initial state for text wrap
-  introTextWrap.style.opacity   = "0";
-  introTextWrap.style.transform = "scale(0.95)";
-
-  // Timeline
-  setTimeout(runIntroPhase1, 120);
-  setTimeout(runIntroPhase2, 1300);
-  setTimeout(runIntroPhase3, 2000);
-  setTimeout(completeIntro, 3500);
-
-  // Click to skip
-  startupScr.addEventListener("click", () => {
-    if (introDone) return;
-    // Fast skip: hide gun, show text briefly, then complete
-    introGun.style.transition = "opacity 0.15s";
-    introGun.style.opacity    = "0";
-    introSub.style.display    = "none";
-    introTextWrap.style.transition = "opacity 0.3s ease";
-    introTextWrap.style.opacity    = "1";
-    introTextWrap.style.transform  = "scale(1)";
-    setTimeout(completeIntro, 500);
+    gun.style.transition = "opacity 0.1s";
+    gun.style.opacity    = "0";
+    textWrap.style.transition = "opacity 0.25s ease";
+    textWrap.style.opacity    = "1";
+    textWrap.style.transform  = "scale(1)";
+    setTimeout(finishIntro, 400);
   });
 
-  /* ═══════════════════════════════════════════════════════
-     HERO BUTTONS
-  ═══════════════════════════════════════════════════════ */
-  if (heroBuyBtn) heroBuyBtn.addEventListener("click", () => window.open(C.shopUrl, "_blank"));
-  if (heroDiscBtn) heroDiscBtn.addEventListener("click", () => openModal("modal-discord"));
+  function finishIntro() {
+    if (introDone) return;
+    introDone = true;
+    startup.classList.add("fade-out");
+    setTimeout(() => {
+      startup.style.display = "none";
+      main.classList.remove("hidden-main");
+      main.classList.add("visible");
+      refreshHovers();
+    }, 650);
+  }
 
-  /* ═══════════════════════════════════════════════════════
-     MODAL SYSTEM
-  ═══════════════════════════════════════════════════════ */
-  let currentModal = null;
+  /* ══════════════════════════════════════
+     MODALS
+  ══════════════════════════════════════ */
+  let activeModal = null;
 
   function openModal(id) {
-    closeModal();
-    const m = document.getElementById(id);
-    if (!m) return;
-    m.classList.add("active");
-    currentModal = m;
-
-    // Mark nav tab active
-    document.querySelectorAll(".nav-tab").forEach(b => {
-      b.classList.toggle("active", b.dataset.modal === id);
-    });
-
-    // Lazy-load modal content
-    if (id === "modal-features")  loadFeatures();
-    if (id === "modal-info")      loadInfo();
-    if (id === "modal-pricing")   loadPricing();
-    if (id === "modal-discord")   loadDiscord();
-
+    if (activeModal) activeModal.classList.remove("active");
+    activeModal = document.getElementById(id);
+    if (activeModal) activeModal.classList.add("active");
+    document.querySelectorAll(".tab-btn").forEach(b =>
+      b.classList.toggle("active", b.dataset.modal === id));
     refreshHovers();
   }
 
-  function closeModal() {
-    if (currentModal) {
-      currentModal.classList.remove("active");
-      currentModal = null;
-    }
-    document.querySelectorAll(".nav-tab").forEach(b => b.classList.remove("active"));
+  function closeAll() {
+    if (activeModal) { activeModal.classList.remove("active"); activeModal = null; }
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
   }
 
-  // Nav tab clicks
-  document.querySelectorAll(".nav-tab[data-modal]").forEach(btn => {
-    btn.addEventListener("click", () => openModal(btn.dataset.modal));
-  });
-
-  // Close button & backdrop
-  document.addEventListener("click", e => {
-    if (e.target.classList.contains("modal-close-btn") || e.target.classList.contains("modal-backdrop")) {
-      closeModal();
-    }
-  });
-  window.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-
-  /* ═══════════════════════════════════════════════════════
-     ACCORDION (Info modal)
-  ═══════════════════════════════════════════════════════ */
-  document.querySelectorAll(".acc-trigger").forEach(trigger => {
-    trigger.addEventListener("click", () => {
-      const body   = document.getElementById(trigger.dataset.target);
-      const isOpen = body.classList.contains("open");
-      // close all
-      document.querySelectorAll(".acc-body").forEach(b  => b.classList.remove("open"));
-      document.querySelectorAll(".acc-trigger").forEach(t => t.classList.remove("active"));
-      // toggle
-      if (!isOpen) { body.classList.add("open"); trigger.classList.add("active"); }
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (activeModal && activeModal.id === btn.dataset.modal) { closeAll(); return; }
+      openModal(btn.dataset.modal);
+      if (btn.dataset.modal === "modal-features") loadFeatures();
+      if (btn.dataset.modal === "modal-info")     loadInfo();
+      if (btn.dataset.modal === "modal-pricing")  loadPricing();
+      if (btn.dataset.modal === "modal-discord")  loadDiscord();
     });
   });
 
-  /* ═══════════════════════════════════════════════════════
-     FEATURES MODAL
-  ═══════════════════════════════════════════════════════ */
+  document.querySelectorAll(".close-btn").forEach(btn =>
+    btn.addEventListener("click", closeAll));
+  document.querySelectorAll(".modal-bg").forEach(bg =>
+    bg.addEventListener("click", closeAll));
+  window.addEventListener("keydown", e => { if (e.key === "Escape") closeAll(); });
+
+  /* ── Accordion ──────────────────────── */
+  document.querySelectorAll(".acc-h").forEach(h => {
+    h.addEventListener("click", () => {
+      const body = document.getElementById(h.dataset.t);
+      const open = body.classList.contains("open");
+      document.querySelectorAll(".acc-b").forEach(b => b.classList.remove("open"));
+      document.querySelectorAll(".acc-h").forEach(a => a.classList.remove("active"));
+      if (!open) { body.classList.add("open"); h.classList.add("active"); }
+    });
+  });
+
+  /* ══════════════════════════════════════
+     FEATURES (parses script.txt)
+  ══════════════════════════════════════ */
   let featDone = false;
   let featData = {};
 
@@ -268,299 +213,196 @@ document.addEventListener("DOMContentLoaded", () => {
     if (featDone) return;
     fetch("script.txt")
       .then(r => { if (!r.ok) throw 0; return r.text(); })
-      .then(parseFeatures)
-      .catch(() => parseFeatures(FALLBACK_FEATURES));
+      .then(parseFeat).catch(() => parseFeat(FALLBACK));
   }
 
-  function parseFeatures(text) {
-    featDone = true;
-    const loader = document.getElementById("features-loader");
-    const nav    = document.getElementById("features-tabs-nav");
-    const content= document.getElementById("features-content");
-    if (loader) loader.remove();
-    nav.innerHTML = ""; content.innerHTML = "";
-    featData = {};
-
-    let cat = null;
-    text.split("\n").forEach(line => {
-      const t = line.trim();
-      if (!t) return;
-      if (t.startsWith("[") && t.endsWith("]")) {
-        cat = t.slice(1, -1);
-        featData[cat] = [];
-      } else if (cat && (t[0] === "-" || t[0] === "*")) {
-        featData[cat].push(t.slice(1).trim());
-      }
-    });
-
-    const cats = Object.keys(featData);
-    cats.forEach((cat, i) => {
-      const btn = document.createElement("button");
-      btn.className   = "feat-tab-btn" + (i === 0 ? " active" : "");
-      btn.textContent = cat;
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".feat-tab-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        renderFeatContent(cat, content);
-      });
-      nav.appendChild(btn);
-    });
-
-    if (cats.length) renderFeatContent(cats[0], content);
-    refreshHovers();
-  }
-
-  function renderFeatContent(cat, container) {
-    container.innerHTML = "";
-    const grid = document.createElement("div");
-    grid.className = "features-grid";
-    (featData[cat] || []).forEach(item => {
-      const chip = document.createElement("div");
-      chip.className = "feature-chip";
-      chip.innerHTML = `<span class="chip-dot"></span><span>${item}</span>`;
-      grid.appendChild(chip);
-    });
-    container.appendChild(grid);
-  }
-
-  const FALLBACK_FEATURES = `[Aimbot]
+  const FALLBACK = `[Aimbot]
 - Enabled
 - Lock Method (Mouse, Camera)
 - Target Mode (FOV, Mouse, Distance, Center)
-- Aim Type (Normal, Closest Part)
-- Sticky Aim
-- Lock Target
-- Look At Target
+- Sticky Aim / Lock Target
 - Smoothing / Inertia
 - Dynamic Prediction
+- Offsets (Up, Down, Left, Right)
 [Silent Aim]
 - Enabled
-- Target Type (Closest to Mouse, Distance, FOV)
-- Hit Part (Head, Torso)
+- Target Type (Closest, Distance, FOV)
+- Hit Part (Head, Torso, HRP)
 - Use Closest Point
 [Visuals (ESP)]
-- Enable ESP
 - Box ESP (Full, Cornered)
 - Name ESP
 - Health Bar
-- Health Bar Gradient
 - Armor Bar
 - Weapon ESP
 - State Flags
 [Player Chams]
-- Player Chams
-- Fill Color
-- Outline Color
-- Fill Transparency
+- Fill &amp; Outline Color
+- Show On Self / Others / NPCs
+- Transparency Control
 [Movement]
-- Speed Boost
-- Jump Boost
-- Noclip
-- Fly
+- Speed Boost / Jump Boost
+- Noclip / Fly
 - Anti AFK
 [Skins]
-- Purple, Red, Green, Blue, Grey
-- Ghost Skin (transparent)
-- Rainbow Skin
-- Cosmic Skin
+- Purple / Red / Green / Blue / Grey
+- Ghost / Rainbow / Cosmic
 [Skyboxes]
-- Space, Pink, Night, Forest
-- Nebula, Blood Red, Sunset
-- Realistic Day, HD Space
+- Space / Pink / Night / Forest
+- Nebula / Sunset / Blood Red
 [Avatar]
-- Headless
-- Korblox Right/Left Leg
+- Headless / Korblox
 - Animation Changer`;
 
-  /* ═══════════════════════════════════════════════════════
-     INFO MODAL
-  ═══════════════════════════════════════════════════════ */
+  function parseFeat(txt) {
+    featDone = true;
+    document.getElementById("feat-loader")?.remove();
+    const nav    = document.getElementById("feat-tabs");
+    const grid   = document.getElementById("feat-grid");
+    nav.innerHTML = ""; grid.innerHTML = ""; featData = {};
+
+    let cat = null;
+    txt.split("\n").forEach(line => {
+      const t = line.trim();
+      if (!t) return;
+      if (t[0]==="[" && t.at(-1)==="]") { cat = t.slice(1,-1); featData[cat]=[]; }
+      else if (cat && (t[0]==="-"||t[0]==="*")) featData[cat].push(t.slice(1).trim());
+    });
+
+    Object.keys(featData).forEach((cat, i) => {
+      const btn = document.createElement("button");
+      btn.className = "ftab" + (i===0 ? " active" : "");
+      btn.textContent = cat;
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".ftab").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        showFeat(cat);
+      });
+      nav.appendChild(btn);
+    });
+    if (Object.keys(featData)[0]) showFeat(Object.keys(featData)[0]);
+    refreshHovers();
+  }
+
+  function showFeat(cat) {
+    const grid = document.getElementById("feat-grid");
+    grid.innerHTML = "";
+    (featData[cat]||[]).forEach(item => {
+      const d = document.createElement("div");
+      d.className = "f-chip";
+      d.innerHTML = `<span class="f-dot"></span><span>${item}</span>`;
+      grid.appendChild(d);
+    });
+  }
+
+  /* ══════════════════════════════════════
+     INFO (Roblox + offsets)
+  ══════════════════════════════════════ */
   let infoDone = false;
 
   function loadInfo() {
     if (infoDone) return;
     infoDone = true;
-    renderGames();
-    renderExecutors();
-    renderOwner();
-    fetchOffsets();
-  }
 
-  function renderGames() {
-    const el = document.getElementById("games-list");
-    if (!el) return;
-    el.innerHTML = "";
-    C.games.forEach(g => {
-      const card = document.createElement("div");
-      card.className = "game-card";
-      card.innerHTML = `
-        <div class="game-card-icon">${g.icon}</div>
-        <h4>${g.name}</h4>
-        <p>${g.details}</p>
-        <div class="game-tags">${g.tags.map(t => `<span class="game-tag">${t}</span>`).join("")}</div>`;
-      el.appendChild(card);
+    /* Games */
+    const gEl = document.getElementById("games-list");
+    if (gEl) C.games.forEach(g => {
+      gEl.innerHTML += `<div class="game-card">
+        <div class="game-icon">${g.icon}</div>
+        <h4>${g.name}</h4><p>${g.details}</p>
+        <div class="tag-row">${g.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+      </div>`;
     });
-  }
 
-  function renderExecutors() {
-    const el = document.getElementById("executors-list");
-    if (!el) return;
-    el.innerHTML = "";
-    C.executors.forEach(name => {
-      const b = document.createElement("span");
-      b.className   = "exec-badge";
-      b.textContent = name;
-      el.appendChild(b);
+    /* Executors */
+    const eEl = document.getElementById("exec-list");
+    if (eEl) C.executors.forEach(n => {
+      const s = document.createElement("span");
+      s.className = "exec-b"; s.textContent = n; eEl.appendChild(s);
     });
-  }
 
-  function renderOwner() {
-    // Avatar (full body)
-    fetchRobloxAvatar(C.owner.robloxId, "full", img => {
-      const el = document.getElementById("owner-avatar");
-      if (el) el.src = img;
+    /* Owner links */
+    const lEl = document.getElementById("owner-links");
+    if (lEl) C.owner.links.forEach(l => {
+      const a = document.createElement("a");
+      a.className="dev-link"; a.href=l.url; a.target="_blank";
+      a.textContent=`${l.icon}  ${l.label}`; lEl.appendChild(a);
     });
-    // Profile data
-    proxyFetch(`https://users.roblox.com/v1/users/${C.owner.robloxId}`)
+
+    /* Roblox avatar (full body) */
+    const PROXY = url => `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
+    const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar?userIds=${C.owner.robloxId}&size=420x420&format=Png&isCircular=false`;
+    fetch(PROXY(avatarUrl))
+      .then(r => r.json())
+      .then(d => {
+        if (d.data?.[0]?.imageUrl) {
+          const el = document.getElementById("owner-avatar");
+          if (el) el.src = d.data[0].imageUrl;
+        }
+      }).catch(() => {});
+
+    /* Roblox profile (name, username, joined) */
+    const profileUrl = `https://users.roblox.com/v1/users/${C.owner.robloxId}`;
+    fetch(PROXY(profileUrl))
+      .then(r => r.json())
       .then(d => {
         const dn = document.getElementById("owner-display-name");
         const un = document.getElementById("owner-username");
         const id = document.getElementById("owner-id");
         const cr = document.getElementById("owner-created");
-        if (dn) dn.textContent = d.displayName || C.owner.name;
-        if (un) un.textContent = `@${d.name || "loading"}`;
-        if (id) id.textContent = d.id || C.owner.robloxId;
-        if (cr && d.created) {
-          cr.textContent = new Date(d.created).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
-        }
-      })
-      .catch(() => {
-        const dn = document.getElementById("owner-display-name");
-        const un = document.getElementById("owner-username");
-        if (dn) dn.textContent = C.owner.name;
-        if (un) un.textContent = "@5fovtraceboss";
-      });
+        if (dn && d.displayName) dn.textContent = d.displayName;
+        if (un && d.name)        un.textContent  = `@${d.name}`;
+        if (id && d.id)          id.textContent  = d.id;
+        if (cr && d.created)     cr.textContent  = new Date(d.created).toLocaleDateString("en-US",{month:"2-digit",day:"2-digit",year:"numeric"});
+      }).catch(() => {});
 
-    // Links
-    const linksEl = document.getElementById("owner-links");
-    if (linksEl) {
-      linksEl.innerHTML = "";
-      C.owner.links.forEach(link => {
-        const a = document.createElement("a");
-        a.className = "dev-link-btn";
-        a.href = link.url;
-        a.target = "_blank";
-        a.textContent = `${link.icon}  ${link.label}`;
-        linksEl.appendChild(a);
-      });
-    }
-    refreshHovers();
-  }
-
-  /* ─── Roblox avatar fetch helper ───────────────────── */
-  function fetchRobloxAvatar(userId, type, cb) {
-    const endpoint = type === "full"
-      ? `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`
-      : `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`;
-
-    proxyFetch(endpoint)
-      .then(d => { if (d.data && d.data[0]) cb(d.data[0].imageUrl); })
-      .catch(() => {});
-  }
-
-  /* ─── Generic CORS proxy fetch ──────────────────────── */
-  function proxyFetch(url) {
-    const proxy = `https://corsproxy.io/?url=${encodeURIComponent(url)}`;
-    return fetch(proxy).then(r => { if (!r.ok) throw 0; return r.json(); });
-  }
-
-  /* ═══════════════════════════════════════════════════════
-     OFFSETS  (imtheo.lol)
-  ═══════════════════════════════════════════════════════ */
-  function fetchOffsets() {
-    const url = C.offsetsUrl || "https://offsets.imtheo.lol/Offsets.json";
-    proxyFetch(url)
+    /* Offsets */
+    const OFFSETS = C.offsetsUrl || "https://offsets.imtheo.lol/Offsets.json";
+    fetch(PROXY(OFFSETS))
+      .then(r => r.json())
       .then(setOffsets)
-      .catch(() => fetch(url).then(r => r.json()).then(setOffsets).catch(() => {
-        setOffsets({
-          "Roblox Version": "version-d584fb6c717a43d9",
-          "Dumper Version": "2.1.7",
-          "Dumped With": "RbxDumperV2",
-          "Dumped At": "01:04 06/08/2026",
-          "Total Offsets": "388"
-        });
+      .catch(() => fetch(OFFSETS).then(r=>r.json()).then(setOffsets).catch(() => {
+        setOffsets({"Roblox Version":"version-d584fb6c717a43d9","Dumper Version":"2.1.7","Dumped With":"RbxDumperV2","Dumped At":"01:04 06/08/2026","Total Offsets":"388"});
       }));
+
+    refreshHovers();
   }
 
   function setOffsets(d) {
-    const cv = document.getElementById("rbx-client-version");
-    const dv = document.getElementById("rbx-dumper-version");
-    const da = document.getElementById("rbx-dump-date");
-    const oc = document.getElementById("rbx-offset-count");
-    if (cv) cv.textContent = d["Roblox Version"] || "—";
-    if (dv) dv.textContent = `${d["Dumper Version"] || "?"} (${d["Dumped With"] || "?"})`;
-    if (da) da.textContent = d["Dumped At"] || "—";
-    if (oc) oc.textContent = `${d["Total Offsets"] || "?"} offsets`;
-
-    // Update links with real viewer URL
-    const viewerUrl = C.offsetsViewerUrl || "https://offsets.imtheo.lol/";
-    const link = document.getElementById("offsets-link");
-    const btn  = document.getElementById("offsets-open-btn");
-    if (link) link.href = viewerUrl;
-    if (btn)  btn.href  = viewerUrl;
+    const v  = document.getElementById("rbx-ver");
+    const dv = document.getElementById("rbx-dump");
+    const da = document.getElementById("rbx-date");
+    const oc = document.getElementById("rbx-count");
+    if (v)  v.textContent  = d["Roblox Version"]||"—";
+    if (dv) dv.textContent = `${d["Dumper Version"]||"?"} (${d["Dumped With"]||"?"})`;
+    if (da) da.textContent = d["Dumped At"]||"—";
+    if (oc) oc.textContent = `${d["Total Offsets"]||"?"} offsets`;
+    const btn = document.getElementById("offsets-btn");
+    if (btn) btn.href = C.offsetsViewerUrl || "https://offsets.imtheo.lol/";
   }
 
-  /* ═══════════════════════════════════════════════════════
-     PRICING MODAL
-  ═══════════════════════════════════════════════════════ */
-  let pricingDone = false;
-
+  /* ══════════════════════════════════════
+     PRICING
+  ══════════════════════════════════════ */
+  let priceDone = false;
   function loadPricing() {
-    if (pricingDone) return;
-    pricingDone = true;
-    const container = document.getElementById("pricing-card-container");
-    if (!container) return;
-
-    const p = C.pricing;
-    container.innerHTML = `
-      <div class="pricing-card-hero">
-        <div class="pricing-card-glow"></div>
-        <div class="pricing-badge-wrap">
-          <span class="pricing-badge">${p.badge || "Best Value"}</span>
-        </div>
-        <div class="pricing-inner">
-          <h3>${p.name}</h3>
-          <div class="pricing-amount-row">
-            <span class="pricing-big-price">${p.price}</span>
-            <span class="pricing-period">${p.period}</span>
-          </div>
-          <div class="pricing-divider"></div>
-          <ul class="pricing-features-ul">
-            ${p.features.map(f => `<li>${f}</li>`).join("")}
-          </ul>
-          <button class="pricing-buy-btn" id="pricing-buy-btn">Get Lifetime Access</button>
-          <p class="pricing-note">Secure checkout via aeri.mysellauth.com</p>
-        </div>
-      </div>`;
-
-    document.getElementById("pricing-buy-btn").addEventListener("click", () => {
-      window.open(p.link, "_blank");
-    });
+    if (priceDone) return;
+    priceDone = true;
+    const btn = document.getElementById("buy-btn");
+    if (btn) btn.addEventListener("click", () => window.open(C.shopUrl, "_blank"));
     refreshHovers();
   }
 
-  /* ═══════════════════════════════════════════════════════
-     DISCORD MODAL  —  real server info via Discord API
-  ═══════════════════════════════════════════════════════ */
-  let discordDone = false;
-
+  /* ══════════════════════════════════════
+     DISCORD  (invite API for live counts)
+  ══════════════════════════════════════ */
+  let dscDone = false;
   function loadDiscord() {
-    if (discordDone) return;
-    discordDone = true;
+    if (dscDone) return;
+    dscDone = true;
 
-    const joinBtn = document.getElementById("discord-join-btn");
-    const copyBtn = document.getElementById("discord-copy-btn");
-
+    const joinBtn = document.getElementById("dsc-join");
+    const copyBtn = document.getElementById("dsc-copy");
     if (joinBtn) joinBtn.addEventListener("click", () => window.open(C.discord, "_blank"));
     if (copyBtn) copyBtn.addEventListener("click", () => {
       navigator.clipboard.writeText(C.discord).then(() => {
@@ -569,31 +411,26 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Fetch live member counts from Discord widget API (no bot token needed)
-    const guildId = C.discordGuildId;
-    fetch(`https://discord.com/api/guilds/${guildId}/widget.json`)
+    /* Discord invite API — no auth required, public endpoint */
+    const inviteCode = C.discordInviteCode || "alternate";
+    fetch(`https://discord.com/api/v10/invites/${inviteCode}?with_counts=true`)
       .then(r => r.json())
       .then(d => {
-        const onlineEl = document.getElementById("dsc-online-count");
-        const totalEl  = document.getElementById("dsc-total-count");
-        const descEl   = document.getElementById("dsc-description");
-        if (onlineEl) onlineEl.textContent = (d.presence_count || 0).toLocaleString();
-        if (totalEl)  totalEl.textContent  = "—"; // widget only returns online
-        if (descEl && d.name) descEl.textContent = `Official server for the Alternate Roblox script.`;
+        const onEl = document.getElementById("dsc-online");
+        const mbEl = document.getElementById("dsc-members");
+        if (onEl && d.approximate_presence_count !== undefined)
+          onEl.textContent = d.approximate_presence_count.toLocaleString();
+        if (mbEl && d.approximate_member_count !== undefined)
+          mbEl.textContent = d.approximate_member_count.toLocaleString();
       })
       .catch(() => {
-        // Fallback to invite API
-        fetch(`https://discord.com/api/v10/invites/${C.discordInviteCode}?with_counts=true&with_expiration=true`)
+        /* fallback: widget API */
+        fetch(`https://discord.com/api/guilds/${C.discordGuildId}/widget.json`)
           .then(r => r.json())
           .then(d => {
-            const onlineEl = document.getElementById("dsc-online-count");
-            const totalEl  = document.getElementById("dsc-total-count");
-            if (d.approximate_presence_count !== undefined)
-              onlineEl && (onlineEl.textContent = d.approximate_presence_count.toLocaleString());
-            if (d.approximate_member_count !== undefined)
-              totalEl  && (totalEl.textContent  = d.approximate_member_count.toLocaleString());
-          })
-          .catch(() => {});
+            const onEl = document.getElementById("dsc-online");
+            if (onEl && d.presence_count) onEl.textContent = d.presence_count.toLocaleString();
+          }).catch(() => {});
       });
 
     refreshHovers();
