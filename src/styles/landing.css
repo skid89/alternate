@@ -1,0 +1,340 @@
+/* Landing Page Styles */
+
+.landing-viewport {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background flowing flow */
+.landing-bg-gradient {
+  position: absolute;
+  top: -10%;
+  left: 30%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+.landing-nav {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  z-index: 10;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+}
+
+.landing-logo {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+}
+
+/* Hero Section */
+.landing-hero-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  flex-grow: 1;
+  padding-top: 60px;
+  padding-bottom: 80px;
+  z-index: 10;
+}
+
+@media (max-width: 992px) {
+  .landing-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding-top: 40px;
+    text-align: center;
+  }
+  .username-claim-form {
+    justify-content: center;
+  }
+}
+
+.premium-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  background: var(--accent-dim);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+  align-self: flex-start;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 992px) {
+  .premium-label {
+    align-self: center;
+  }
+}
+
+.landing-main-title {
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  background: linear-gradient(to bottom, #ffffff, #888888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.landing-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 520px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 992px) {
+  .landing-description {
+    margin: 0 auto 24px auto;
+  }
+}
+
+/* Claim form input */
+.username-claim-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 480px;
+}
+
+@media (max-width: 992px) {
+  .username-claim-form {
+    margin: 0 auto;
+  }
+}
+
+.input-search-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg-elevated);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 0 16px;
+  flex-grow: 1;
+  height: 48px;
+  transition: border-color var(--transition-fast);
+}
+
+.input-search-wrapper:focus-within {
+  border-color: var(--accent-color);
+}
+
+.domain-prefix {
+  color: var(--text-dimmed);
+  font-size: 14px;
+  user-select: none;
+}
+
+.input-search-wrapper input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  outline: none;
+  flex-grow: 1;
+  padding-left: 4px;
+}
+
+.availability-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.indicator-dot.loading {
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: var(--accent-light);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.community-card {
+  text-align: left;
+}
+
+/* Preview Card Mock layout */
+.preview-card-outer {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1.2;
+}
+
+.preview-glow-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 80%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(30px);
+}
+
+.profile-card-preview-mock {
+  position: relative;
+  background-color: #050506;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.08);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  z-index: 5;
+  height: 100%;
+  justify-content: center;
+}
+
+.mock-avatar-container {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+
+.mock-pfp {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.03);
+  border: 2px solid var(--accent-color);
+}
+
+.mock-deco-ring {
+  position: absolute;
+  top: -8%;
+  left: -8%;
+  width: 116%;
+  height: 116%;
+  border: 1px dashed rgba(139, 92, 246, 0.4);
+  border-radius: 50%;
+  animation: spin 10s linear infinite;
+}
+
+.mock-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mock-slug {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.mock-badges-row {
+  display: flex;
+  gap: 6px;
+}
+
+.mock-badge {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mock-location {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mock-bio {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 280px;
+}
+
+.mock-links {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mock-link-item {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background-color: rgba(255,255,255,0.02);
+  border: 1px solid var(--card-border);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mock-link-item.highlight {
+  background: linear-gradient(135deg, var(--accent-dim), transparent);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.mock-presence-box {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--card-border);
+}
+
+.mock-presence-avatar {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  background-color: rgba(255,255,255,0.05);
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,304 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MODERATOR
+  DEVELOPER
+  USER
+}
+
+enum PremiumStatus {
+  FREE
+  PREMIUM
+  LIFETIME
+  CREATOR
+  VERIFIED
+}
+
+enum LayoutType {
+  DEFAULT
+  MINIMAL
+  MODERN
+  SLEEK
+  PORTFOLIO
+  CARDS
+  COMPACT
+  CENTERED
+  SPLIT
+}
+
+enum CommentStatus {
+  APPROVED
+  PENDING
+  SPAM
+  REPORTED
+}
+
+enum ReportCategory {
+  SPAM
+  PHISHING
+  MALWARE
+  IMPERSONATION
+  HARASSMENT
+  INAPPROPRIATE
+  STOLEN_CONTENT
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  INVESTIGATING
+  RESOLVED
+  REJECTED
+}
+
+model User {
+  id            String        @id @default(uuid())
+  username      String        @unique
+  email         String        @unique
+  passwordHash  String
+  role          Role          @default(USER)
+  premiumStatus PremiumStatus @default(FREE)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  sessions      Session[]
+  profile       Profile?
+  badges        UserBadge[]
+  entitlements  Entitlement[]
+  auditLogs     AuditLog[]    @relation("ActorLogs")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  userId       String
+  token        String    @unique
+  ipAddress    String?
+  userAgent    String?
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Profile {
+  id                     String      @id @default(uuid())
+  userId                 String      @unique
+  slug                   String      @unique
+  displayName            String
+  bio                    String?
+  location               String?
+  entryText              String?
+  layout                 LayoutType  @default(DEFAULT)
+  font                   String      @default("Inter")
+  customCursor           String?     // URL or SVG code
+  cursorStyle            String      @default("default") // default, glow, trail, sparkles
+  
+  // Customization Colors & Styles
+  primaryColor           String      @default("#ffffff")
+  accentColor            String      @default("#8B5CF6") // Muted Violet
+  bgColor                String      @default("#000000")
+  cardColor              String      @default("#0c0c0e")
+  textColor              String      @default("#ffffff")
+  textMutedColor         String      @default("#a1a1aa")
+  borderGlowColor        String      @default("#8B5CF6")
+  cardOpacity            Float       @default(0.85)
+  cardBlur               Float       @default(10)
+  cardRadius             Float       @default(12)
+  cardWidth              String      @default("650px")
+  
+  // Wallpapers & Banners
+  backgroundType         String      @default("color") // color, gradient, image, video
+  backgroundUrl          String?
+  backgroundEffects      String      @default("none") // none, particles, noise, grid, animated-gradient
+  avatarUrl              String?
+  avatarDecoration       String?     // URL or ID of decoration overlay
+  avatarStyle            String      @default("circle") // circle, square, rounded
+  bannerUrl              String?
+
+  // Audio System
+  musicUrl               String?
+  musicAutoplay          Boolean     @default(false)
+  musicVolume            Float       @default(0.5)
+  musicTitle             String?
+  musicArtist            String?
+  musicAlbumArt          String?
+
+  // Integrations
+  discordId              String?
+  discordPresenceEnabled Boolean     @default(false)
+  robloxId               String?
+  robloxPresenceEnabled  Boolean     @default(false)
+
+  // Status & Visibility
+  isPrivate              Boolean     @default(false)
+  isUnlisted             Boolean     @default(false)
+  isSuspended            Boolean     @default(false)
+  commentsEnabled        Boolean     @default(true)
+  viewsCount             Int         @default(0)
+  seoTitle               String?
+  seoDescription         String?
+  seoIndexing            Boolean     @default(true)
+
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  user                   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links                  Link[]
+  socials                Social[]
+  comments               Comment[]
+  reports                Report[]
+}
+
+model Link {
+  id          String    @id @default(uuid())
+  profileId   String
+  title       String
+  url         String
+  icon        String?   // Lucide icon name or image URL
+  iconColor   String?
+  order       Int       @default(0)
+  isActive    Boolean   @default(true)
+  clicksCount Int       @default(0)
+  description String?
+  isLarge     Boolean   @default(false)
+  
+  // Scheduling
+  isScheduled Boolean   @default(false)
+  startAt     DateTime?
+  endAt       DateTime?
+
+  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Social {
+  id        String  @id @default(uuid())
+  profileId String
+  platform  String  // discord, roblox, youtube, github, twitter, instagram, etc.
+  value     String  // Username, tag, ID, or direct URL
+  order     Int     @default(0)
+
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id          String      @id @default(uuid())
+  name        String      @unique
+  description String?
+  icon        String      // Lucide icon name or image path
+  color       String      @default("#8B5CF6")
+  rarity      String      @default("common")
+  createdAt   DateTime    @default(now())
+
+  users       UserBadge[]
+}
+
+model UserBadge {
+  userId    String
+  badgeId   String
+  order     Int      @default(0)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, badgeId])
+}
+
+model MusicTrack {
+  id        String   @id @default(uuid())
+  profileId String
+  title     String
+  artist    String?
+  fileUrl   String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id            String        @id @default(uuid())
+  profileId     String
+  authorName    String
+  authorEmail   String?
+  authorUserId  String?       // optional linked User account
+  content       String
+  parentId      String?       // for nested replies
+  status        CommentStatus @default(PENDING)
+  ipAddress     String?
+  isPinned      Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+
+  profile       Profile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id            String         @id @default(uuid())
+  profileId     String
+  reporterEmail String
+  category      ReportCategory
+  description   String
+  status        ReportStatus   @default(PENDING)
+  notes         String?        // Admin private notes
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  profile       Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  actorId   String?  // Admin or user performing action
+  action    String   // e.g. USER_SUSPEND, BADGE_ASSIGN
+  targetId  String?  // Target user or object id
+  details   String?  // JSON string or summary
+  ipAddress String?
+  timestamp DateTime @default(now())
+
+  actor     User?    @relation("ActorLogs", fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+model Template {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String?
+  layout        LayoutType
+  previewUrl    String?
+  configJson    String   // Serialized theme layout settings JSON
+  isPremium     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Entitlement {
+  id        String        @id @default(uuid())
+  userId    String
+  status    String        // active, expired, canceled
+  planType  PremiumStatus
+  amount    Int           @default(0)
+  expiresAt DateTime?
+  notes     String?
+  createdAt DateTime      @default(now())
+
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  slug      String   // profile username slug
+  type      String   // view, click
+  target    String?  // link ID, or empty for profile view
+  ipAddress String?
+  country   String?
+  browser   String?
+  os        String?
+  device    String?  // desktop, mobile, tablet
+  referrer  String?
+  timestamp DateTime @default(now())
+}
