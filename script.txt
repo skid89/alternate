@@ -1,0 +1,55 @@
+[Aimbot]
+- Enabled
+- Lock Method (Mouse, Camera)
+- Target Mode (FOV, Mouse, Distance, Center)
+- Aim Type (Normal, Closest Part)
+- Ground Part (Head, Torso, etc.)
+- Air Part (UpperTorso, etc.)
+- Ignore Fall State
+- Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
+- Auto Stop on Dead
+- Sticky Aim
+- Lock Target
+
+[Silent Aim]
+- Enabled
+- Target Type (Closest to Mouse, Distance, FOV)
+- Hit Part (Head, Torso, etc.)
+- Use Closest Point
+- Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
+
+[Visuals (ESP)]
+- Enable ESP
+- ESP Font (ProggyClean, Tahoma, SourceSans, etc.)
+- Show On (NPC, Enemy, Team, Self)
+- Max Distance
+- Box ESP (Full, Cornered)
+- Glow Amount
+- Box Fill (Fill Transparency 1 & 2)
+- Name ESP (Top, Bottom, Left, Right)
+- Distance ESP (Top, Bottom, Left, Right)
+- Health Bar & Health Bar Gradient
+- Health Text & Armor Bar
+- Weapon ESP
+- State Flags
+
+[Player Chams]
+- Player Chams (Fill/Outline Color Picker)
+- Show On Self, Others, NPCs
+- Checks (Dead, Wall)
+- Fill/Outline Transparency
+
+[Movement]
+- Speed Boost (Walk Speed, Ground Speed, Up Speed, Down Speed)
+- Speed Method (Default, Velocity)
+- Jump Boost (Jump Power, Jump Method)
+- Noclip (Collision Bypass)
+- Fly (Fly Speed, Fly Method)
+- Anti AFK
+- Aspect Ratio & Resolution Changer
+
+[Avatar (Skins)]
+- Headless (Non-destructive)
+- Korblox (Right Leg)
+- Korblox (Left Leg)
+- Animation Changer (Walk, Run, Idle, Jump, Fall, Swim)
