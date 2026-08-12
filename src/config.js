@@ -12,20 +12,20 @@ const CONFIG = {
   games: [
     {
       name: "Da Track",
-      icon: "🎯",
+      icon: "DT",
       details: "Custom skin changer & undetected silent aim.",
       tags: ["Skin Changer", "Silent Aim"]
     },
     {
       name: "Hood Customs",
-      icon: "👕",
+      icon: "HC",
       details: "Full skin changer support for all weapons.",
       tags: ["Skin Changer"]
     }
   ],
 
   // ─── Supported Executors ────────────────────────────────────
-  executors: ["Wave", "Synapse Z", "Macsploit", "Solara", "Sentinel", "Sirhurt", "AWP X"],
+  executors: ["real", "madium", "volt", "pottasium", "80+ UNC/SUNC"],
 
   // ─── Owner / Developer ──────────────────────────────────────
   owner: {
@@ -34,9 +34,9 @@ const CONFIG = {
     robloxId: "8393274455",
     robloxProfile: "https://www.roblox.com/users/8393274455/profile",
     links: [
-      { label: "zyo.lol/swq",              url: "https://zyo.lol/swq",              icon: "🔗" },
-      { label: "feds.lol/misanthropist",    url: "https://feds.lol/misanthropist",   icon: "🔗" },
-      { label: "guns.lol/dreadfulness",     url: "https://guns.lol/dreadfulness",    icon: "🔗" }
+      { label: "zyo.lol/swq",              url: "https://zyo.lol/swq",              icon: "" },
+      { label: "feds.lol/misanthropist",    url: "https://feds.lol/misanthropist",   icon: "" },
+      { label: "guns.lol/dreadfulness",     url: "https://guns.lol/dreadfulness",    icon: "" }
     ]
   },
 
@@ -49,15 +49,7 @@ const CONFIG = {
     features: [
       "Undetected Silent Aim & Aimbot",
       "Full Skin & Skybox Changer",
-      "All Executor Support",
-      "Direct Discord Support",
-      "All Future Updates Free"
-    ],
-    link: "https://aeri.mysellauth.com/"
-  },
-
-  // ─── Offsets API ────────────────────────────────────────────
-  offsetsUrl: "https://offsets.imtheo.lol/Offsets.json",
+        "Supported Executors: real, madium, volt, pottasium, 80+ UNC/SUNC",
   offsetsViewerUrl: "https://offsets.imtheo.lol/"
 };
 
