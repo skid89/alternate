@@ -10,7 +10,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
   <link rel="stylesheet" href="src/style.css">
 </head>
@@ -63,25 +63,12 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="bottom-nav">
-      <div class="nav-links">
-        <button id="tab-features" class="nav-btn">
-          <span class="btn-text">Features</span>
-          <span class="btn-glow"></span>
-        </button>
-        <button id="tab-info" class="nav-btn">
-          <span class="btn-text">Info</span>
-          <span class="btn-glow"></span>
-        </button>
-        <button id="tab-discord" class="nav-btn discord">
-          <svg viewBox="0 0 127.14 96.36" class="nav-icon">
-            <path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/>
-          </svg>
-          <span class="btn-text">Discord</span>
-          <span class="btn-glow"></span>
-        </button>
-      </div>
+    <!-- Bottom Navigation Bar (Screenshot Style: Separate small dark buttons) -->
+    <nav class="bottom-nav-separate">
+      <button id="tab-features" class="nav-btn-separate">Feature List</button>
+      <button id="tab-info" class="nav-btn-separate">Info</button>
+      <button id="tab-pricing" class="nav-btn-separate">Pricing</button>
+      <button id="tab-discord" class="nav-btn-separate">Discord</button>
     </nav>
   </main>
 
@@ -90,20 +77,30 @@
     <div class="modal-overlay"></div>
     <div class="modal-container">
       <div class="modal-header">
-        <h2>Script Features</h2>
+        <h2>Features List</h2>
         <button class="modal-close" aria-label="Close modal">&times;</button>
       </div>
+      
+      <!-- Sub-Tabs Navigation to divide categories -->
+      <div class="features-tabs-header">
+        <div id="features-tabs-nav" class="features-tabs-nav custom-scrollbar">
+          <!-- Dynamically populated subtab buttons -->
+        </div>
+      </div>
+
       <div class="modal-body custom-scrollbar">
         <div id="features-loader" class="modal-loader">
           <div class="spinner"></div>
-          <p>Loading features from script.txt...</p>
+          <p>Parsing script.txt features...</p>
         </div>
-        <div id="features-content" class="features-grid"></div>
+        <div id="features-subtab-content" class="features-tab-content">
+          <!-- Dynamically populated category features list -->
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- INFO MODAL -->
+  <!-- INFO MODAL (Accordion Dropdown Structure) -->
   <div id="modal-info" class="modal">
     <div class="modal-overlay"></div>
     <div class="modal-container info-container">
@@ -111,50 +108,164 @@
         <h2>Product Information</h2>
         <button class="modal-close" aria-label="Close modal">&times;</button>
       </div>
-      <div class="modal-body custom-scrollbar info-layout">
+      <div class="modal-body custom-scrollbar info-accordion-body">
         
-        <!-- Supported Games Section -->
-        <div class="info-section">
-          <h3>Supported Games</h3>
-          <div id="games-list" class="games-grid">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- Supported Executors Section -->
-        <div class="info-section">
-          <h3>Supported Executors</h3>
-          <div id="executors-list" class="executors-flex">
-            <!-- Dynamically populated -->
-          </div>
-        </div>
-
-        <!-- Owner / Developer Section -->
-        <div class="info-section owner-section">
-          <h3>Developer Profile</h3>
-          <div class="owner-card">
-            <div class="owner-avatar-container">
-              <img id="owner-avatar" src="" alt="Developer Avatar" class="owner-avatar">
-              <div class="avatar-shimmer"></div>
+        <!-- Dropdown 1: Supported Games & Executors -->
+        <div class="accordion-item">
+          <button class="accordion-trigger active">
+            <span class="trigger-text">Supported Games & Executors</span>
+            <span class="trigger-icon">&#9662;</span>
+          </button>
+          <div class="accordion-content show">
+            <div class="games-grid">
+              <!-- Dynamically populated -->
+              <div id="games-list" class="games-grid-sub"></div>
             </div>
-            <div class="owner-details">
-              <h4 id="owner-display-name">koni</h4>
-              <p id="owner-username">@5fovtraceboss</p>
-              <div class="owner-stats">
-                <span class="stat-badge">ID: <span id="owner-id">8393274455</span></span>
-                <span class="stat-badge">Created: <span id="owner-created">05/01/2025</span></span>
-                <span class="stat-badge status-online">Status: Active</span>
+            <h4 class="info-subtitle">Supported Executors</h4>
+            <div id="executors-list" class="executors-flex">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropdown 2: Meet the Team -->
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="trigger-text">Meet the Team</span>
+            <span class="trigger-icon">&#9662;</span>
+          </button>
+          <div class="accordion-content">
+            <div id="team-list" class="team-grid">
+              <!-- Dynamically populated team cards -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Dropdown 3: Roblox Offset & Version Info (imtheo.lol API integration) -->
+        <div class="accordion-item">
+          <button class="accordion-trigger">
+            <span class="trigger-text">Roblox Client & Offset Info</span>
+            <span class="trigger-icon">&#9662;</span>
+          </button>
+          <div class="accordion-content">
+            <div class="roblox-info-card">
+              <div class="roblox-info-header">
+                <svg viewBox="0 0 24 24" class="roblox-icon-svg">
+                  <path fill="currentColor" d="M18.8,3.2L5.2,6.4L3.2,18.8L16.8,15.6L18.8,3.2 M12.8,11.2L11.2,12.8L9.6,11.2L11.2,9.6L12.8,11.2 Z"/>
+                </svg>
+                <div class="roblox-info-title">
+                  <h4>Roblox Client Status</h4>
+                  <p>Fetched live from offsets.imtheo.lol</p>
+                </div>
               </div>
-              <div class="owner-links-container">
-                <h5>Contact & Links</h5>
-                <div id="owner-links" class="owner-links-grid">
-                  <!-- Dynamically populated -->
+              
+              <div class="roblox-stats-grid">
+                <div class="roblox-stat-item">
+                  <span class="stat-label">Client Version</span>
+                  <span id="rbx-client-version" class="stat-value text-glow">Loading...</span>
+                </div>
+                <div class="roblox-stat-item">
+                  <span class="stat-label">Dumper Version</span>
+                  <span id="rbx-dumper-version" class="stat-value">Loading...</span>
+                </div>
+                <div class="roblox-stat-item">
+                  <span class="stat-label">Dumped At</span>
+                  <span id="rbx-dump-date" class="stat-value">Loading...</span>
+                </div>
+                <div class="roblox-stat-item">
+                  <span class="stat-label">Active Offsets</span>
+                  <span id="rbx-offset-count" class="stat-value text-glow">Loading...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Details for Developer -->
+            <div class="team-developer-profile">
+              <h4 class="info-subtitle">Lead Developer Profile</h4>
+              <div class="owner-card">
+                <div class="owner-avatar-container">
+                  <img id="owner-avatar" src="" alt="Developer Avatar" class="owner-avatar">
+                  <div class="avatar-shimmer"></div>
+                </div>
+                <div class="owner-details">
+                  <h4 id="owner-display-name">koni</h4>
+                  <p id="owner-username">@5fovtraceboss</p>
+                  <div class="owner-stats">
+                    <span class="stat-badge">ID: <span id="owner-id">8393274455</span></span>
+                    <span class="stat-badge">Created: <span id="owner-created">05/01/2025</span></span>
+                    <span class="stat-badge status-online">Status: Active</span>
+                  </div>
+                  <div class="owner-links-container">
+                    <h5>Developer Links</h5>
+                    <div id="owner-links" class="owner-links-grid">
+                      <!-- Dynamically populated -->
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING MODAL -->
+  <div id="modal-pricing" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-container pricing-modal-container">
+      <div class="modal-header">
+        <h2>Premium Plans</h2>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body custom-scrollbar pricing-body">
+        <div id="pricing-plans" class="pricing-grid-container">
+          <!-- Dynamically populated pricing cards -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCORD BANNER CARD MODAL -->
+  <div id="modal-discord" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-container discord-card-container">
+      <div class="modal-header">
+        <h2>Discord Server</h2>
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body discord-card-body">
+        <div class="discord-card">
+          <div class="discord-card-banner">
+            <div class="discord-card-banner-overlay"></div>
+          </div>
+          <div class="discord-card-info">
+            <div class="discord-card-icon-container">
+              <svg class="discord-card-icon-svg" viewBox="0 0 127.14 96.36">
+                <path fill="#ffffff" d="M107.7,8.07A105.15,105.15,0,0,0,77.26,0a77.19,77.19,0,0,0-3.3,6.83A96.67,96.67,0,0,0,53.22,6.83,77.19,77.19,0,0,0,49.88,0,105.15,105.15,0,0,0,19.44,8.07C3.66,31.58-1.86,54.65,1,77.53A105.73,105.73,0,0,0,32,96.36a77.7,77.7,0,0,0,6.63-10.85,68.43,68.43,0,0,1-10.45-5c.88-.65,1.74-1.34,2.58-2a75.58,75.58,0,0,0,72.9,0c.84.71,1.7,1.4,2.58,2a68.48,68.48,0,0,1-10.45,5,78.21,78.21,0,0,0,6.63,10.85,105.47,105.47,0,0,0,31.06-18.83C129.53,50.41,123.6,27.59,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53S36.18,40.36,42.45,40.36,53.9,46,53.9,53,48.72,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.24,60,73.24,53S78.41,40.36,84.69,40.36,96.14,46,96.14,53,91,65.69,84.69,65.69Z"/>
+              </svg>
+            </div>
+            <div class="discord-card-meta">
+              <h3>Alternate</h3>
+              <p class="discord-invite-code">discord.gg/alternate</p>
+              
+              <div class="discord-presence-stats">
+                <span class="presence-badge online">
+                  <span class="presence-dot-online"></span> 5,420 Online
+                </span>
+                <span class="presence-badge members">
+                  <span class="presence-dot-total"></span> 24,190 Members
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="discord-card-actions">
+            <button id="discord-join-btn" class="discord-action-btn primary">Join Server</button>
+            <button id="discord-copy-btn" class="discord-action-btn secondary">Copy Invite Link</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

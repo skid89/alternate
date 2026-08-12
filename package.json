@@ -1,0 +1,7 @@
+{
+  "name": "alternate-site",
+  "version": "1.0.0",
+  "scripts": {
+    "vercel-build": "echo 'Static site build complete'"
+  }
+}

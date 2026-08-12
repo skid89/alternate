@@ -1,55 +1,126 @@
 [Aimbot]
-- Enabled
+- Enabled (AimbotEnabled)
 - Lock Method (Mouse, Camera)
 - Target Mode (FOV, Mouse, Distance, Center)
 - Aim Type (Normal, Closest Part)
-- Ground Part (Head, Torso, etc.)
-- Air Part (UpperTorso, etc.)
+- Ground Part (Head, Torso, UpperTorso, LowerTorso, HumanoidRootPart)
+- Air Part (Head, Torso, UpperTorso, LowerTorso, HumanoidRootPart)
 - Ignore Fall State
 - Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
 - Auto Stop on Dead
 - Sticky Aim
 - Lock Target
+- Look At Target (Keybind Trigger)
+- Target HUD (Realtime Target Info Display)
+- Target Tracer (Screen Start: Bottom, Top, Cursor; End: Feet, Head)
+- Smoothing / Inertia (Use Smoothing, Smoothing+, Dynamic Smoothing X/Y)
+- Easing (Linear, Sine, Quad, Cubic, Quart, Quint, Expo, Circular, Back, Bounce, Elastic, Adaptive, Zigzag, Pulse, Sharp)
+- Easing Direction (In, Out, InOut)
+- Prediction (X/Z Prediction, Y Prediction, Air X/Z Prediction, Air Y Prediction, Dynamic Prediction, Pull Resistance)
+- Offsets (Offset Up, Offset Down, Offset Left, Offset Right, Air Offset Value, Air Offset Smoothness)
+- Lock Time (ms)
+- Switch Speed (Ground Switch Speed, Up Switch Speed, Down Switch Speed)
+- Delay Jump (Jump Delay ms, X Jump Delay)
 
 [Silent Aim]
-- Enabled
+- Enabled (SilentEnabled)
 - Target Type (Closest to Mouse, Distance, FOV)
-- Hit Part (Head, Torso, etc.)
-- Use Closest Point
+- Hit Part (Head, Torso, UpperTorso, LowerTorso, HumanoidRootPart)
+- Use Closest Point (Scalable hitboxes)
 - Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
 
 [Visuals (ESP)]
-- Enable ESP
-- ESP Font (ProggyClean, Tahoma, SourceSans, etc.)
+- Enable ESP (ESP_Enabled)
+- ESP Font (ProggyClean, SmallestPixel, Tahoma, TahomaBold, Arial, SourceSans)
 - Show On (NPC, Enemy, Team, Self)
-- Max Distance
-- Box ESP (Full, Cornered)
-- Glow Amount
+- Max Distance (custom sliders up to 10000 studs)
+- Box ESP (Full, Cornered Box)
+- Glow Amount (Glow Percentage)
 - Box Fill (Fill Transparency 1 & 2)
-- Name ESP (Top, Bottom, Left, Right)
-- Distance ESP (Top, Bottom, Left, Right)
-- Health Bar & Health Bar Gradient
-- Health Text & Armor Bar
-- Weapon ESP
-- State Flags
+- Name ESP (Position: Top, Bottom, Left, Right; Type: Display Name, Username, Both)
+- Distance ESP (Position: Top, Bottom, Left, Right; Type: Studs, Meters)
+- Health Bar (Smooth Vertical Health Indicator)
+- Health Bar Gradient (Visual ColorCorrection)
+- Health Text (Numeric Health Value display)
+- Armor Bar (Vertical Shield indicator)
+- Weapon ESP (Show equipped tool names)
+- State Flags (Knocked, Dead, Reloading, Running state indicators)
 
 [Player Chams]
-- Player Chams (Fill/Outline Color Picker)
-- Show On Self, Others, NPCs
-- Checks (Dead, Wall)
-- Fill/Outline Transparency
+- Player Chams (Chams Fill & Outline rendering)
+- Fill Color (Full RGB color picker)
+- Outline Color (Full RGB outline picker)
+- Show On Self (Cham your own character)
+- Show On Others (Cham other players)
+- Show On NPCs (Cham bots)
+- Checks (Wall check, Dead check)
+- Fill Transparency (0-100% slider)
+- Outline Transparency (0-100% slider)
 
 [Movement]
-- Speed Boost (Walk Speed, Ground Speed, Up Speed, Down Speed)
-- Speed Method (Default, Velocity)
-- Jump Boost (Jump Power, Jump Method)
-- Noclip (Collision Bypass)
-- Fly (Fly Speed, Fly Method)
-- Anti AFK
-- Aspect Ratio & Resolution Changer
+- Speed Boost (Walk Speed manipulation)
+- Ground Speed (Switch ground speed)
+- Up Speed (Switch jumps speed)
+- Down Speed (Switch fall speed)
+- Speed Method (Default WalkSpeed, Velocity-based)
+- Jump Boost (Jump Power manipulation)
+- Jump Method (Default JumpPower, Velocity-based, CFrame-based)
+- Noclip (Complete Stepped-based collision bypass)
+- Fly (Velocity or CFrame-based flight controls)
+- Fly Speed (10-300 studs/sec flight speed)
+- Anti AFK (Prevents idle disconnection)
+- Aspect Ratio Changer (Resolutions 20-100%)
 
-[Avatar (Skins)]
-- Headless (Non-destructive)
-- Korblox (Right Leg)
-- Korblox (Left Leg)
-- Animation Changer (Walk, Run, Idle, Jump, Fall, Swim)
+[Skins]
+- Purple Skin (Revolver, Double-Barrel SG, TacticalShotgun)
+- Red Skin (Revolver, Double-Barrel SG, TacticalShotgun)
+- Green Skin (Revolver, Double-Barrel SG, TacticalShotgun)
+- Blue Skin (Revolver, Double-Barrel SG, TacticalShotgun)
+- Grey Skin (Revolver, Double-Barrel SG, TacticalShotgun)
+- Ghost Skin (Pulsating transparent look)
+- Rainbow Skin (Neon rainbow cycle)
+- Cosmic Skin (Animated cosmic texture with custom beams)
+
+[Skyboxes]
+- Piss (Vintage Gold)
+- Space (Deep Void)
+- Dark (Blackout Skies)
+- Space V2 (Nebula skies)
+- Pink (BlackPink glow)
+- Forest (Woodland environment)
+- Night (Starry night)
+- Lava (Volcanic ash)
+- Rainy (Storm clouds)
+- Green (Emerald mist)
+- Nebulous (Distant galaxies)
+- Blue Clouds (High altitude day)
+- Candy Floss (Pink/Blue cotton skies)
+- Green Skies (Radioactive glow)
+- White Skies (Clean minimalist day)
+- Blood Red (Crimson eclipse)
+- Scary (Halloween theme)
+- Realistic Day (Volumetric clouds)
+- Realistic Space (Distant stars)
+- Classic (Roblox legacy sky)
+- Sunset (Amber gradient)
+- HD Space (High-res cosmos)
+- Cold Winter (Shivering frost)
+- Shiverfrost (Aurora borealis)
+- Blue Nebula (Galactic dust)
+- Red Space (Mars orbit)
+- Green Clouds (Emerald fog)
+- Purple Clouds (Lilac twilight)
+- Nibiru (Apocalyptic storm)
+- Nebulae (Nebula clouds)
+- Moody (Dark overcast)
+- Whistle (Dreamy sky)
+- Crossroads (2007 vintage day)
+
+[Avatar]
+- Headless (Non-destructive transparency bypass)
+- Korblox Right Leg (Simulates Right Leg asset 902942089)
+- Korblox Left Leg (Simulates Left Leg asset 902942077)
+- Animation Changer (Applies custom Roblox animations)
+- Zombie Animation (Walk, Run, Idle, Jump, Fall, Swim)
+- Mage Animation (Walk, Run, Idle, Jump, Fall, Swim)
+- Ninja Animation (Walk, Run, Idle, Jump, Fall, Swim)
