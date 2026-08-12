@@ -238,29 +238,39 @@ document.addEventListener("DOMContentLoaded", () => {
      DRAG-SCROLL TABS
   ══════════════════════════════════════════════ */
   function makeDraggable(el){
-    let isActive=false, startX=0, scrollL=0;
+    let isActive=false, isDragging=false, startX=0, scrollL=0;
+    el.style.touchAction = "pan-x";
     el.addEventListener("pointerdown", e=>{
       if(e.button!==0) return;
+      if(e.target.closest && e.target.closest('.tab-btn')) return;
       isActive=true;
+      isDragging=false;
       el.setPointerCapture?.(e.pointerId);
       startX=e.clientX;
       scrollL=el.scrollLeft;
-      el.classList.add("dragging");
-      e.preventDefault();
     });
     el.addEventListener("pointermove", e=>{
       if(!isActive) return;
       const dx=e.clientX-startX;
-      el.scrollLeft = scrollL - dx;
+      if(!isDragging && Math.abs(dx) > 6){
+        isDragging = true;
+        el.classList.add("dragging");
+      }
+      if(isDragging){
+        e.preventDefault();
+        el.scrollLeft = scrollL - dx;
+      }
     });
     el.addEventListener("pointerup", e=>{
       if(!isActive) return;
       isActive=false;
+      isDragging=false;
       el.releasePointerCapture?.(e.pointerId);
       el.classList.remove("dragging");
     });
     el.addEventListener("pointercancel", ()=>{
       isActive=false;
+      isDragging=false;
       el.classList.remove("dragging");
     });
   }

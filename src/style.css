@@ -113,22 +113,6 @@ body.hovered #cursor-ring { opacity:1; }
   text-shadow:0 0 22px rgba(0,0,0,0.4);
   z-index:2;
 }
-#intro-logo {
-  position:absolute;
-  font-family:'Outfit',sans-serif;
-  font-size:clamp(18px,3vw,34px);
-  font-weight:800;
-  letter-spacing:5px;
-  text-transform:uppercase;
-  color:transparent;
-  background:linear-gradient(135deg, rgba(255,255,255,0.95), rgba(0,0,0,0.8));
-  -webkit-background-clip:text;
-  background-clip:text;
-  filter:grayscale(1) contrast(1.1);
-  pointer-events:none;
-  opacity:0.65;
-  z-index:1;
-}
 #intro-slash { color:#fff; }
 #intro-typed { color:rgba(255,255,255,0.7); }
 #intro-typed::after {
@@ -154,18 +138,18 @@ body.hovered #cursor-ring { opacity:1; }
 /* ─── Music note button ─────────────────────── */
 #mp-btn {
   position:fixed; top:14px; right:14px; z-index:80;
-  width:40px; height:40px;
-  background:rgba(10,10,10,0.85);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:50%;
-  font-size:20px; color:#fff;
+  width:46px; height:46px;
+  background:rgba(15,15,15,0.92);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:14px;
+  font-size:22px; color:#fff;
   display:flex; align-items:center; justify-content:center;
-  cursor:none; backdrop-filter:blur(14px);
-  box-shadow:0 2px 14px rgba(0,0,0,0.5);
+  cursor:none; backdrop-filter:blur(16px);
+  box-shadow:0 18px 40px rgba(0,0,0,0.35);
   transition:background var(--ease),transform .15s,color var(--ease);
   line-height:1;
 }
-#mp-btn:hover { background:rgba(255,79,163,0.15); color:var(--pink); transform:scale(1.08); }
+#mp-btn:hover { background:rgba(255,255,255,0.12); color:var(--pink); transform:scale(1.06); }
 #mp-btn.playing { color:var(--pink); border-color:rgba(255,79,163,0.3); animation:notePulse 1.8s ease-in-out infinite; }
 #mp-btn.playing::after { content:"♪"; position:absolute; top:50%; left:50%; transform:translate(-50%, -120%); font-size:12px; color:var(--pink); opacity:0.8; }
 @keyframes notePulse { 0%,100%{box-shadow:0 2px 14px rgba(0,0,0,0.5);} 50%{box-shadow:0 2px 22px rgba(255,79,163,0.25);} }
@@ -173,14 +157,27 @@ body.hovered #cursor-ring { opacity:1; }
 /* ─── Music popup ───────────────────────────── */
 #mp-popup {
   position:fixed; top:60px; right:14px; z-index:79;
-  background:rgba(10,10,10,0.92);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:13px; padding:12px 14px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 6px 30px rgba(0,0,0,0.6);
-  width:200px;
+  background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(0,0,0,0.92));
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:20px; padding:16px 18px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 26px 80px rgba(0,0,0,0.55);
+  width:270px;
   animation:popIn .18s cubic-bezier(0.34,1.5,0.64,1);
 }
+#mp-popup-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+#mp-play {
+  width:40px; height:40px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%; background:rgba(255,255,255,0.08);
+}
+#mp-play:hover { background:rgba(255,255,255,0.18); }
+#mp-progress { height:5px; border-radius:999px; }
+#mp-bar-fill { border-radius:999px; }
+#mp-time { font-size:11px; color:var(--grey); }
+#mp-vol { height:5px; }
+#mp-vol::-webkit-slider-thumb { width:12px;height:12px; border-radius:50%; background:#fff; }
+#mp-vol::-moz-range-thumb { width:12px;height:12px; border-radius:50%; background:#fff; }
 @keyframes popIn { from{opacity:0;transform:scale(0.92) translateY(-6px);}to{opacity:1;transform:none;} }
 #mp-popup.hidden { display:none; }
 
@@ -247,14 +244,15 @@ body.hovered #cursor-ring { opacity:1; }
 #tabs-track::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.14); border-radius:99px; }
 
 .tab-btn {
-  flex-shrink:0; min-width:84px; padding:8px 10px;
-  background:rgba(255,255,255,0.03); border:none; border-radius:11px;
+  flex-shrink:0; min-width:84px; padding:10px 12px;
+  background:rgba(255,255,255,0.05); border:none; border-radius:12px;
   color:var(--grey);
   font-family:'Outfit',sans-serif; font-size:12px; font-weight:700;
-  text-align:center; cursor:none;
+  text-align:center; pointer-events:auto;
   transition:color var(--ease),background var(--ease),transform .15s;
 }
-.tab-btn:hover { color:#fff; background:rgba(255,255,255,0.08); transform:translateY(-1px); }
+.tab-btn:hover { color:#fff; background:rgba(255,255,255,0.12); transform:translateY(-1px); }
+.tab-btn.active { background:rgba(255,79,163,0.16); color:var(--pink); }
 .tab-btn:hover { color:var(--white); background:rgba(255,255,255,0.05); }
 .tab-btn.active { color:var(--pink); background:rgba(255,79,163,0.1); }
 
