@@ -1,47 +1,64 @@
 const CONFIG = {
+  // ─── Discord ────────────────────────────────────────────────
   discord: "https://discord.gg/alternate",
-  discordInviteCode: "alternate", // Used for the banner invite call
+  discordInviteCode: "alternate",
+  discordGuildId: "1389362677691846730",   // real guild ID for API
+
+  // ─── Shop ───────────────────────────────────────────────────
+  shopUrl: "https://aeri.mysellauth.com/",
+  price: "$8",
+
+  // ─── Supported Games ────────────────────────────────────────
   games: [
-    { name: "Da Track", details: "Custom skin changer and silent aim support." },
-    { name: "Hood Customs", details: "Dedicated skin changer support." }
+    {
+      name: "Da Track",
+      icon: "🎯",
+      details: "Custom skin changer & undetected silent aim.",
+      tags: ["Skin Changer", "Silent Aim"]
+    },
+    {
+      name: "Hood Customs",
+      icon: "👕",
+      details: "Full skin changer support for all weapons.",
+      tags: ["Skin Changer"]
+    }
   ],
-  executors: [
-    "Wave", "Synapse Z", "Macsploit", "Solara", "Sentinel", "Sirhurt"
-  ],
+
+  // ─── Supported Executors ────────────────────────────────────
+  executors: ["Wave", "Synapse Z", "Macsploit", "Solara", "Sentinel", "Sirhurt", "AWP X"],
+
+  // ─── Owner / Developer ──────────────────────────────────────
   owner: {
+    name: "koni",
+    role: "Founder & Lead Developer",
     robloxId: "8393274455",
     robloxProfile: "https://www.roblox.com/users/8393274455/profile",
     links: [
-      { label: "zyo.lol/swq", url: "https://zyo.lol/swq" },
-      { label: "feds.lol/misanthropist", url: "https://feds.lol/misanthropist" },
-      { label: "guns.lol/dreadfulness", url: "https://guns.lol/dreadfulness" }
+      { label: "zyo.lol/swq",              url: "https://zyo.lol/swq",              icon: "🔗" },
+      { label: "feds.lol/misanthropist",    url: "https://feds.lol/misanthropist",   icon: "🔗" },
+      { label: "guns.lol/dreadfulness",     url: "https://guns.lol/dreadfulness",    icon: "🔗" }
     ]
   },
-  team: [
-    { name: "koni", role: "Founder & Lead Developer", robloxId: "8393274455" },
-    { name: "theo", role: "Offset Analyst & Core Contributor", robloxId: "17205" } // standard developer or core helper id
-  ],
-  pricing: [
-    {
-      name: "Lifetime Access",
-      price: "$10.00",
-      period: "one-time payment",
-      features: [
-        "Undetected Silent Aim & Aimbot",
-        "Full Skin & Skybox Changer",
-        "Compatible with all Executors",
-        "Direct Support & Discord Role",
-        "Future Updates Included"
-      ],
-      link: "https://discord.gg/alternate",
-      popular: true
-    }
-  ]
+
+  // ─── Pricing ────────────────────────────────────────────────
+  pricing: {
+    name: "Lifetime Access",
+    price: "$8",
+    period: "one-time payment",
+    badge: "Best Value",
+    features: [
+      "Undetected Silent Aim & Aimbot",
+      "Full Skin & Skybox Changer",
+      "All Executor Support",
+      "Direct Discord Support",
+      "All Future Updates Free"
+    ],
+    link: "https://aeri.mysellauth.com/"
+  },
+
+  // ─── Offsets API ────────────────────────────────────────────
+  offsetsUrl: "https://offsets.imtheo.lol/Offsets.json",
+  offsetsViewerUrl: "https://offsets.imtheo.lol/"
 };
 
-// Export config so it can be imported as a module or accessed globally
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = CONFIG;
-} else {
-  window.CONFIG = CONFIG;
-}
+window.CONFIG = CONFIG;
