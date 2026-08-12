@@ -161,6 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if(audio){
     audio.volume = 0.5;
     audio.muted = true;
+    audio.autoplay = true;
+    audio.loop = true;
+    audio.playsInline = true;
+    audio.dataset.played = "0";
+    audio.addEventListener("canplay",()=>{
+      if(audio.dataset.played === "0") attemptAutoplay();
+    });
   }
 
   function setPlaying(v){
@@ -196,6 +203,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if(mpVol){ mpVol.addEventListener("input",()=>{ if(audio) audio.volume=mpVol.value; }); }
 
   if(audio){
+    audio.addEventListener("canplay",()=>{
+      if(audio.paused && !audio.dataset.played){
+        audio.dataset.played = "1";
+        audio.play().catch(()=>{});
+      }
+    });
     audio.addEventListener("timeupdate",()=>{
       if(!audio.duration) return;
       if(barFill) barFill.style.width=((audio.currentTime/audio.duration)*100)+"%";
@@ -278,6 +291,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".modal-bg").forEach(b=>b.addEventListener("click",closeAll));
   window.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll();});
 
+  // Preload sections so tabs show content immediately
+  loadFeatures();
+  loadInfo();
+  loadPricing();
+  loadDiscord();
+
   document.querySelectorAll(".acc-h").forEach(h=>{
     h.addEventListener("click",()=>{
       const body=document.getElementById(h.dataset.t);
@@ -317,6 +336,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if(impliedSlider) return {name,type:"s",opts:[],range:"0–100"};
     if(impliedToggle) return {name,type:"t",opts:[]};
     return {name,type:"i",opts};
+  }
+
+  function makeDraggable(el){
+    if(!el) return;
+    let isDown=false, startX=0, scrollLeft=0;
+    el.style.touchAction = "pan-x";
+    el.addEventListener("pointerdown", e=>{
+      if(e.button !== 0) return;
+      if(e.target.closest && e.target.closest("button")) return;
+      isDown = true;
+      startX = e.clientX;
+      scrollLeft = el.scrollLeft;
+      el.setPointerCapture?.(e.pointerId);
+    });
+    el.addEventListener("pointermove", e=>{
+      if(!isDown) return;
+      const dx = e.clientX - startX;
+      if(Math.abs(dx) > 6) el.scrollLeft = scrollLeft - dx;
+    });
+    el.addEventListener("pointerup", e=>{ if(!isDown) return; isDown=false; el.releasePointerCapture?.(e.pointerId); });
+    el.addEventListener("pointercancel", ()=>{ isDown=false; });
   }
 
   function parseFeat(txt){
@@ -442,10 +482,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const lEl=document.getElementById("owner-links");
     if(lEl) C.owner.links.forEach(l=>{
       const a=document.createElement("a"); a.className="dev-link"; a.href=l.url; a.target="_blank";
-      a.textContent=`${l.icon}  ${l.label}`; lEl.appendChild(a);
+      a.textContent = l.label;
+      lEl.appendChild(a);
     });
 
-    // Roblox avatar — allorigins raw proxy
+    // Set defaults before remote fetches
+    setText("owner-display-name", C.owner.name || "koni");
+    setText("owner-username", `@${C.owner.robloxId||"5fovtraceboss"}`);
+    setText("owner-id", C.owner.robloxId || "8393274455");
+    setText("owner-created", "05/01/2025");
+    const avatarEl=document.getElementById("owner-avatar");
+    if(avatarEl) avatarEl.src = "gun.png";
+
+    // Roblox avatar — try proxy then fallback
     apiGet(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${C.owner.robloxId}&size=420x420&format=Png&isCircular=false`)
       .then(d=>{
         const url=d?.data?.[0]?.imageUrl;
@@ -455,14 +504,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Roblox profile
     apiGet(`https://users.roblox.com/v1/users/${C.owner.robloxId}`)
       .then(d=>{
-        setText("owner-display-name", d.displayName||"koni");
-        setText("owner-username",     d.name?`@${d.name}`:"@5fovtraceboss");
+        setText("owner-display-name", d.displayName||C.owner.name||"koni");
+        setText("owner-username",     d.name?`@${d.name}`:`@${C.owner.robloxId || "5fovtraceboss"}`);
         setText("owner-id",           d.id||C.owner.robloxId);
         if(d.created) setText("owner-created", new Date(d.created).toLocaleDateString("en-US",{month:"2-digit",day:"2-digit",year:"numeric"}));
       })
       .catch(()=>{
-        setText("owner-display-name","koni");
-        setText("owner-username","@5fovtraceboss");
+        setText("owner-display-name",C.owner.name||"koni");
+        setText("owner-username", `@${C.owner.robloxId || "5fovtraceboss"}`);
       });
 
     // Offsets
@@ -470,9 +519,9 @@ document.addEventListener("DOMContentLoaded", () => {
     apiGet(OFF)
       .then(setOff)
       .catch(()=>setOff({
-        "Roblox Version":"version-d584fb6c717a43d9",
-        "Dumper Version":"2.1.7","Dumped With":"RbxDumperV2",
-        "Dumped At":"01:04 06/08/2026","Total Offsets":"388"
+        "Roblox Version":"unknown",
+        "Dumper Version":"unknown","Dumped With":"unknown",
+        "Dumped At":"unknown","Total Offsets":"unknown"
       }));
 
     refreshHovers();
@@ -489,9 +538,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function apiGet(url){
     const endpoints = [
+      url,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+      `https://api.allorigins.cf/raw?url=${encodeURIComponent(url)}`,
       `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-      url
+      `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(url)}`
     ];
     let chain = Promise.reject();
     endpoints.forEach(endpoint => {
