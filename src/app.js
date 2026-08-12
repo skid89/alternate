@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // text appears as gun moves
     introTxt.style.transition="opacity 0.4s ease";
     introTxt.style.opacity="1";
-    typewrite("alternate — roblox", typedEl, 72);
+    typewrite("alternate", typedEl, 72);
   },1300);
   // finish
   setTimeout(finishIntro, 4000);
