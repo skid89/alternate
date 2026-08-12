@@ -126,26 +126,31 @@ document.addEventListener("DOMContentLoaded", () => {
      text typewriters in as gun slides
      screen fades out → main visible
   ══════════════════════════════════════════════ */
-  gun.style.transform="scale(3.5)";
-  gun.style.opacity="0";
-  introTxt.style.opacity="0";
+  if(gun) {
+    gun.style.transform="scale(3.5)";
+    gun.style.opacity="0";
+  }
+  if(introTxt) introTxt.style.opacity="0";
 
   // fade in
-  setTimeout(()=>{ gun.style.transition="opacity 0.3s ease"; gun.style.opacity="1"; },80);
+  if(gun) setTimeout(()=>{ gun.style.transition="opacity 0.3s ease"; gun.style.opacity="1"; },80);
   // zoom out
-  setTimeout(()=>{
+  if(gun) setTimeout(()=>{
     gun.style.transition="transform 1.0s cubic-bezier(0.34,1.1,0.64,1)";
     gun.style.transform="scale(0.38)";
   },200);
   // slide left + start typewriter simultaneously
   setTimeout(()=>{
-    gun.style.transition="transform 1.9s cubic-bezier(0.4,0,0.25,1), opacity 0.5s ease 1.4s";
-    gun.style.transform="scale(0.38) translateX(-260vw)";
-    gun.style.opacity="0";
-    // text appears as gun moves
-    introTxt.style.transition="opacity 0.4s ease";
-    introTxt.style.opacity="1";
-    typewrite("alternate", typedEl, 72);
+    if(gun) {
+      gun.style.transition="transform 1.9s cubic-bezier(0.4,0,0.25,1), opacity 0.5s ease 1.4s";
+      gun.style.transform="scale(0.38) translateX(-260vw)";
+      gun.style.opacity="0";
+    }
+    if(introTxt) {
+      introTxt.style.transition="opacity 0.4s ease";
+      introTxt.style.opacity="1";
+    }
+    if(typedEl) typewrite("alternate", typedEl, 72);
   },1300);
   // finish
   setTimeout(finishIntro, 4000);

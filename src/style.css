@@ -40,26 +40,22 @@ img { display:block; }
 /* ─── Cursor ───────────────────────────────── */
 #cursor-ring {
   position:fixed; z-index:9999;
-  width:44px; height:44px;
+  width:18px; height:18px;
   border:none; pointer-events:none;
   transform:translate(-50%,-50%);
-  transition:width .15s,height .15s,opacity .15s,transform .15s;
-  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s,opacity .15s;
 }
 #cursor-ring::before,
 #cursor-ring::after {
   content:"";
   position:absolute;
-  background:rgba(255,255,255,0.8);
-  border-radius:2px;
+  background:rgba(255,255,255,0.9);
 }
 #cursor-ring::before {
-  width:2px; height:44px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.9) 28%, transparent 28%, transparent 72%, rgba(255,255,255,0.9) 72%, rgba(255,255,255,0.9) 100%);
+  width:2px; height:18px;
 }
 #cursor-ring::after {
-  width:44px; height:2px;
-  background:linear-gradient(90deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.9) 28%, transparent 28%, transparent 72%, rgba(255,255,255,0.9) 72%, rgba(255,255,255,0.9) 100%);
+  width:18px; height:2px;
 }
 #cursor-dot {
   display:none;
