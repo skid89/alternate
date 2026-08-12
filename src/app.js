@@ -291,6 +291,11 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".modal-bg").forEach(b=>b.addEventListener("click",closeAll));
   window.addEventListener("keydown",e=>{if(e.key==="Escape")closeAll();});
 
+  let featDone=false, featData={};
+  let infoDone=false;
+  let priceDone=false;
+  let dscDone=false;
+
   // Preload sections so tabs show content immediately
   loadFeatures();
   loadInfo();
@@ -310,8 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ══════════════════════════════════════════════
      FEATURES — real interactive inputs
   ══════════════════════════════════════════════ */
-  let featDone=false, featData={};
-
   function loadFeatures(){
     if(featDone) return;
     fetch("script.txt")
@@ -461,7 +464,6 @@ document.addEventListener("DOMContentLoaded", () => {
      INFO — Roblox + Offsets via robust proxy chain
      Using allorigins raw endpoint which works reliably
   ══════════════════════════════════════════════ */
-  let infoDone=false;
 
   function loadInfo(){
     if(infoDone)return; infoDone=true;
@@ -565,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ══════════════════════════════════════════════
      PRICING
   ══════════════════════════════════════════════ */
-  let priceDone=false;
   function loadPricing(){
     if(priceDone)return; priceDone=true;
     const btn=document.getElementById("buy-btn");
@@ -576,7 +577,6 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ══════════════════════════════════════════════
      DISCORD
   ══════════════════════════════════════════════ */
-  let dscDone=false;
   function loadDiscord(){
     if(dscDone)return; dscDone=true;
     const jb=document.getElementById("dsc-join"),cb=document.getElementById("dsc-copy");
