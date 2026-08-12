@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import { ShieldCheck, Server, AlertCircle } from 'lucide-react';
 
-export const revalidate = 0; // Disable cache so status is checked in real-time
+export const dynamic = 'force-dynamic';
 
 export default async function StatusPage() {
   let dbStatus = 'Operational';

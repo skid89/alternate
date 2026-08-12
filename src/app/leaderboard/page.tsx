@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import { Trophy, Eye, ArrowLeft, Star } from 'lucide-react';
 
-export const revalidate = 60; // Cache leaderboard for 60 seconds
+export const dynamic = 'force-dynamic';
 
 export default async function LeaderboardPage() {
   // Query popular public profiles

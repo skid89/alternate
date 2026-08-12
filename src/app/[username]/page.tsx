@@ -11,6 +11,8 @@ interface RouteProps {
   params: { username: string };
 }
 
+export const dynamic = 'force-dynamic';
+
 // 1. Generate SEO Metadata dynamically
 export async function generateMetadata({ params }: RouteProps): Promise<Metadata> {
   const slug = params.username.toLowerCase();
