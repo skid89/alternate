@@ -19,32 +19,17 @@
   <canvas id="snow-canvas"></canvas>
 
   <!-- INTRO -->
-  <div id="startup-screen">
-    <img id="intro-gun" src="gun.png" alt="" draggable="false">
-    <div id="intro-logo">ALTERNATE</div>
-    <div id="intro-text">
-      <span id="intro-slash">/</span><span id="intro-typed"></span>
-    </div>
-  </div>
+  <div id="startup-screen"></div>
 
   <!-- MAIN -->
   <main id="main-content" class="hidden-main">
 
-    <!-- Music note button (top-right) -->
-    <button id="mp-btn" aria-label="Music Player">♪</button>
-    <div id="mp-popup" class="hidden">
-      <div id="mp-popup-row">
-        <button id="mp-play">
-          <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><polygon points="5,3 19,12 5,21"/></svg>
-          <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" width="12" height="12" class="hidden"><rect x="6" y="3" width="4" height="18"/><rect x="14" y="3" width="4" height="18"/></svg>
-        </button>
-        <div id="mp-progress" title="Click to seek"><div id="mp-bar-fill"></div></div>
-        <span id="mp-time">0:00</span>
-      </div>
-      <div id="mp-vol-row">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="11" height="11"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-        <input id="mp-vol" type="range" min="0" max="1" step="0.02" value="0.5">
-      </div>
+    <!-- Media player bar -->
+    <div id="mp-panel">
+      <button id="mp-play" class="mp-play-btn" aria-label="Play/Pause">▶</button>
+      <div id="mp-progress" title="Seek"><div id="mp-bar-fill"></div></div>
+      <span id="mp-time">0:00</span>
+      <input id="mp-vol" type="range" min="0" max="1" step="0.02" value="0.5" aria-label="Volume">
     </div>
     <audio id="audio" src="music.mp3" loop></audio>
 

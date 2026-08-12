@@ -126,39 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
      text typewriters in as gun slides
      screen fades out → main visible
   ══════════════════════════════════════════════ */
-  if(gun) {
-    gun.style.transform="scale(3.5)";
-    gun.style.opacity="0";
-  }
-  if(introTxt) introTxt.style.opacity="0";
-
-  // fade in
-  if(gun) setTimeout(()=>{ gun.style.transition="opacity 0.3s ease"; gun.style.opacity="1"; },80);
-  // zoom out
-  if(gun) setTimeout(()=>{
-    gun.style.transition="transform 1.0s cubic-bezier(0.34,1.1,0.64,1)";
-    gun.style.transform="scale(0.38)";
-  },200);
-  // slide left + start typewriter simultaneously
+  startup.style.opacity = "1";
   setTimeout(()=>{
-    if(gun) {
-      gun.style.transition="transform 1.9s cubic-bezier(0.4,0,0.25,1), opacity 0.5s ease 1.4s";
-      gun.style.transform="scale(0.38) translateX(-260vw)";
-      gun.style.opacity="0";
-    }
-    if(introTxt) {
-      introTxt.style.transition="opacity 0.4s ease";
-      introTxt.style.opacity="1";
-    }
-    if(typedEl) typewrite("alternate", typedEl, 72);
-  },1300);
-  // finish
-  setTimeout(finishIntro, 4000);
+    startup.classList.add("fade-out");
+    setTimeout(()=>{
+      startup.style.display="none";
+      main.classList.remove("hidden-main");
+      main.classList.add("visible");
+      attemptAutoplay();
+      refreshHovers();
+    },700);
+  },250);
 
-  function typewrite(text,el,speed){
-    let i=0; el.textContent="";
-    const iv=setInterval(()=>{ if(i<text.length){el.textContent+=text[i];i++;}else clearInterval(iv); },speed);
-  }
   function finishIntro(){
     startup.classList.add("fade-out");
     setTimeout(()=>{
@@ -171,31 +150,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ══════════════════════════════════════════════
-     MUSIC PLAYER — big note button + popup
+     MUSIC PLAYER — simple black/white bar
   ══════════════════════════════════════════════ */
   const audio    = document.getElementById("audio");
-  const mpBtn    = document.getElementById("mp-btn");
-  const mpPopup  = document.getElementById("mp-popup");
   const mpPlay   = document.getElementById("mp-play");
-  const iconPlay = document.getElementById("icon-play");
-  const iconPause= document.getElementById("icon-pause");
   const barFill  = document.getElementById("mp-bar-fill");
   const mpTime   = document.getElementById("mp-time");
   const mpVol    = document.getElementById("mp-vol");
 
-  audio.volume = 0.5;
-  audio.muted = true;
+  if(audio){
+    audio.volume = 0.5;
+    audio.muted = true;
+  }
 
   function setPlaying(v){
-    iconPlay.classList.toggle("hidden",v);
-    iconPause.classList.toggle("hidden",!v);
-    mpBtn.classList.toggle("playing",v);
-    if(v) audio.muted = false;
+    if(mpPlay){
+      mpPlay.classList.toggle("playing",v);
+      mpPlay.textContent = v ? "❚❚" : "▶";
+    }
   }
 
   function attemptAutoplay(){
+    if(!audio) return;
     audio.play().then(()=>{
-      mpBtn.classList.add("playing");
       audio.muted = false;
       setPlaying(true);
     }).catch(()=>{
@@ -208,78 +185,66 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Toggle popup
-  mpBtn.addEventListener("click",e=>{
-    e.stopPropagation();
-    mpPopup.classList.toggle("hidden");
-  });
-  document.addEventListener("click",e=>{
-    if(!mpPopup.contains(e.target)&&e.target!==mpBtn) mpPopup.classList.add("hidden");
-  });
+  if(mpPlay){
+    mpPlay.addEventListener("click",()=>{
+      if(!audio) return;
+      if(audio.paused){ audio.play(); setPlaying(true); }
+      else { audio.pause(); setPlaying(false); }
+    });
+  }
 
-  mpPlay.addEventListener("click",e=>{
-    e.stopPropagation();
-    if(audio.paused){ audio.play(); setPlaying(true); }
-    else { audio.pause(); setPlaying(false); }
-  });
+  if(mpVol){ mpVol.addEventListener("input",()=>{ if(audio) audio.volume=mpVol.value; }); }
 
-  mpVol.addEventListener("input",()=>{ audio.volume=mpVol.value; });
+  if(audio){
+    audio.addEventListener("timeupdate",()=>{
+      if(!audio.duration) return;
+      if(barFill) barFill.style.width=((audio.currentTime/audio.duration)*100)+"%";
+      const m=Math.floor(audio.currentTime/60);
+      const s=Math.floor(audio.currentTime%60).toString().padStart(2,"0");
+      if(mpTime) mpTime.textContent=`${m}:${s}`;
+    });
+  }
 
-  audio.addEventListener("timeupdate",()=>{
-    if(!audio.duration) return;
-    barFill.style.width=((audio.currentTime/audio.duration)*100)+"%";
-    const m=Math.floor(audio.currentTime/60);
-    const s=Math.floor(audio.currentTime%60).toString().padStart(2,"0");
-    mpTime.textContent=`${m}:${s}`;
-  });
-
-  document.getElementById("mp-progress").addEventListener("click",e=>{
-    if(!audio.duration) return;
-    const r=e.currentTarget.getBoundingClientRect();
-    audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
-  });
+  const progressEl = document.getElementById("mp-progress");
+  if(progressEl){
+    progressEl.addEventListener("click",e=>{
+      if(!audio||!audio.duration) return;
+      const r=e.currentTarget.getBoundingClientRect();
+      audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+    });
+  }
 
   /* ══════════════════════════════════════════════
      DRAG-SCROLL TABS
   ══════════════════════════════════════════════ */
-  function makeDraggable(el){
-    let isActive=false, isDragging=false, startX=0, scrollL=0;
-    el.style.touchAction = "pan-x";
-    el.addEventListener("pointerdown", e=>{
-      if(e.button!==0) return;
-      if(e.target.closest && e.target.closest('.tab-btn')) return;
-      isActive=true;
-      isDragging=false;
-      el.setPointerCapture?.(e.pointerId);
-      startX=e.clientX;
-      scrollL=el.scrollLeft;
+  const tabTrack = document.getElementById("tabs-track");
+  if(tabTrack){
+    tabTrack.style.touchAction = "pan-x";
+    let isDown=false, startX=0, scrollLeft=0, moved=false;
+    tabTrack.addEventListener("pointerdown", e=>{
+      if(e.button !== 0) return;
+      isDown = true;
+      startX = e.clientX;
+      scrollLeft = tabTrack.scrollLeft;
+      moved = false;
+      tabTrack.setPointerCapture?.(e.pointerId);
     });
-    el.addEventListener("pointermove", e=>{
-      if(!isActive) return;
-      const dx=e.clientX-startX;
-      if(!isDragging && Math.abs(dx) > 6){
-        isDragging = true;
-        el.classList.add("dragging");
-      }
-      if(isDragging){
-        e.preventDefault();
-        el.scrollLeft = scrollL - dx;
+    tabTrack.addEventListener("pointermove", e=>{
+      if(!isDown) return;
+      const dx = e.clientX - startX;
+      if(Math.abs(dx) > 6){
+        moved = true;
+        tabTrack.scrollLeft = scrollLeft - dx;
       }
     });
-    el.addEventListener("pointerup", e=>{
-      if(!isActive) return;
-      isActive=false;
-      isDragging=false;
-      el.releasePointerCapture?.(e.pointerId);
-      el.classList.remove("dragging");
+    tabTrack.addEventListener("pointerup", e=>{
+      if(!isDown) return;
+      isDown = false;
+      tabTrack.releasePointerCapture?.(e.pointerId);
+      if(moved) e.preventDefault();
     });
-    el.addEventListener("pointercancel", ()=>{
-      isActive=false;
-      isDragging=false;
-      el.classList.remove("dragging");
-    });
+    tabTrack.addEventListener("pointercancel", ()=>{ isDown=false; });
   }
-  makeDraggable(document.getElementById("tabs-track"));
 
   /* ══════════════════════════════════════════════
      MODALS
