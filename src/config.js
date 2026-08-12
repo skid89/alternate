@@ -49,8 +49,21 @@ const CONFIG = {
     features: [
       "Undetected Silent Aim & Aimbot",
       "Full Skin & Skybox Changer",
-        "Supported Executors: real, madium, volt, pottasium, 80+ UNC/SUNC",
+      "Supported Executors: real, madium, volt, pottasium, 80+ UNC/SUNC",
+      "Direct Discord Support",
+      "All Future Updates Free"
+    ],
+    link: "https://aeri.mysellauth.com/"
+  },
+
+  // ─── Offsets API ──────────────────────────────────────────────
+  offsetsUrl: "https://offsets.imtheo.lol/Offsets.json",
   offsetsViewerUrl: "https://offsets.imtheo.lol/"
 };
 
+Object.freeze(CONFIG);
+Object.freeze(CONFIG.owner);
+Object.freeze(CONFIG.pricing);
+Object.freeze(CONFIG.games);
+Object.freeze(CONFIG.executors);
 window.CONFIG = CONFIG;

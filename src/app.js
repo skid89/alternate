@@ -2,7 +2,9 @@
    ALTERNATE — app.js
 ══════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
-  const C = window.CONFIG;
+  const safeConfig = (window.CONFIG && typeof window.CONFIG === "object") ? window.CONFIG : {};
+  if (safeConfig && !Object.isFrozen(safeConfig)) Object.freeze(safeConfig);
+  const C = safeConfig;
 
   /* ─── ELEMENTS ──────────────────────────────── */
   const ring    = document.getElementById("cursor-ring");
@@ -470,13 +472,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Games
     const gEl=document.getElementById("games-list");
-    if(gEl) C.games.forEach(g=>{
+    if(gEl && Array.isArray(C.games)) C.games.forEach(g=>{
       gEl.innerHTML+=`<div class="game-card"><div class="game-icon">${g.icon}</div><h4>${g.name}</h4><p>${g.details}</p><div class="tag-row">${g.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div></div>`;
     });
 
     // Executors
     const eEl=document.getElementById("exec-list");
-    if(eEl) C.executors.forEach(n=>{
+    if(eEl && Array.isArray(C.executors)) C.executors.forEach(n=>{
       const s=document.createElement("span"); s.className="exec-b"; s.textContent=n; eEl.appendChild(s);
     });
 
