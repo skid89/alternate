@@ -1,19 +1,8 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { verifyAndGetSession, logout } from '@/lib/auth';
-import { 
-  User, 
-  Paintbrush, 
-  Link as LinkIcon, 
-  BarChart3, 
-  Settings, 
-  ShieldAlert, 
-  LogOut, 
-  Compass,
-  MessageSquare,
-  Sparkles,
-  Lock
-} from 'lucide-react';
+import { LogOut } from 'lucide-react';
+import SidebarNav from '@/components/dashboard/SidebarNav';
 import '@/styles/dashboard.css';
 
 export default async function DashboardLayout({
@@ -50,57 +39,7 @@ export default async function DashboardLayout({
           )}
         </div>
 
-        <nav className="sidebar-nav">
-          <div className="nav-section">
-            <span className="section-title">General</span>
-            <Link href="/dashboard" className="nav-item">
-              <User size={18} />
-              <span>Overview</span>
-            </Link>
-            <Link href="/dashboard/customize" className="nav-item">
-              <Paintbrush size={18} />
-              <span>Customize</span>
-            </Link>
-            <Link href="/dashboard/links" className="nav-item">
-              <LinkIcon size={18} />
-              <span>Links & Socials</span>
-            </Link>
-            <Link href="/dashboard/analytics" className="nav-item">
-              <BarChart3 size={18} />
-              <span>Analytics</span>
-            </Link>
-          </div>
-
-          <div className="nav-section">
-            <span className="section-title">Account</span>
-            <Link href="/dashboard/integrations" className="nav-item">
-              <Compass size={18} />
-              <span>Integrations</span>
-            </Link>
-            <Link href="/dashboard/comments" className="nav-item">
-              <MessageSquare size={18} />
-              <span>Comments</span>
-            </Link>
-            <Link href="/dashboard/security" className="nav-item">
-              <Lock size={18} />
-              <span>Security</span>
-            </Link>
-            <Link href={`/${user.username}`} target="_blank" className="nav-item view-profile-btn">
-              <Sparkles size={18} />
-              <span>View Profile</span>
-            </Link>
-          </div>
-
-          {isAdmin && (
-            <div className="nav-section admin-section">
-              <span className="section-title">Management</span>
-              <Link href="/admin" className="nav-item admin-item">
-                <ShieldAlert size={18} />
-                <span>Admin Panel</span>
-              </Link>
-            </div>
-          )}
-        </nav>
+        <SidebarNav username={user.username} isAdmin={isAdmin} />
 
         <div className="sidebar-footer">
           <div className="user-info">

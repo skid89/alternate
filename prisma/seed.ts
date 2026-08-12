@@ -102,71 +102,7 @@ async function main() {
     });
   }
 
-  // Create admin account (Password: admin123)
-  const adminPasswordHash = await bcrypt.hash('admin123', 10);
-  console.log('Creating Admin account (username: admin)...');
-  const admin = await prisma.user.upsert({
-    where: { username: 'admin' },
-    update: {
-      passwordHash: adminPasswordHash,
-      role: Role.OWNER,
-      premiumStatus: PremiumStatus.LIFETIME
-    },
-    create: {
-      username: 'admin',
-      email: 'admin@alternate.lol',
-      passwordHash: adminPasswordHash,
-      role: Role.OWNER,
-      premiumStatus: PremiumStatus.LIFETIME
-    }
-  });
 
-  // Assign Admin Badges
-  const staffBadge = badgesMap.get('Staff');
-  const devBadge = badgesMap.get('Developer');
-  if (staffBadge && devBadge) {
-    await prisma.userBadge.upsert({
-      where: { userId_badgeId: { userId: admin.id, badgeId: staffBadge.id } },
-      update: {},
-      create: { userId: admin.id, badgeId: staffBadge.id, order: 0 }
-    });
-    await prisma.userBadge.upsert({
-      where: { userId_badgeId: { userId: admin.id, badgeId: devBadge.id } },
-      update: {},
-      create: { userId: admin.id, badgeId: devBadge.id, order: 1 }
-    });
-  }
-
-  // Create default Admin profile
-  console.log('Creating Admin profile...');
-  await prisma.profile.upsert({
-    where: { userId: admin.id },
-    update: {},
-    create: {
-      userId: admin.id,
-      slug: 'admin',
-      displayName: 'Alternate Admin',
-      bio: 'Administrator and developer of Alternate.lol. Connect with me or report any system issues.',
-      location: 'New Zealand',
-      layout: LayoutType.DEFAULT,
-      backgroundEffects: 'animated-gradient',
-      discordPresenceEnabled: false,
-      robloxPresenceEnabled: false,
-      links: {
-        create: [
-          { title: 'Official Discord Server', url: 'https://discord.gg/alternate', order: 0, isLarge: true },
-          { title: 'Status Page', url: '/status', order: 1, isLarge: false },
-          { title: 'Explore Leaderboards', url: '/leaderboard', order: 2, isLarge: false }
-        ]
-      },
-      socials: {
-        create: [
-          { platform: 'discord', value: 'alternate.lol', order: 0 },
-          { platform: 'github', value: 'alternate-lol', order: 1 }
-        ]
-      }
-    }
-  });
 
   // Create mock demo user (Password: password123)
   const userPasswordHash = await bcrypt.hash('password123', 10);
