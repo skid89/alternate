@@ -2,11 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- CONFIG ACCESS ---
   const config = window.CONFIG || {
     discord: "https://discord.gg/alternate",
+    discordInviteCode: "alternate",
     games: [
-      { name: "Da Track", details: "Custom skin changer and silent aim" },
-      { name: "Hood Customs", details: "Skin changer support" }
+      { name: "Da Track", details: "Custom skin changer and silent aim support." },
+      { name: "Hood Customs", details: "Dedicated skin changer support." }
     ],
-    executors: ["Wave", "Synapse Z", "Macsploit", "Solara", "Sentinel"],
+    executors: ["Wave", "Synapse Z", "Macsploit", "Solara", "Sentinel", "Sirhurt"],
     owner: {
       robloxId: "8393274455",
       robloxProfile: "https://www.roblox.com/users/8393274455/profile",
@@ -15,483 +16,609 @@ document.addEventListener("DOMContentLoaded", () => {
         { label: "feds.lol/misanthropist", url: "https://feds.lol/misanthropist" },
         { label: "guns.lol/dreadfulness", url: "https://guns.lol/dreadfulness" }
       ]
-    }
+    },
+    team: [
+      { name: "koni", role: "Founder & Lead Developer", robloxId: "8393274455" }
+    ],
+    pricing: [
+      {
+        name: "Lifetime Access",
+        price: "$10.00",
+        period: "one-time payment",
+        features: [
+          "Undetected Silent Aim & Aimbot",
+          "Full Skin & Skybox Changer",
+          "Compatible with all Executors",
+          "Direct Support & Discord Role",
+          "Future Updates Included"
+        ],
+        link: "https://discord.gg/alternate",
+        popular: true
+      }
+    ]
   };
 
-  // --- HTML ELEMENT REFERENCES ---
-  const customCursor = document.getElementById("custom-cursor");
+  // --- ELEMENT REFERENCES ---
+  const customCursor     = document.getElementById("custom-cursor");
   const customCursorDot = document.getElementById("custom-cursor-dot");
-  const startupScreen = document.getElementById("startup-screen");
-  const revealBtn = document.getElementById("reveal-btn");
-  const revealText = document.getElementById("reveal-text");
-  const mainContent = document.getElementById("main-content");
-  const guiCard = document.getElementById("gui-card");
-  
-  // Tab Buttons
+  const startupScreen   = document.getElementById("startup-screen");
+  const revealBtn       = document.getElementById("reveal-btn");
+  const revealText      = document.getElementById("reveal-text");
+  const mainContent     = document.getElementById("main-content");
+  const guiCard         = document.getElementById("gui-card");
+
+  // Nav tabs
   const tabFeaturesBtn = document.getElementById("tab-features");
-  const tabInfoBtn = document.getElementById("tab-info");
-  const tabDiscordBtn = document.getElementById("tab-discord");
-  
+  const tabInfoBtn     = document.getElementById("tab-info");
+  const tabPricingBtn  = document.getElementById("tab-pricing");
+  const tabDiscordBtn  = document.getElementById("tab-discord");
+
   // Modals
   const modalFeatures = document.getElementById("modal-features");
-  const modalInfo = document.getElementById("modal-info");
-  const closeBtns = document.querySelectorAll(".modal-close, .modal-overlay");
-  
-  // Features Content
-  const featuresLoader = document.getElementById("features-loader");
-  const featuresContent = document.getElementById("features-content");
-  
-  // Info Content
-  const gamesList = document.getElementById("games-list");
+  const modalInfo     = document.getElementById("modal-info");
+  const modalPricing  = document.getElementById("modal-pricing");
+  const modalDiscord  = document.getElementById("modal-discord");
+
+  // Features elements
+  const featuresLoader      = document.getElementById("features-loader");
+  const featuresSubContent  = document.getElementById("features-subtab-content");
+  const featuresTabsNav     = document.getElementById("features-tabs-nav");
+
+  // Info elements
+  const gamesList     = document.getElementById("games-list");
   const executorsList = document.getElementById("executors-list");
-  const ownerLinks = document.getElementById("owner-links");
-  const ownerAvatar = document.getElementById("owner-avatar");
-  const ownerDisplayName = document.getElementById("owner-display-name");
-  const ownerUsername = document.getElementById("owner-username");
-  const ownerId = document.getElementById("owner-id");
-  const ownerCreated = document.getElementById("owner-created");
+  const teamList      = document.getElementById("team-list");
+  const ownerAvatar   = document.getElementById("owner-avatar");
+  const ownerDName    = document.getElementById("owner-display-name");
+  const ownerUname    = document.getElementById("owner-username");
+  const ownerId       = document.getElementById("owner-id");
+  const ownerCreated  = document.getElementById("owner-created");
+  const ownerLinks    = document.getElementById("owner-links");
 
-  // --- MOUSE TRACKING & PHYSICS ---
-  let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  let dampedMouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-  
-  let targetRotX = 0;
-  let targetRotY = 0;
-  let currentRotX = 0;
-  let currentRotY = 0;
+  // Roblox version elements
+  const rbxClientVersion = document.getElementById("rbx-client-version");
+  const rbxDumperVersion = document.getElementById("rbx-dumper-version");
+  const rbxDumpDate      = document.getElementById("rbx-dump-date");
+  const rbxOffsetCount   = document.getElementById("rbx-offset-count");
 
-  // Custom Cursor Update Loop
+  // Pricing elements
+  const pricingPlans = document.getElementById("pricing-plans");
+
+  // Discord card elements
+  const discordJoinBtn = document.getElementById("discord-join-btn");
+  const discordCopyBtn = document.getElementById("discord-copy-btn");
+
+  // =============================================
+  // CUSTOM CURSOR + DAMPED PARALLAX SYSTEM
+  // =============================================
+  let mouse        = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  let dampedMouse  = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  let targetRotX = 0, targetRotY = 0;
+  let currentRotX = 0, currentRotY = 0;
+
   function updateCursor() {
-    // Lerp damped cursor coordinates (dampening effect)
     dampedMouse.x += (mouse.x - dampedMouse.x) * 0.12;
     dampedMouse.y += (mouse.y - dampedMouse.y) * 0.12;
-
-    customCursor.style.left = `${dampedMouse.x}px`;
-    customCursor.style.top = `${dampedMouse.y}px`;
-    
-    // Dot follows mouse directly
+    customCursor.style.left    = `${dampedMouse.x}px`;
+    customCursor.style.top     = `${dampedMouse.y}px`;
     customCursorDot.style.left = `${mouse.x}px`;
-    customCursorDot.style.top = `${mouse.y}px`;
+    customCursorDot.style.top  = `${mouse.y}px`;
 
-    // 3D Parallax Dampening logic for card
     currentRotX += (targetRotX - currentRotX) * 0.08;
     currentRotY += (targetRotY - currentRotY) * 0.08;
-    
+
     if (guiCard) {
       guiCard.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
     }
-
     requestAnimationFrame(updateCursor);
   }
   requestAnimationFrame(updateCursor);
 
-  // Mouse move event listeners
   window.addEventListener("mousemove", (e) => {
     mouse.x = e.clientX;
     mouse.y = e.clientY;
 
-    // Calculate rotation angles for parallax card
-    const cardRect = guiCard ? guiCard.getBoundingClientRect() : null;
-    if (cardRect) {
-      const centerX = cardRect.left + cardRect.width / 2;
-      const centerY = cardRect.top + cardRect.height / 2;
-      const deltaX = (e.clientX - centerX) / (window.innerWidth / 2);
-      const deltaY = (e.clientY - centerY) / (window.innerHeight / 2);
-      
-      // Limit rotations to max 12 degrees
-      targetRotX = -deltaY * 12;
-      targetRotY = deltaX * 12;
+    if (guiCard) {
+      const r   = guiCard.getBoundingClientRect();
+      const dx  = (e.clientX - (r.left + r.width / 2))  / (window.innerWidth  / 2);
+      const dy  = (e.clientY - (r.top  + r.height / 2)) / (window.innerHeight / 2);
+      targetRotX = -dy * 10;
+      targetRotY =  dx * 10;
     }
   });
 
-  // Cursor Hover classes on interactive elements
-  const addCursorHover = () => document.body.classList.add("cursor-hover");
-  const removeCursorHover = () => document.body.classList.remove("cursor-hover");
+  const addHover    = () => document.body.classList.add("cursor-hover");
+  const removeHover = () => document.body.classList.remove("cursor-hover");
 
-  function refreshCursorHoverListeners() {
-    const hoverables = document.querySelectorAll("a, button, input, select, textarea, .control, .modal-close");
-    hoverables.forEach(elem => {
-      elem.removeEventListener("mouseenter", addCursorHover);
-      elem.removeEventListener("mouseleave", removeCursorHover);
-      elem.addEventListener("mouseenter", addCursorHover);
-      elem.addEventListener("mouseleave", removeCursorHover);
+  function refreshCursorHovers() {
+    document.querySelectorAll("a, button, input, .control").forEach(el => {
+      el.removeEventListener("mouseenter", addHover);
+      el.removeEventListener("mouseleave", removeHover);
+      el.addEventListener("mouseenter", addHover);
+      el.addEventListener("mouseleave", removeHover);
     });
   }
-  refreshCursorHoverListeners();
+  refreshCursorHovers();
 
-  // --- INTERACTIVE BACKGROUND CANVAS GRID ---
+  // =============================================
+  // INTERACTIVE TILE BACKGROUND CANVAS
+  // =============================================
   const canvas = document.getElementById("grid-canvas");
-  const ctx = canvas.getContext("2d");
-
-  let gridCells = [];
-  const cellSize = 50; // Size of grid cells in pixels
-  let cols, rows;
+  const ctx    = canvas.getContext("2d");
+  const CELL   = 50;
+  let cols, rows, gridCells = [];
 
   function resizeCanvas() {
-    canvas.width = window.innerWidth;
+    canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-    cols = Math.ceil(canvas.width / cellSize);
-    rows = Math.ceil(canvas.height / cellSize);
-    
-    // Reinitialize grid intensity array
+    cols = Math.ceil(canvas.width  / CELL);
+    rows = Math.ceil(canvas.height / CELL);
     gridCells = [];
     for (let c = 0; c < cols; c++) {
       gridCells[c] = [];
-      for (let r = 0; r < rows; r++) {
-        gridCells[c][r] = 0; // Intensity initialized to 0
-      }
+      for (let r = 0; r < rows; r++) gridCells[c][r] = 0;
     }
   }
   window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
 
-  // Canvas animation loop
   function drawCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // 1. Calculate which grid cell the mouse is currently in, and activate it
-    const activeCol = Math.floor(mouse.x / cellSize);
-    const activeRow = Math.floor(mouse.y / cellSize);
-    
-    if (activeCol >= 0 && activeCol < cols && activeRow >= 0 && activeRow < rows) {
-      gridCells[activeCol][activeRow] = 1.0; // Max intensity on cursor cell
-      
-      // Light up neighboring cells slightly
-      const neighbors = [
-        [0, 1], [0, -1], [1, 0], [-1, 0]
-      ];
-      neighbors.forEach(([dc, dr]) => {
-        const nc = activeCol + dc;
-        const nr = activeRow + dr;
-        if (nc >= 0 && nc < cols && nr >= 0 && nr < rows) {
-          gridCells[nc][nr] = Math.max(gridCells[nc][nr], 0.4);
-        }
+
+    const aC = Math.floor(mouse.x / CELL);
+    const aR = Math.floor(mouse.y / CELL);
+
+    if (aC >= 0 && aC < cols && aR >= 0 && aR < rows) {
+      gridCells[aC][aR] = 1.0;
+      [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dc, dr]) => {
+        const nc = aC + dc, nr = aR + dr;
+        if (nc >= 0 && nc < cols && nr >= 0 && nr < rows)
+          gridCells[nc][nr] = Math.max(gridCells[nc][nr], 0.35);
       });
     }
 
-    // 2. Draw active tiles (black, white, pink theme)
     for (let c = 0; c < cols; c++) {
       for (let r = 0; r < rows; r++) {
-        const intensity = gridCells[c][r];
-        if (intensity > 0.01) {
-          // Fill grid cells that are active with a glowing pink trail
-          ctx.fillStyle = `rgba(255, 105, 180, ${intensity * 0.14})`;
-          ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
-          
-          // Fade grid cell intensity over time (dampening effect)
-          gridCells[c][r] *= 0.94;
+        const v = gridCells[c][r];
+        if (v > 0.01) {
+          ctx.fillStyle = `rgba(255,105,180,${v * 0.13})`;
+          ctx.fillRect(c * CELL, r * CELL, CELL, CELL);
+          gridCells[c][r] *= 0.93;
         }
       }
     }
 
-    // 3. Draw grid lines (subtle dark grid borders)
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.018)";
+    // Grid lines
+    ctx.strokeStyle = "rgba(255,255,255,0.016)";
     ctx.lineWidth = 1;
     ctx.beginPath();
-    
-    for (let c = 0; c <= cols; c++) {
-      ctx.moveTo(c * cellSize, 0);
-      ctx.lineTo(c * cellSize, canvas.height);
-    }
-    for (let r = 0; r <= rows; r++) {
-      ctx.moveTo(0, r * cellSize);
-      ctx.lineTo(canvas.width, r * cellSize);
-    }
+    for (let c = 0; c <= cols; c++) { ctx.moveTo(c * CELL, 0); ctx.lineTo(c * CELL, canvas.height); }
+    for (let r = 0; r <= rows; r++) { ctx.moveTo(0, r * CELL); ctx.lineTo(canvas.width, r * CELL); }
     ctx.stroke();
 
-    // 4. Subtle mouse spotlight glow
-    const gradient = ctx.createRadialGradient(
-      dampedMouse.x, dampedMouse.y, 10,
-      dampedMouse.x, dampedMouse.y, 200
-    );
-    gradient.addColorStop(0, "rgba(255, 105, 180, 0.07)");
-    gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.fillStyle = gradient;
+    // Spotlight glow
+    const grad = ctx.createRadialGradient(dampedMouse.x, dampedMouse.y, 10, dampedMouse.x, dampedMouse.y, 220);
+    grad.addColorStop(0, "rgba(255,105,180,0.065)");
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     requestAnimationFrame(drawCanvas);
   }
   requestAnimationFrame(drawCanvas);
 
-  // --- STARTUP ANIMATION LOGIC ---
+  // =============================================
+  // STARTUP REVEAL ANIMATION
+  // =============================================
   if (revealBtn) {
     revealBtn.addEventListener("click", () => {
-      // 1. Trigger reveal text animation
       revealText.classList.remove("hidden");
-      revealText.classList.add("show");
-      
-      // Rotate and slide the button
-      revealBtn.style.transform = "scale(0.8) rotate(360deg)";
-      revealBtn.style.opacity = "0";
+      setTimeout(() => revealText.classList.add("show"), 50);
+
+      revealBtn.style.transition = "transform 0.8s cubic-bezier(0.34,1.56,0.64,1), opacity 0.6s ease";
+      revealBtn.style.transform  = "scale(0.7) rotate(360deg)";
+      revealBtn.style.opacity    = "0";
       revealBtn.style.pointerEvents = "none";
 
-      // 2. Transition Loader -> Main Website
       setTimeout(() => {
-        startupScreen.style.opacity = "0";
+        startupScreen.style.opacity    = "0";
         startupScreen.style.visibility = "hidden";
         mainContent.classList.remove("hidden-main");
-      }, 1400);
+        setTimeout(refreshCursorHovers, 300);
+      }, 1500);
     });
   }
 
-  // --- TAB NAVIGATION ACTIONS ---
-  if (tabDiscordBtn) {
-    tabDiscordBtn.addEventListener("click", () => {
-      window.open(config.discord, "_blank");
-    });
+  // =============================================
+  // MODAL HELPERS
+  // =============================================
+  function openModal(modal) {
+    document.querySelectorAll(".modal").forEach(m => m.classList.remove("active"));
+    modal.classList.add("active");
+    refreshCursorHovers();
   }
 
-  if (tabFeaturesBtn) {
-    tabFeaturesBtn.addEventListener("click", () => {
-      modalFeatures.classList.add("active");
-      loadFeatures();
-    });
+  function closeAllModals() {
+    document.querySelectorAll(".modal").forEach(m => m.classList.remove("active"));
   }
 
-  if (tabInfoBtn) {
-    tabInfoBtn.addEventListener("click", () => {
-      modalInfo.classList.add("active");
-      loadInfoSection();
-    });
-  }
+  // Close on overlay click or 'X' button
+  document.querySelectorAll(".modal-close, .modal-overlay").forEach(el => {
+    el.addEventListener("click", closeAllModals);
+  });
 
-  // Close modals
-  closeBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".modal").forEach(modal => {
-        modal.classList.remove("active");
-      });
+  window.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeAllModals();
+  });
+
+  // =============================================
+  // TAB BUTTON ACTIONS
+  // =============================================
+  if (tabFeaturesBtn) tabFeaturesBtn.addEventListener("click", () => {
+    openModal(modalFeatures);
+    loadFeatures();
+  });
+
+  if (tabInfoBtn) tabInfoBtn.addEventListener("click", () => {
+    openModal(modalInfo);
+    loadInfoSection();
+  });
+
+  if (tabPricingBtn) tabPricingBtn.addEventListener("click", () => {
+    openModal(modalPricing);
+    renderPricing();
+  });
+
+  if (tabDiscordBtn) tabDiscordBtn.addEventListener("click", () => {
+    openModal(modalDiscord);
+  });
+
+  // Discord card buttons
+  if (discordJoinBtn) discordJoinBtn.addEventListener("click", () => {
+    window.open(config.discord, "_blank");
+  });
+
+  if (discordCopyBtn) discordCopyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(config.discord).then(() => {
+      discordCopyBtn.textContent = "Copied!";
+      setTimeout(() => { discordCopyBtn.textContent = "Copy Invite Link"; }, 2000);
+    }).catch(() => {
+      discordCopyBtn.textContent = "Failed";
+      setTimeout(() => { discordCopyBtn.textContent = "Copy Invite Link"; }, 2000);
     });
   });
 
-  // Close modal on Escape key
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      document.querySelectorAll(".modal").forEach(modal => {
-        modal.classList.remove("active");
-      });
-    }
+  // =============================================
+  // ACCORDION TOGGLES (Info Modal)
+  // =============================================
+  document.querySelectorAll(".accordion-trigger").forEach(trigger => {
+    trigger.addEventListener("click", () => {
+      const content = trigger.nextElementSibling;
+      const isOpen  = content.classList.contains("show");
+
+      // Close all first
+      document.querySelectorAll(".accordion-content").forEach(c => c.classList.remove("show"));
+      document.querySelectorAll(".accordion-trigger").forEach(t => t.classList.remove("active"));
+
+      // Toggle clicked one
+      if (!isOpen) {
+        content.classList.add("show");
+        trigger.classList.add("active");
+      }
+    });
   });
 
-  // --- FEATURE PARSER FROM script.txt ---
+  // =============================================
+  // PRICING RENDER
+  // =============================================
+  let pricingRendered = false;
+  function renderPricing() {
+    if (pricingRendered) return;
+    pricingRendered = true;
+    pricingPlans.innerHTML = "";
+
+    config.pricing.forEach(plan => {
+      const card = document.createElement("div");
+      card.className = "pricing-card";
+
+      if (plan.popular) {
+        const badge = document.createElement("div");
+        badge.className = "pricing-popular-badge";
+        badge.textContent = "Most Popular";
+        card.appendChild(badge);
+      }
+
+      const title = document.createElement("h3");
+      title.textContent = plan.name;
+      card.appendChild(title);
+
+      const priceWrap = document.createElement("div");
+      priceWrap.className = "pricing-price-container";
+      priceWrap.innerHTML = `<span class="pricing-amount">${plan.price}</span><span class="pricing-period">${plan.period}</span>`;
+      card.appendChild(priceWrap);
+
+      const ul = document.createElement("ul");
+      ul.className = "pricing-features-list";
+      plan.features.forEach(f => {
+        const li = document.createElement("li");
+        li.textContent = f;
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+
+      const btn = document.createElement("button");
+      btn.className = "pricing-action-btn";
+      btn.textContent = "Get Access";
+      btn.addEventListener("click", () => window.open(plan.link, "_blank"));
+      card.appendChild(btn);
+
+      pricingPlans.appendChild(card);
+    });
+
+    refreshCursorHovers();
+  }
+
+  // =============================================
+  // FEATURES PARSER FROM script.txt WITH SUBTABS
+  // =============================================
   let featuresLoaded = false;
+  let allCategories  = {};
+  let activeTab      = null;
+
   function loadFeatures() {
-    if (featuresLoaded) return; // Prevent double loads
-
+    if (featuresLoaded) return;
     fetch("script.txt")
-      .then(response => {
-        if (!response.ok) throw new Error("File not found");
-        return response.text();
-      })
-      .then(text => {
-        parseAndRenderFeatures(text);
-        featuresLoaded = true;
-      })
-      .catch(error => {
-        console.warn("Could not load script.txt, using local fallback features:", error);
-        // Fallback features list if script.txt fetch fails
-        const fallbackText = `
-[Aimbot]
-- Enabled
-- Lock Method (Mouse, Camera)
-- Target Mode (FOV, Mouse, Distance, Center)
-- Aim Type (Normal, Closest Part)
-- Ground Part (Head, Torso, etc.)
-- Air Part (UpperTorso, etc.)
-- Ignore Fall State
-- Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
-- Auto Stop on Dead
-- Sticky Aim
-- Lock Target
-
-[Silent Aim]
-- Enabled
-- Target Type (Closest to Mouse, Distance, FOV)
-- Hit Part (Head, Torso, etc.)
-- Use Closest Point
-- Checks (Enemy, Team, NPC, Wall, Dead, Knocked)
-
-[Visuals (ESP)]
-- Enable ESP
-- ESP Font (ProggyClean, Tahoma, SourceSans, etc.)
-- Show On (NPC, Enemy, Team, Self)
-- Max Distance
-- Box ESP (Full, Cornered)
-- Glow Amount
-- Box Fill (Fill Transparency 1 & 2)
-- Name ESP (Top, Bottom, Left, Right)
-- Distance ESP (Top, Bottom, Left, Right)
-- Health Bar & Health Bar Gradient
-- Health Text & Armor Bar
-- Weapon ESP
-- State Flags
-
-[Player Chams]
-- Player Chams (Fill/Outline Color Picker)
-- Show On Self, Others, NPCs
-- Checks (Dead, Wall)
-- Fill/Outline Transparency
-        `;
-        parseAndRenderFeatures(fallbackText);
-        featuresLoaded = true;
-      });
+      .then(r => { if (!r.ok) throw new Error("404"); return r.text(); })
+      .then(text => parseAndRenderFeatures(text))
+      .catch(() => parseAndRenderFeatures(getFallbackFeatures()));
   }
 
   function parseAndRenderFeatures(text) {
     featuresLoader.style.display = "none";
-    featuresContent.innerHTML = "";
+    featuresTabsNav.innerHTML    = "";
+    featuresSubContent.innerHTML = "";
+    allCategories = {};
 
     const lines = text.split("\n");
-    let currentCategory = null;
-    let categories = {};
+    let currentCat = null;
 
     lines.forEach(line => {
-      const trimmed = line.trim();
-      if (!trimmed) return;
-
-      // Category Header like [Aimbot]
-      if (trimmed.startsWith("[") && trimmed.endsWith("]")) {
-        currentCategory = trimmed.substring(1, trimmed.length - 1);
-        categories[currentCategory] = [];
-      } else if (currentCategory && (trimmed.startsWith("-") || trimmed.startsWith("*"))) {
-        // Feature bullet point
-        const feature = trimmed.substring(1).trim();
-        categories[currentCategory].push(feature);
+      const t = line.trim();
+      if (!t) return;
+      if (t.startsWith("[") && t.endsWith("]")) {
+        currentCat = t.slice(1, -1);
+        allCategories[currentCat] = [];
+      } else if (currentCat && (t.startsWith("-") || t.startsWith("*"))) {
+        allCategories[currentCat].push(t.substring(1).trim());
       }
     });
 
-    // Render HTML Cards
-    Object.keys(categories).forEach(catName => {
-      const card = document.createElement("div");
-      card.className = "feature-category-card";
-
-      const title = document.createElement("h3");
-      title.textContent = catName;
-      card.appendChild(title);
-
-      const list = document.createElement("ul");
-      categories[catName].forEach(feat => {
-        const item = document.createElement("li");
-        item.textContent = feat;
-        list.appendChild(item);
+    // Build subtab buttons
+    const cats = Object.keys(allCategories);
+    cats.forEach((cat, idx) => {
+      const btn = document.createElement("button");
+      btn.className   = "features-tab-btn" + (idx === 0 ? " active" : "");
+      btn.textContent = cat;
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".features-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        showCategoryPanel(cat);
       });
-      card.appendChild(list);
-
-      featuresContent.appendChild(card);
+      featuresTabsNav.appendChild(btn);
     });
 
-    refreshCursorHoverListeners();
+    // Show first category by default
+    if (cats.length > 0) showCategoryPanel(cats[0]);
+    featuresLoaded = true;
+    refreshCursorHovers();
   }
 
-  // --- INFO SECTION RENDER & ROBLOX API FETCH ---
+  function showCategoryPanel(cat) {
+    activeTab = cat;
+    const items = allCategories[cat] || [];
+    featuresSubContent.innerHTML = "";
+
+    const grid = document.createElement("div");
+    grid.className = "features-subtab-grid";
+
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "feature-item-card";
+      card.innerHTML = `<span class="feature-item-dot"></span><span class="feature-item-text">${item}</span>`;
+      grid.appendChild(card);
+    });
+
+    featuresSubContent.appendChild(grid);
+    refreshCursorHovers();
+  }
+
+  function getFallbackFeatures() {
+    return `[Aimbot]
+- Enabled
+- Lock Method (Mouse, Camera)
+- Target Mode (FOV, Mouse, Distance, Center)
+- Sticky Aim
+- Lock Target
+- Smoothing / Inertia
+- Prediction (X/Z, Y, Dynamic)
+[Silent Aim]
+- Enabled
+- Target Type (Closest to Mouse, Distance, FOV)
+- Hit Part (Head, Torso)
+[Visuals (ESP)]
+- Enable ESP
+- Box ESP
+- Name ESP
+- Health Bar
+[Skins]
+- Purple Skin
+- Red Skin
+- Green Skin
+- Blue Skin
+[Skyboxes]
+- Space
+- Night
+- Pink
+- Forest`;
+  }
+
+  // =============================================
+  // INFO SECTION RENDER
+  // =============================================
   let infoLoaded = false;
+
   function loadInfoSection() {
     if (infoLoaded) return;
-
-    // 1. Render Games
-    gamesList.innerHTML = "";
-    config.games.forEach(game => {
-      const gameCard = document.createElement("div");
-      gameCard.className = "game-card";
-      
-      const title = document.createElement("h4");
-      title.textContent = game.name;
-      
-      const details = document.createElement("p");
-      details.textContent = game.details;
-      
-      gameCard.appendChild(title);
-      gameCard.appendChild(details);
-      gamesList.appendChild(gameCard);
-    });
-
-    // 2. Render Executors
-    executorsList.innerHTML = "";
-    config.executors.forEach(exec => {
-      const badge = document.createElement("span");
-      badge.className = "executor-badge";
-      badge.textContent = exec;
-      executorsList.appendChild(badge);
-    });
-
-    // 3. Render Owner links
-    ownerLinks.innerHTML = "";
-    config.owner.links.forEach(link => {
-      const btn = document.createElement("a");
-      btn.className = "owner-link-btn";
-      btn.href = link.url;
-      btn.target = "_blank";
-      btn.textContent = link.label;
-      ownerLinks.appendChild(btn);
-    });
-
-    // 4. Fetch Roblox Profile info dynamically
-    fetchRobloxProfile(config.owner.robloxId);
-    
     infoLoaded = true;
+
+    // Games
+    if (gamesList) {
+      gamesList.innerHTML = "";
+      config.games.forEach(game => {
+        const card = document.createElement("div");
+        card.className = "game-card";
+        card.innerHTML = `<h4>${game.name}</h4><p>${game.details}</p>`;
+        gamesList.appendChild(card);
+      });
+    }
+
+    // Executors
+    if (executorsList) {
+      executorsList.innerHTML = "";
+      config.executors.forEach(exec => {
+        const badge = document.createElement("span");
+        badge.className   = "executor-badge";
+        badge.textContent = exec;
+        executorsList.appendChild(badge);
+      });
+    }
+
+    // Team cards
+    if (teamList) {
+      teamList.innerHTML = "";
+      config.team.forEach(member => {
+        const card     = document.createElement("div");
+        card.className = "team-card";
+
+        const avatarUrl = `https://tr.rbxcdn.com/30DAY-Avatar-${member.robloxId}-Png/420/420/Avatar/Png/noFilter`;
+        const fallbackAvatar = `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${member.robloxId}&size=150x150&format=Png&isCircular=false`;
+
+        card.innerHTML = `
+          <img src="" alt="${member.name}" class="team-card-avatar" data-robloxid="${member.robloxId}">
+          <div class="team-card-info">
+            <h4>${member.name}</h4>
+            <span class="role-badge">${member.role}</span>
+          </div>`;
+        teamList.appendChild(card);
+
+        // Fetch avatar for team member
+        fetchAvatarForImg(card.querySelector("img"), member.robloxId);
+      });
+    }
+
+    // Owner links
+    if (ownerLinks) {
+      ownerLinks.innerHTML = "";
+      config.owner.links.forEach(link => {
+        const a   = document.createElement("a");
+        a.className = "owner-link-btn";
+        a.href    = link.url;
+        a.target  = "_blank";
+        a.textContent = link.label;
+        ownerLinks.appendChild(a);
+      });
+    }
+
+    // Fetch Roblox profile for owner
+    fetchOwnerProfile(config.owner.robloxId);
+
+    // Fetch live imtheo.lol offsets data
+    fetchRobloxOffsets();
+
+    refreshCursorHovers();
   }
 
-  function fetchRobloxProfile(userId) {
-    // Standard Roblox Avatar body shot CDN URL
-    const avatarUrl = `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`;
-    
-    // Pre-calculated fallback details in case network is offline
-    const fallbackProfile = {
-      description: "",
-      created: "2025-05-01T04:15:20.162Z",
-      isBanned: false,
-      id: parseInt(userId),
-      name: "5fovtraceboss",
-      displayName: "koni"
-    };
-
-    // Load dynamic avatar image from Roblox CDN (always supports CORS)
-    fetch(avatarUrl)
-      .then(res => res.json())
+  function fetchAvatarForImg(imgEl, userId) {
+    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`)}`;
+    fetch(proxyUrl)
+      .then(r => r.json())
       .then(json => {
         if (json.data && json.data[0] && json.data[0].imageUrl) {
-          ownerAvatar.src = json.data[0].imageUrl;
-        } else {
-          ownerAvatar.src = "https://tr.rbxcdn.com/30DAY-Avatar-8768D4231D32EF9CBC674A5265D71B79-Png/420/420/Avatar/Png/noFilter";
+          imgEl.src = json.data[0].imageUrl;
         }
       })
       .catch(() => {
-        ownerAvatar.src = "https://tr.rbxcdn.com/30DAY-Avatar-8768D4231D32EF9CBC674A5265D71B79-Png/420/420/Avatar/Png/noFilter";
+        imgEl.src = `https://tr.rbxcdn.com/30DAY-Avatar-8768D4231D32EF9CBC674A5265D71B79-Png/420/420/Avatar/Png/noFilter`;
       });
+  }
 
-    // Load profile stats - attempt via public CORS proxy to bypass Roblox API restrictions
-    const profileUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://users.roblox.com/v1/users/${userId}`)}`;
-    
-    fetch(profileUrl)
-      .then(res => {
-        if (!res.ok) throw new Error("CORS proxy error");
-        return res.json();
-      })
-      .then(profile => {
-        renderRobloxProfile(profile);
+  function fetchOwnerProfile(userId) {
+    // Load avatar full body shot
+    const avatarProxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`)}`;
+    fetch(avatarProxyUrl)
+      .then(r => r.json())
+      .then(json => {
+        if (json.data && json.data[0] && json.data[0].imageUrl && ownerAvatar) {
+          ownerAvatar.src = json.data[0].imageUrl;
+        }
       })
       .catch(() => {
-        console.warn("Could not fetch profile from Roblox API via proxy. Loading local cached fallback profile.");
-        renderRobloxProfile(fallbackProfile);
+        if (ownerAvatar) ownerAvatar.src = "https://tr.rbxcdn.com/30DAY-Avatar-8768D4231D32EF9CBC674A5265D71B79-Png/420/420/Avatar/Png/noFilter";
       });
+
+    // Load profile data
+    const profileProxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://users.roblox.com/v1/users/${userId}`)}`;
+    fetch(profileProxyUrl)
+      .then(r => { if (!r.ok) throw new Error("Proxy error"); return r.json(); })
+      .then(profile => renderOwnerProfile(profile))
+      .catch(() => renderOwnerProfile({ displayName: "koni", name: "5fovtraceboss", id: userId, created: "2025-05-01T04:15:20.162Z" }));
   }
 
-  function renderRobloxProfile(profile) {
-    ownerDisplayName.textContent = profile.displayName || "koni";
-    ownerUsername.textContent = `@${profile.name || "5fovtraceboss"}`;
-    ownerId.textContent = profile.id || "8393274455";
-    
-    if (profile.created) {
-      const date = new Date(profile.created);
-      ownerCreated.textContent = date.toLocaleDateString("en-US", {
-        month: "2-digit",
-        day: "2-digit",
-        year: "numeric"
-      });
-    } else {
-      ownerCreated.textContent = "05/01/2025";
+  function renderOwnerProfile(p) {
+    if (ownerDName)   ownerDName.textContent  = p.displayName || "koni";
+    if (ownerUname)   ownerUname.textContent  = `@${p.name || "5fovtraceboss"}`;
+    if (ownerId)      ownerId.textContent     = p.id || "8393274455";
+    if (ownerCreated && p.created) {
+      const d = new Date(p.created);
+      ownerCreated.textContent = d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" });
     }
-
-    refreshCursorHoverListeners();
+    refreshCursorHovers();
   }
+
+  // =============================================
+  // LIVE ROBLOX OFFSET API (imtheo.lol)
+  // =============================================
+  function fetchRobloxOffsets() {
+    if (!rbxClientVersion) return;
+
+    const OFFSETS_URL  = "https://offsets.imtheo.lol/Offsets.json";
+    const PROXY_URL    = `https://corsproxy.io/?url=${encodeURIComponent(OFFSETS_URL)}`;
+
+    fetch(PROXY_URL)
+      .then(r => { if (!r.ok) throw new Error("Proxy fail"); return r.json(); })
+      .then(data => {
+        rbxClientVersion.textContent = data["Roblox Version"] || "Unknown";
+        rbxDumperVersion.textContent = `${data["Dumper Version"] || "?"} (${data["Dumped With"] || "Unknown"})`;
+        rbxDumpDate.textContent      = data["Dumped At"] || "Unknown";
+        rbxOffsetCount.textContent   = (data["Total Offsets"] || "?") + " offsets";
+      })
+      .catch(() => {
+        // Direct fetch attempt (may fail due to CORS on browser)
+        fetch(OFFSETS_URL, { mode: "cors" })
+          .then(r => r.json())
+          .then(data => {
+            rbxClientVersion.textContent = data["Roblox Version"] || "Unknown";
+            rbxDumperVersion.textContent = data["Dumper Version"] || "Unknown";
+            rbxDumpDate.textContent      = data["Dumped At"]  || "Unknown";
+            rbxOffsetCount.textContent   = (data["Total Offsets"] || "?") + " offsets";
+          })
+          .catch(() => {
+            rbxClientVersion.textContent = "version-d584fb6c717a43d9";
+            rbxDumperVersion.textContent = "2.1.7 (RbxDumperV2)";
+            rbxDumpDate.textContent      = "01:04 06/08/2026";
+            rbxOffsetCount.textContent   = "388 offsets";
+          });
+      });
+  }
+
 });
